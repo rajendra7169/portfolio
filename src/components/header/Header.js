@@ -86,14 +86,14 @@ class Header extends Component {
               </li>
               <li>
                 <a
-                  href="https://example.com"
+                  href="https://blog.rajendrapandey.info.np/"
                   target="_blank"
                   rel="noopener noreferrer" // Prevents security risks
                   style={{ color: theme.text }} // Add consistent styling
                   onMouseEnter={(event) => onMouseEnter(event, theme.highlight)}
                   onMouseOut={(event) => onMouseOut(event)}
                 >
-                  Blog
+                  Stories
                 </a>
               </li>
               <li>
