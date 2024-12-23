@@ -81,8 +81,12 @@
       "isFork": false,
       "languages": [
         {
-          "name": "Python",
-          "iconifyClass": "logos-python"
+          "name": "Dart",
+          "iconifyClass": "logos-dart"
+        },
+        {
+          "name": "Flutter",
+          "iconifyClass": "logos-flutter"
         }
       ]
     },
