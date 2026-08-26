@@ -17,8 +17,8 @@ export function Effects() {
   return (
     <EffectComposer enableNormalPass={false} multisampling={0}>
       <Bloom
-        intensity={0.5}
-        luminanceThreshold={0.62}
+        intensity={0.35}
+        luminanceThreshold={0.78}
         luminanceSmoothing={0.3}
         mipmapBlur={false}
         kernelSize={KernelSize.SMALL}

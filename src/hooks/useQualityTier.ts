@@ -14,7 +14,12 @@ export interface Quality {
   webgl: boolean;
   dpr: [number, number];
   points: number;
+  /** Number of ruled lines behind the artifact. 0 disables them. */
   ridgeSegments: number;
+  /** Refraction is a per-frame re-render of the scene. Desktop only. */
+  transmission: boolean;
+  /** Transmission sample count. Higher is smoother and costs more. */
+  samples: number;
   bloom: boolean;
   lattice: boolean;
   /** 'full' | 'short' | 'cut' — how the camera moves between acts. */
@@ -67,6 +72,8 @@ function resolve(): Quality {
       dpr: [1, 1],
       points: 0,
       ridgeSegments: 0,
+      transmission: false,
+      samples: 0,
       bloom: false,
       lattice: false,
       camera: 'cut',
@@ -79,7 +86,10 @@ function resolve(): Quality {
       webgl: true,
       dpr: [1, 1.5],
       points: 0,
-      ridgeSegments: 0,
+      // The rules stay: they are the content of the image, not motion.
+      ridgeSegments: 16,
+      transmission: false,
+      samples: 0,
       bloom: false,
       lattice: false,
       camera: 'cut',
@@ -92,7 +102,9 @@ function resolve(): Quality {
       webgl: true,
       dpr: [1, 1.5],
       points: 2500,
-      ridgeSegments: 48,
+      ridgeSegments: 16,
+      transmission: false,
+      samples: 0,
       bloom: false,
       lattice: false,
       camera: 'short',
@@ -104,8 +116,18 @@ function resolve(): Quality {
     webgl: true,
     dpr: [1, 2],
     points: 8000,
-    ridgeSegments: 128,
-    bloom: true,
+    // Twenty-two lines you can count, not two hundred and fifty that alias
+    // into grey mush.
+    ridgeSegments: 22,
+    transmission: true,
+    samples: 6,
+    /**
+     * Off. Bloom was in the brief to make a wireframe ridge crest glow; there
+     * is no such object any more, and refraction does not need help being
+     * visible. It cost four passes and pushed the frame past the 12-draw-call
+     * budget that transmission already strains.
+     */
+    bloom: false,
     lattice: true,
     camera: 'full',
   };

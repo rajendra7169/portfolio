@@ -6,3 +6,7 @@ dist
 .DS_Store
 .vite
 .playwright-mcp
+
+# Stray downloads that land in the project directory
+*.deb
+*.AppImage

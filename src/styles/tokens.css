@@ -30,10 +30,6 @@
   /* red that has to survive as text on --ground / --surface */
   --ledger-ink: #e0574a;
 
-  /* the scrim from the brief §5 — no backdrop-filter, ever */
-  --scrim: color-mix(in srgb, var(--ground) 82%, transparent);
-  --scrim-solid: color-mix(in srgb, var(--ground) 94%, transparent);
-
   /* -- type -------------------------------------------------------------- */
   --font-display: 'Archivo Variable', 'Archivo', 'Archivo Fallback', ui-sans-serif, system-ui, sans-serif;
   --font-body: 'Public Sans Variable', 'Public Sans', 'Public Sans Fallback', ui-sans-serif, system-ui, sans-serif;

@@ -155,7 +155,7 @@ a.link:hover {
 .act {
   position: relative;
   min-height: 100svh;
-  padding-block: var(--s-9);
+  padding-block: var(--s-8);
   /* Sections may and do exceed one viewport. That is the design. */
 }
 
@@ -164,6 +164,12 @@ a.link:hover {
  * below 64rem is 11 gaps wide before it holds a single character — at 320px
  * that is 352px of gutter in a 272px track, and the page scrolls sideways.
  */
+/* The masthead is fixed and opaque, so the first thing on the page has to
+   start below it. Every later section scrolls under it, which is intended. */
+main > .act:first-child {
+  padding-block-start: calc(var(--s-8) + 3.25rem);
+}
+
 .act__grid {
   display: grid;
   row-gap: var(--s-6);
@@ -185,15 +191,6 @@ a.link:hover {
     grid-column: 1 / span 7;
   }
 
-  .act--right .act__content {
-    grid-column: 6 / span 7;
-  }
-}
-
-/* Any text that could cross the scene sits on a scrim. No backdrop-filter. */
-.scrim {
-  background: var(--scrim);
-  backdrop-filter: none;
 }
 
 /* -- the entry label ------------------------------------------------------ */
@@ -264,6 +261,15 @@ a.link:hover {
 
 /* -- the one canvas ------------------------------------------------------- */
 
+/**
+ * The canvas occupies the scene column and nothing else.
+ *
+ * It used to be a full-viewport fixed layer, with the objects inside it
+ * expected to stay politely out of the text. They did not — a 60x30 plane
+ * swung straight across the copy. Giving the canvas its own box makes the
+ * safe-zone contract a layout fact instead of a hope, and it costs less to
+ * render besides, because it is half the pixels.
+ */
 .global-canvas {
   position: fixed;
   inset: 0;
@@ -271,6 +277,14 @@ a.link:hover {
   /* A canvas that swallows clicks is the classic break. the brief §5. */
   pointer-events: none;
   contain: strict;
+}
+
+@media (min-width: 64rem) {
+  .global-canvas {
+    inset-inline-start: 57%;
+    /* Fades in from its own left edge, so the column has no visible boundary. */
+    mask-image: linear-gradient(to right, transparent 0, #000 20%, #000 100%);
+  }
 }
 
 .page {
@@ -283,16 +297,18 @@ a.link:hover {
 @media (max-width: 47.999rem) {
   .global-canvas {
     top: auto;
-    height: 30svh;
-    opacity: 0.5;
+    height: 34svh;
+    /* 0.5 washed the stone out to a smudge; it is the subject here, not a
+       texture behind something else. */
+    opacity: 0.8;
   }
 }
 
 @media (min-width: 48rem) and (max-width: 63.999rem) {
   .global-canvas {
     top: auto;
-    height: 40svh;
-    opacity: 0.62;
+    height: 42svh;
+    opacity: 0.85;
   }
 }
 
@@ -307,41 +323,16 @@ a.link:hover {
 }
 
 /**
- * The text substrate (the brief §5). Any text that could visually cross the
- * scene sits on a scrim — no backdrop-filter, because a blur behind moving
- * geometry costs more than it is worth and reads as glassmorphism, which
- * DESIGN.md §9 rules out.
- *
- * Desktop: the content column carries the ground colour and fades out toward
- * the scene column, so the two regions meet without a visible panel edge.
+ * No scrim on desktop any more. The scrim existed because the scene could
+ * cross the copy; it cannot now, and painting a translucent panel behind every
+ * column just drew a hard grey rectangle on the page — which is exactly what it
+ * looked like.
  */
-@media (min-width: 64rem) {
-  .act__content {
-    padding-block: var(--s-5);
-    padding-inline-end: var(--s-7);
-    background: linear-gradient(
-      to right,
-      var(--scrim-solid) 0 76%,
-      color-mix(in srgb, var(--ground) 40%, transparent) 92%,
-      transparent 100%
-    );
-  }
-
-  .act--right .act__content {
-    padding-inline: var(--s-7) 0;
-    background: linear-gradient(
-      to left,
-      var(--scrim-solid) 0 76%,
-      color-mix(in srgb, var(--ground) 40%, transparent) 92%,
-      transparent 100%
-    );
-  }
-}
 
 /**
- * Below 64rem the scene is a horizon band pinned to the bottom of the viewport,
- * so content is fully opaque and the band shows through the generous padding
- * between one section and the next. Legibility beats purity every time.
+ * Below 64rem the scene is a band pinned to the bottom of the viewport, so
+ * content stays fully opaque and the band shows through the padding between one
+ * section and the next. Legibility beats purity every time.
  */
 @media (max-width: 63.999rem) {
   .act__content {

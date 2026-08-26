@@ -18,7 +18,7 @@ export function Arrival() {
       <div className="shell act__grid">
         <div className="act__content">
           <div data-reveal>
-            <EntryLabel entry={act.entry} qualifier={act.qualifier} title="Kathmandu" />
+            <EntryLabel entry={act.entry} qualifier={act.qualifier} title={act.title} />
           </div>
 
           <h1 id="arrival-name" className="hero__name" data-reveal>

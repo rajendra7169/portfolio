@@ -23,6 +23,19 @@ export interface Repo {
 /** Public, non-fork repositories, most recently pushed first. */
 export const repos: Repo[] = [
   {
+    name: 'blazify',
+    url: 'https://github.com/rajendra7169/blazify',
+    description: 'Blazify — modern Android music streaming player (Kotlin + Jetpack Compose)',
+    language: 'Kotlin',
+    languageColor: '#A97BFF',
+    stars: 14,
+    forks: 1,
+    topics: ['android', 'android-app', 'audio-player', 'equalizer', 'exoplayer', 'jetpack-compose', 'kotlin', 'material-design-3', 'material-you', 'media3', 'mp3-player', 'music', 'music-player', 'music-streaming', 'offline-music', 'streaming', 'synced-lyrics', 'youtube-music'],
+    homepage: 'https://github.com/rajendra7169/blazify/releases/latest',
+    createdAt: '2026-07-15',
+    pushedAt: '2026-08-26',
+  },
+  {
     name: 'sajilo-sawari',
     url: 'https://github.com/rajendra7169/sajilo-sawari',
     description: 'A multi-vehicle rental marketplace for Nepal — cars, two-wheelers and goods transport, verified against real documents, bookable with or without a driver.',
@@ -51,7 +64,7 @@ export const repos: Repo[] = [
   {
     name: 'attendance-system',
     url: 'https://github.com/rajendra7169/attendance-system',
-    description: '🌳 Tally — a modern, gamified attendance manager with a living forest visualization. Multi-tenant SaaS for small teams. Live: https://tally.rajendrapandey.info.np',
+    description: 'Tally — a modern, gamified attendance manager with a living forest visualization. Multi-tenant SaaS for small teams. Live: https://tally.rajendrapandey.info.np',
     language: 'JavaScript',
     languageColor: '#f1e05a',
     stars: 4,
@@ -60,19 +73,6 @@ export const repos: Repo[] = [
     homepage: 'https://tally.rajendrapandey.info.np',
     createdAt: '2026-05-29',
     pushedAt: '2026-08-06',
-  },
-  {
-    name: 'blazify',
-    url: 'https://github.com/rajendra7169/blazify',
-    description: 'Blazify — modern Android music streaming player (Kotlin + Jetpack Compose)',
-    language: 'Kotlin',
-    languageColor: '#A97BFF',
-    stars: 14,
-    forks: 1,
-    topics: ['android', 'android-app', 'audio-player', 'equalizer', 'exoplayer', 'jetpack-compose', 'kotlin', 'material-design-3', 'material-you', 'media3', 'mp3-player', 'music', 'music-player', 'music-streaming', 'offline-music', 'streaming', 'synced-lyrics', 'youtube-music'],
-    homepage: 'https://github.com/rajendra7169/blazify/releases/latest',
-    createdAt: '2026-07-15',
-    pushedAt: '2026-08-03',
   },
   {
     name: 'jjewellery-releases',

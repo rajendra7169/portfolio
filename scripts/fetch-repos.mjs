@@ -79,6 +79,18 @@ async function api(path) {
   return res.json();
 }
 
+/**
+ * GitHub descriptions carry emoji; the page does not (DESIGN.md §9). A stray
+ * tree in a project blurb is the exact "generated page" tell the whole design
+ * is trying to avoid, so it is stripped at the source rather than hidden in CSS.
+ */
+function stripEmoji(s) {
+  return String(s)
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}]/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 function esc(s) {
   return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, ' ');
 }
@@ -146,7 +158,7 @@ async function main() {
     .map((r) => ({
       name: r.name,
       url: r.html_url,
-      description: r.description || '',
+      description: stripEmoji(r.description || ''),
       language: r.language || '',
       languageColor: r.language ? LANGUAGE_COLORS[r.language] || '' : '',
       stars: r.stargazers_count ?? 0,

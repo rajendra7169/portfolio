@@ -14,7 +14,7 @@ export function Documentation() {
   if (publications.length === 0) return null;
 
   return (
-    <section className="act act--right" id={act.id} aria-labelledby="documentation-title">
+    <section className="act" id={act.id} aria-labelledby="documentation-title">
       <div className="shell act__grid">
         <div className="act__content">
           <header className="act__head" data-reveal>

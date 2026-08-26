@@ -13,7 +13,7 @@ const act = acts[1];
 
 export function Origin() {
   return (
-    <section className="act act--right" id={act.id} aria-labelledby="origin-title">
+    <section className="act" id={act.id} aria-labelledby="origin-title">
       <div className="shell act__grid">
         <div className="act__content">
           <header className="act__head" data-reveal>

@@ -159,19 +159,11 @@ export function ProjectAccordion({ panels }: ProjectAccordionProps) {
               className="panel"
               key={project.repo}
               data-expanded={expanded ? 'true' : 'false'}
-              style={
-                lang
-                  ? ({
-                      // A family tint, not a rainbow: the language colour is
-                      // pulled most of the way to --surface. The undesaturated
-                      // value shows only in the 2px indicator, per DESIGN.md
-                      // §5.6 — a literal 60% tint puts --ink at 2.7:1 on the
-                      // yellow of JavaScript, which the §9 floor forbids.
-                      ['--panel-tint' as string]: `color-mix(in srgb, ${lang} 16%, var(--surface))`,
-                      ['--panel-accent' as string]: lang,
-                    })
-                  : undefined
-              }
+              // The language colour survives only as the 2px edge. As a panel
+              // wash it turned six projects into lavender, mint and baby blue —
+              // a rainbow of pastels, which is what "reads as a family" was
+              // supposed to prevent.
+              style={lang ? ({ ['--panel-accent' as string]: lang }) : undefined}
             >
               {expanded ? <span className="panel__indicator" aria-hidden="true" /> : null}
 
@@ -254,49 +246,9 @@ export function ProjectAccordion({ panels }: ProjectAccordionProps) {
                 </p>
               </div>
 
-              {/*
-                A sibling of the body, not a child of it. The body scrolls, and
-                a scrolling box computes overflow-x to auto no matter what the
-                author asked for — which clips the bleed and, per DESIGN.md
-                §5.6, collapses the whole effect.
-              */}
-              <div className="panel__stage">
-                <ProjectFrame project={project} repo={repo} />
-              </div>
             </article>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-/**
- * The tilted device frame. No screenshot renders the frame with an empty screen
- * and the repo name in mono — never a broken image (DESIGN.md §5.6).
- */
-function ProjectFrame({ project, repo }: PanelData) {
-  return (
-    <div className="frame" aria-hidden="true">
-      <div className="frame__bar">
-        <span className="frame__dot" />
-        <span className="frame__dot" />
-        <span className="frame__dot" />
-      </div>
-      <div className="frame__screen">
-        {project.shot ? (
-          <img
-            src={project.shot}
-            srcSet={`${project.shot} 1x, ${project.shot.replace(/\.webp$/, '@2x.webp')} 2x`}
-            width={1280}
-            height={800}
-            loading="lazy"
-            decoding="async"
-            alt=""
-          />
-        ) : (
-          <span>{repo.name}</span>
-        )}
       </div>
     </div>
   );
