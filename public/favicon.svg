@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Rajendra Pandey">
+  <!-- The site's thesis at 32px: ruled ledger lines at the base lifting into a
+       ridgeline. Same two colours as the page, switched by the viewer's theme. -->
+  <style>
+    .ground { fill: #0B1114 }
+    .rule   { stroke: #2A363B }
+    .crest  { stroke: #C1352B }
+    @media (prefers-color-scheme: light) {
+      .ground { fill: #DCE4D6 }
+      .rule   { stroke: #B4C0AC }
+      .crest  { stroke: #A82B22 }
+    }
+  </style>
+  <rect class="ground" width="32" height="32" rx="4"/>
+  <g fill="none" stroke-width="1.4" stroke-linecap="square">
+    <path class="rule" d="M5 26h22M5 22h22M5 18h22"/>
+    <path class="crest" d="M4 14 10 6l4 5 5-7 5 6 4-3" stroke-linejoin="miter"/>
+  </g>
+</svg>

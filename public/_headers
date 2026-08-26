@@ -1,0 +1,19 @@
+# Cloudflare Pages headers.
+# Hashed assets are immutable; the HTML shell must never be.
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  # No third-party anything: all fonts are self-hosted, all icons are inline
+  # SVG, and there is no analytics script. The policy can afford to be strict.
+  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'none'
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

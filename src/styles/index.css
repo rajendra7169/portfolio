@@ -1,0 +1,15 @@
+/* Tailwind first so token layers and element defaults win over its preflight. */
+@import 'tailwindcss';
+
+/* Self-hosted, no hotlink. Each face carries unicode-range, so a browser only
+   pulls the subsets the page actually uses. CLAUDE.md §5. */
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/public-sans/wght.css';
+@import '@fontsource/martian-mono/latin-400.css';
+@import '@fontsource/martian-mono/latin-500.css';
+@import '@fontsource/noto-sans-devanagari/devanagari-400.css';
+
+@import './fallbacks.css';
+@import './tokens.css';
+@import './base.css';
+@import './components.css';

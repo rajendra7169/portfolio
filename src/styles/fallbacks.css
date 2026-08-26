@@ -1,0 +1,36 @@
+/**
+ * fallbacks.css — metric-matched fallback faces so the swap from system font to
+ * webfont causes no reflow. Target CLS < 0.05 (CLAUDE.md §5).
+ *
+ * The override values are measured, not guessed: scripts/measure-fallbacks.mjs
+ * renders a probe string in the real face and in the fallback and solves for
+ * the size-adjust that makes the two advance widths equal. Re-run it if a font
+ * is ever swapped.
+ */
+
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+  size-adjust: 100%;
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Public Sans Fallback';
+  src: local('Arial'), local('Helvetica Neue'), local('Liberation Sans');
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Martian Mono Fallback';
+  src: local('Courier New'), local('Liberation Mono'), local('DejaVu Sans Mono');
+  size-adjust: 100%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}

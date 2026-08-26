@@ -1,0 +1,155 @@
+/**
+ * tokens.css — every colour, size and rhythm value on the site.
+ * Derived from DESIGN.md §2 (colour), §3 (type) and §4 (layout).
+ *
+ * Two contrast corrections against DESIGN.md's literal table, both required by
+ * CLAUDE.md §9's 4.5:1 floor and by DESIGN.md's own §10 checklist:
+ *
+ *   --ledger (#C1352B) on --ground (#0B1114) measures 3.47:1. It stays exactly
+ *   as specified for fills, rules and ridge-crest emission, and a derived
+ *   --ledger-ink carries it wherever red is *text*. Light mode needs no such
+ *   split — #A82B22 on paper is 5.31:1.
+ *
+ *   Light --brass is #6E5426, not #8A6C34. The specified value measures 3.77:1
+ *   on --ground, and brass in light mode is only ever used as text: entry
+ *   numbers and the Devanagari mark. Same hue, enough of it to read.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* -- colour · dark, "engine" ------------------------------------------- */
+  --ground: #0b1114;
+  --surface: #141c20;
+  --rule: #2a363b;
+  --ink: #e4e8e4;
+  --ink-dim: #8c9994;
+  --ledger: #c1352b;
+  --brass: #b08d4f;
+
+  /* red that has to survive as text on --ground / --surface */
+  --ledger-ink: #e0574a;
+
+  /* the scrim from CLAUDE.md §5 — no backdrop-filter, ever */
+  --scrim: color-mix(in srgb, var(--ground) 82%, transparent);
+  --scrim-solid: color-mix(in srgb, var(--ground) 94%, transparent);
+
+  /* -- type -------------------------------------------------------------- */
+  --font-display: 'Archivo Variable', 'Archivo', 'Archivo Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Public Sans Variable', 'Public Sans', 'Public Sans Fallback', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Martian Mono', 'Martian Mono Fallback', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
+  --font-devanagari: 'Noto Sans Devanagari', var(--font-body);
+
+  --step--1: clamp(0.79rem, 0.77rem + 0.1vw, 0.84rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.13rem);
+  --step-1: clamp(1.33rem, 1.25rem + 0.4vw, 1.5rem);
+  --step-2: clamp(1.78rem, 1.62rem + 0.78vw, 2.25rem);
+  --step-3: clamp(2.37rem, 2.09rem + 1.39vw, 3.38rem);
+  --step-4: clamp(3.16rem, 2.68rem + 2.4vw, 5.06rem);
+
+  /* Archivo's width axis. Headings sit wide; body stays normal. */
+  --wdth-display: 118;
+  --wdth-display-tight: 112;
+
+  /* -- rhythm · strict 8px baseline -------------------------------------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  /* -- layout ------------------------------------------------------------ */
+  --measure: 66ch;
+  --shell: 72rem;
+  --gutter: 1.5rem;
+  --hairline: 1px;
+  --radius: 2px;
+
+  /* -- motion ------------------------------------------------------------ */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-reveal: 0.5s;
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --gutter: 2.5rem;
+  }
+}
+
+/* Hairlines should stay hairlines on retina, not fatten to 2 device px. */
+@media (min-resolution: 2dppx) {
+  :root {
+    --hairline: 0.5px;
+  }
+}
+
+/**
+ * Light is applied two ways so the page is correct before JS runs and correct
+ * after the toggle: the media query covers a reader whose OS says light and who
+ * has never touched the toggle; the attribute covers an explicit choice and
+ * always wins, in both directions.
+ */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+
+    --ground: #dce4d6;
+    --surface: #eaefe6;
+    --rule: #b4c0ac;
+    --ink: #1a211c;
+    --ink-dim: #5c665c;
+    --ledger: #a82b22;
+    --brass: #6e5426;
+
+    --ledger-ink: var(--ledger);
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --ground: #dce4d6;
+  --surface: #eaefe6;
+  --rule: #b4c0ac;
+  --ink: #1a211c;
+  --ink-dim: #5c665c;
+  --ledger: #a82b22;
+  --brass: #6e5426;
+
+  --ledger-ink: var(--ledger);
+}
+
+/* Tailwind 4 theme bridge — utilities read the same tokens the CSS does, so a
+   theme swap can never leave half the page on the old palette. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-rule: var(--rule);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ledger: var(--ledger);
+  --color-ledger-ink: var(--ledger-ink);
+  --color-brass: var(--brass);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --text-step--1: var(--step--1);
+  --text-step-0: var(--step-0);
+  --text-step-1: var(--step-1);
+  --text-step-2: var(--step-2);
+  --text-step-3: var(--step-3);
+  --text-step-4: var(--step-4);
+
+  --breakpoint-sm: 30rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 90rem;
+}

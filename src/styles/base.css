@@ -1,0 +1,351 @@
+/**
+ * base.css — element defaults and the handful of layout primitives every
+ * section is built from. DESIGN.md §3 and §4.
+ *
+ * Two structural rules are enforced here rather than left to each component:
+ *   · no `height: 100vh` anywhere — sections use `min-height: 100svh` and grow
+ *   · reveal animations start *visible* and are hidden only once JS has run,
+ *     so a JS-disabled reader gets the whole page (CLAUDE.md §4.7)
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Anchor targets clear the fixed masthead. */
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  min-height: 100svh;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  /* The canvas is fixed behind everything; the document itself scrolls. */
+  overflow-x: clip;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-variation-settings: 'wdth' var(--wdth-display), 'wght' 500;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--ledger);
+  color: #fff;
+}
+
+/* -- focus ---------------------------------------------------------------- */
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid var(--ledger-ink);
+  outline-offset: 3px;
+  border-radius: var(--radius);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: 0;
+  z-index: 100;
+  transform: translateY(-200%);
+  background: var(--surface);
+  color: var(--ink);
+  border: var(--hairline) solid var(--rule);
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  transition: transform 0.18s var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(var(--s-3));
+}
+
+/* -- links ---------------------------------------------------------------- */
+
+a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+}
+
+a.link {
+  color: var(--ledger-ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ledger-ink) 45%, transparent);
+  transition: text-decoration-color 0.18s var(--ease-out);
+}
+
+a.link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* -- layout primitives ---------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/**
+ * The safe-zone contract, DESIGN.md §4. Content occupies columns 1–7 (or 6–12
+ * on alternating sections); the scene owns the other side. Below 64rem the
+ * grid collapses and the scene is banded to the bottom of the viewport by
+ * GlobalCanvas instead.
+ */
+.act {
+  position: relative;
+  min-height: 100svh;
+  padding-block: var(--s-9);
+  /* Sections may and do exceed one viewport. That is the design. */
+}
+
+/**
+ * One column until the safe-zone contract actually applies. A 12-column grid
+ * below 64rem is 11 gaps wide before it holds a single character — at 320px
+ * that is 352px of gutter in a 272px track, and the page scrolls sideways.
+ */
+.act__grid {
+  display: grid;
+  row-gap: var(--s-6);
+  column-gap: var(--s-5);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.act__content {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .act__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .act__content {
+    grid-column: 1 / span 7;
+  }
+
+  .act--right .act__content {
+    grid-column: 6 / span 7;
+  }
+}
+
+/* Any text that could cross the scene sits on a scrim. No backdrop-filter. */
+.scrim {
+  background: var(--scrim);
+  backdrop-filter: none;
+}
+
+/* -- the entry label ------------------------------------------------------ */
+
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.entry__sep {
+  color: color-mix(in srgb, var(--brass) 55%, transparent);
+}
+
+/* -- hairline rules ------------------------------------------------------- */
+
+.hr {
+  border: 0;
+  border-top: var(--hairline) solid var(--rule);
+  margin-block: var(--s-5);
+}
+
+.hr--tight {
+  margin-block: var(--s-4);
+}
+
+/* -- tabular figures for anything dated or counted ------------------------ */
+
+.figures {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* -- reveal --------------------------------------------------------------- */
+
+/**
+ * Defaults to visible. `.js` is set by the inline boot script, so the hidden
+ * state only ever exists when something is guaranteed to reveal it again.
+ * Reveals fire once — never replayed on scroll-up (DESIGN.md §6).
+ */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  will-change: opacity, transform;
+}
+
+.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* -- the one canvas ------------------------------------------------------- */
+
+.global-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  /* A canvas that swallows clicks is the classic break. CLAUDE.md §5. */
+  pointer-events: none;
+  contain: strict;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile: the scene is a horizon band in the bottom 30svh at 0.5 opacity, and
+   content sits entirely above it, fully opaque. DESIGN.md §4. */
+@media (max-width: 47.999rem) {
+  .global-canvas {
+    top: auto;
+    height: 30svh;
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 48rem) and (max-width: 63.999rem) {
+  .global-canvas {
+    top: auto;
+    height: 40svh;
+    opacity: 0.62;
+  }
+}
+
+/* R3F renders its own containers between .global-canvas and the <canvas>.
+   They have to be told to fill, or the scene collapses to zero height. */
+.global-canvas > div,
+.global-canvas canvas {
+  position: absolute !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/**
+ * The text substrate (CLAUDE.md §5). Any text that could visually cross the
+ * scene sits on a scrim — no backdrop-filter, because a blur behind moving
+ * geometry costs more than it is worth and reads as glassmorphism, which
+ * DESIGN.md §9 rules out.
+ *
+ * Desktop: the content column carries the ground colour and fades out toward
+ * the scene column, so the two regions meet without a visible panel edge.
+ */
+@media (min-width: 64rem) {
+  .act__content {
+    padding-block: var(--s-5);
+    padding-inline-end: var(--s-7);
+    background: linear-gradient(
+      to right,
+      var(--scrim-solid) 0 76%,
+      color-mix(in srgb, var(--ground) 40%, transparent) 92%,
+      transparent 100%
+    );
+  }
+
+  .act--right .act__content {
+    padding-inline: var(--s-7) 0;
+    background: linear-gradient(
+      to left,
+      var(--scrim-solid) 0 76%,
+      color-mix(in srgb, var(--ground) 40%, transparent) 92%,
+      transparent 100%
+    );
+  }
+}
+
+/**
+ * Below 64rem the scene is a horizon band pinned to the bottom of the viewport,
+ * so content is fully opaque and the band shows through the generous padding
+ * between one section and the next. Legibility beats purity every time.
+ */
+@media (max-width: 63.999rem) {
+  .act__content {
+    background: var(--ground);
+    padding-block: var(--s-4);
+  }
+}
