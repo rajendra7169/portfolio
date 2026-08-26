@@ -2,7 +2,7 @@
  * LinkRow — a labelled external link with its brand mark.
  *
  * Every social and competitive-programming link on the site renders through
- * this, which is what keeps CLAUDE.md §2's "each labelled and linked" true: the
+ * this, which is what keeps the brief §2's "each labelled and linked" true: the
  * component has no icon-only mode to fall into.
  */
 import { Brandmark } from './Brandmark';

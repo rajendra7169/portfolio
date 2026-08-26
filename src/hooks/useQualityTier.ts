@@ -1,5 +1,5 @@
 /**
- * useQualityTier — CLAUDE.md §6. Chosen once on mount and never changed
+ * useQualityTier — the brief §6. Chosen once on mount and never changed
  * mid-session: a tier that flips while the reader is scrolling produces a
  * visible pop and, worse, re-uploads geometry to the GPU.
  */
@@ -24,7 +24,7 @@ export interface Quality {
 /**
  * A real context, not a `'webgl' in window` guess. Blocklisted drivers, GPU
  * process crashes and headless environments all fail here rather than at the
- * first draw call, which is the point — CLAUDE.md §4.7.
+ * first draw call, which is the point — the brief §4.7.
  */
 export function detectWebGL(): boolean {
   if (typeof document === 'undefined') return false;

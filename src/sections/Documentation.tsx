@@ -2,7 +2,7 @@
  * Documentation — ENTRY 07. One paper, dated and linked.
  *
  * The old site's `publications` array carried this entry plus two empty objects
- * with `createdAt: "Not published yet"`. The empties are gone (CLAUDE.md §2);
+ * with `createdAt: "Not published yet"`. The empties are gone (the brief §2);
  * one real thing beats three rows where two are blank.
  */
 import { publications, acts } from '../content';

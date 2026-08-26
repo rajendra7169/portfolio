@@ -1,6 +1,6 @@
 /**
  * Origin — ENTRY 02. Both institutions, both date ranges, all three description
- * bullets each, both website links (CLAUDE.md §2).
+ * bullets each, both website links (the brief §2).
  *
  * The bullets run past 300 characters. They are not clamped, shortened or
  * summarised — the longest one is the whole point of the section, because it is

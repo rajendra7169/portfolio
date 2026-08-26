@@ -1,6 +1,6 @@
 # DESIGN.md — portfolio-v2
 
-Art direction and scroll choreography. Read alongside `CLAUDE.md`.
+Art direction and scroll choreography. Read alongside the project brief.
 Every colour and type decision on the site derives from this document.
 
 ---
@@ -164,7 +164,7 @@ DESKTOP ≥ 1024px                      MOBILE < 768px
 - Mobile: scene is a horizon band in the bottom 30svh, opacity 0.5. Content sits
   entirely above it, fully opaque. **Never** a card over the ridge crest.
 
-Any text that could still cross the scene gets a scrim — see `CLAUDE.md §5`.
+Any text that could still cross the scene gets a scrim — see the brief §5.
 
 ### Wireframe — Arrival
 
@@ -474,7 +474,7 @@ Rules:
 - No lens flares, no god rays, no chromatic aberration beyond a barely-there
   0.0005 offset, and none on mobile.
 - No scroll-jacking, snap-scroll, or "swipe to continue".
-- No downloaded 3D models. See `CLAUDE.md §4.1`.
+- No downloaded 3D models. See the brief §4.1.
 - No emoji in the interface. The old site used ⚡ on every skill line; drop it.
 - No entry numbers without a year attached.
 - No loading screen unless something genuinely loads slowly.
@@ -484,10 +484,10 @@ Rules:
 
 ## 10. Done means
 
-- [ ] Every one of the 9 content blocks in `CLAUDE.md §2` is present and complete
+- [ ] Every one of the 9 content blocks in the brief §2 is present and complete
 - [ ] Reads well with JavaScript disabled — content present, structure intact
 - [ ] Reads well with WebGL unavailable — no blank screen
-- [ ] Full test matrix in `CLAUDE.md §5` passes
+- [ ] Full test matrix in the brief §5 passes
 - [ ] Content stress test: every list tripled, nothing overlaps or clips
 - [ ] 60 fps desktop, ≥ 30 fps real mid-range Android on a real network
 - [ ] Lighthouse mobile performance ≥ 85, accessibility 100, CLS < 0.05

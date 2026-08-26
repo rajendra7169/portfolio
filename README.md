@@ -3,8 +3,8 @@
 Single-page 3D portfolio for Rajendra Pandey. Replaces the multi-page site at
 https://rajendrapandey.info.np.
 
-Read `CLAUDE.md` for the operating rules and `DESIGN.md` for the art direction.
-Both are binding; this file only covers how to run the thing.
+Read `DESIGN.md` for the art direction — colour, type, the scroll choreography
+and the 3D scene. It is binding. This file only covers how to run the thing.
 
 ## Requirements
 
@@ -85,8 +85,8 @@ real Nepali network, then repoint the `rajendrapandey.info.np` CNAME.
 
 ## Verifying a change
 
-`npm run contrast` proves the colour side. The rest of the test matrix is in
-`CLAUDE.md §5`; the ones that catch real breakage most often:
+`npm run contrast` proves the colour side. The rest of the matrix, in the order
+that catches real breakage most often:
 
 - 320px width — the narrowest thing that has to work
 - content tripled — clone every list item ×3 and confirm nothing overlaps

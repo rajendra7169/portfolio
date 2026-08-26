@@ -2,7 +2,7 @@
  * content.ts — single source of truth for every word on the page.
  *
  * Ported from the old site's `src/portfolio.js` (499 lines, one export per
- * section). Two corrections were applied, and only two, per CLAUDE.md §2:
+ * section). Two corrections were applied, and only two, per the brief §2:
  *
  *   1. `certifications` is gone. Every entry was MasterPortfolio template data
  *      (Andrew Ng, IBM, Microsoft) with `certificate_link: "#"`.

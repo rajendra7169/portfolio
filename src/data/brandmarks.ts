@@ -1,7 +1,7 @@
 /**
  * brandmarks.ts — inline SVG path data for the 29 brand marks on the page.
  *
- * CLAUDE.md §7 rules out vendoring an icon library: the old site carried 1,745
+ * the brief §7 rules out vendoring an icon library: the old site carried 1,745
  * font-awesome files, roughly 30 MB. These are single 24x24 paths, baked in at
  * source so there is no runtime lookup, no network request and no dead icon.
  *

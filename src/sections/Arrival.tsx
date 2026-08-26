@@ -4,7 +4,7 @@
  *
  * The hero line is short. Everything under it is not: seven labelled social
  * links, the résumé, the coordinates. A name and a shape is Failure 1 in
- * CLAUDE.md §1, and this section is where that failure would start.
+ * the brief §1, and this section is where that failure would start.
  */
 import { greeting, socialMediaLinks, contactPageData, acts } from '../content';
 import { EntryLabel } from '../components/EntryLabel';

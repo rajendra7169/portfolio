@@ -1,5 +1,5 @@
 /**
- * GlobalCanvas — the one and only <Canvas> in the application (CLAUDE.md §4.2).
+ * GlobalCanvas — the one and only <Canvas> in the application (the brief §4.2).
  *
  * Mounted once at the app root, position: fixed, never unmounted. If you find
  * yourself adding a second one, the architecture is wrong.
@@ -44,7 +44,7 @@ export function GlobalCanvas({ quality }: GlobalCanvasProps) {
         resize={{ scroll: false, debounce: { scroll: 0, resize: 150 } }}
         onCreated={({ gl }) => {
           // The accessibility tree must not see the scene at all
-          // (CLAUDE.md §9), and it must never be a tab stop.
+          // (the brief §9), and it must never be a tab stop.
           gl.domElement.setAttribute('aria-hidden', 'true');
           gl.domElement.setAttribute('role', 'presentation');
           gl.domElement.tabIndex = -1;

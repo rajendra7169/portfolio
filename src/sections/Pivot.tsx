@@ -59,7 +59,7 @@ export function Pivot() {
                       </a>
                     ) : (
                       /* A missing link renders as plain text, never a dead `#`
-                         anchor. CLAUDE.md §5. */
+                         anchor. the brief §5. */
                       <span>{role.company}</span>
                     )
                   ) : null}

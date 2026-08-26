@@ -1,6 +1,6 @@
 /**
  * Practice — ENTRY 05. All five competitive-programming profiles, each with the
- * username that identifies it, each linked (CLAUDE.md §2).
+ * username that identifies it, each linked (the brief §2).
  *
  * The usernames are the content. A row of five logos would be decoration; a row
  * of five handles is something a reader can go and check.

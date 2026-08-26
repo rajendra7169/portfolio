@@ -1,12 +1,12 @@
 /**
  * scrollStore.ts — the single normalized scroll value the whole page reads.
  *
- * CLAUDE.md §7: never read `window.scrollY` in a component. Everything goes
+ * the brief §7: never read `window.scrollY` in a component. Everything goes
  * through here. The store is a plain module object rather than React state
  * because the 3D scene samples it every frame — pushing that through React
  * would re-render the tree sixty times a second for no reason.
  *
- * Two guards matter (CLAUDE.md §5):
+ * Two guards matter (the brief §5):
  *   · progress is clamped 0–1 and returns 0 for a zero-height document, which
  *     is what you get for a frame or two during hydration
  *   · measurements are recomputed on resize, debounced at 150ms, because a

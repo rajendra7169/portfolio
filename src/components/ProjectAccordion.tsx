@@ -126,7 +126,7 @@ export function ProjectAccordion({ panels }: ProjectAccordionProps) {
   useEffect(() => {
     return () => {
       // Kill anything this component created so a route change or hot reload
-      // cannot leave a pin spacer behind. CLAUDE.md §5.
+      // cannot leave a pin spacer behind. the brief §5.
       triggerRef.current?.kill();
       triggerRef.current = null;
     };

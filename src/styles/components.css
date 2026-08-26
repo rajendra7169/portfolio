@@ -3,7 +3,7 @@
  * same shape shows up in more than one section.
  *
  * Robustness rules that are enforced structurally rather than per-component
- * (CLAUDE.md §5): cards grow and never truncate — no line-clamp appears in this
+ * (the brief §5): cards grow and never truncate — no line-clamp appears in this
  * file; every list is a flow layout that reads correctly at 0, 1 or 30 items;
  * nothing is absolutely positioned except the canvas and decorative rules.
  */
@@ -526,7 +526,7 @@
  * so the frame breaks the right edge of a coloured panel, and below 64rem the
  * accordion is a vertical stack with no such edge to break. Keeping the tilt
  * there just projects the frame past the viewport and scrolls the page
- * sideways, which is exactly the failure CLAUDE.md §5 is about.
+ * sideways, which is exactly the failure the brief §5 is about.
  */
 .frame {
   --frame-bleed: 0%;

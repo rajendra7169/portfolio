@@ -3,7 +3,7 @@
  * Derived from DESIGN.md §2 (colour), §3 (type) and §4 (layout).
  *
  * Two contrast corrections against DESIGN.md's literal table, both required by
- * CLAUDE.md §9's 4.5:1 floor and by DESIGN.md's own §10 checklist:
+ * the brief §9's 4.5:1 floor and by DESIGN.md's own §10 checklist:
  *
  *   --ledger (#C1352B) on --ground (#0B1114) measures 3.47:1. It stays exactly
  *   as specified for fills, rules and ridge-crest emission, and a derived
@@ -30,7 +30,7 @@
   /* red that has to survive as text on --ground / --surface */
   --ledger-ink: #e0574a;
 
-  /* the scrim from CLAUDE.md §5 — no backdrop-filter, ever */
+  /* the scrim from the brief §5 — no backdrop-filter, ever */
   --scrim: color-mix(in srgb, var(--ground) 82%, transparent);
   --scrim-solid: color-mix(in srgb, var(--ground) 94%, transparent);
 

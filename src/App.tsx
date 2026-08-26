@@ -1,10 +1,10 @@
 /**
  * App — ThemeProvider > scroll spine > the one canvas > eight sections.
  *
- * The canvas mounts once, after hydration, and never unmounts (CLAUDE.md §4.2).
+ * The canvas mounts once, after hydration, and never unmounts (the brief §4.2).
  * It is loaded lazily so the three.js chunk stays out of first paint, and it is
  * skipped entirely when WebGL is unavailable — in which case the static ruled
- * backdrop stands in and the DOM below is untouched (CLAUDE.md §4.7).
+ * backdrop stands in and the DOM below is untouched (the brief §4.7).
  */
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { ThemeProvider } from './hooks/useTheme';

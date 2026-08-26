@@ -9,7 +9,7 @@
  * a deploy, and the diff of a rebuild is readable in review.
  *
  * GITHUB_TOKEN in .env is optional — it lifts the rate limit from 60/hr to
- * 5000/hr. Never commit it (CLAUDE.md §7).
+ * 5000/hr. Never commit it (the brief §7).
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

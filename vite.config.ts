@@ -10,7 +10,7 @@ export default defineConfig({
     reportCompressedSize: true,
     rollupOptions: {
       output: {
-        // Keep the 3D stack out of the first-paint chunk (CLAUDE.md §4.5).
+        // Keep the 3D stack out of the first-paint chunk (the brief §4.5).
         manualChunks(id) {
           if (!id.includes('node_modules')) return;
           if (/three|@react-three|postprocessing|maath/.test(id)) return 'three';

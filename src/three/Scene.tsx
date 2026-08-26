@@ -1,6 +1,6 @@
 /**
  * Scene — reads the single normalized scroll value and maps it onto camera
- * position, object presence and material uniforms (CLAUDE.md §7).
+ * position, object presence and material uniforms (the brief §7).
  *
  * The camera path in DESIGN.md §7 is expressed per act, not per hard-coded
  * progress value, because sections size to their content. The target is found

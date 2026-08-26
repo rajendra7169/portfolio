@@ -5,7 +5,7 @@
  * Two structural rules are enforced here rather than left to each component:
  *   · no `height: 100vh` anywhere — sections use `min-height: 100svh` and grow
  *   · reveal animations start *visible* and are hidden only once JS has run,
- *     so a JS-disabled reader gets the whole page (CLAUDE.md §4.7)
+ *     so a JS-disabled reader gets the whole page (the brief §4.7)
  */
 
 *,
@@ -268,7 +268,7 @@ a.link:hover {
   position: fixed;
   inset: 0;
   z-index: 0;
-  /* A canvas that swallows clicks is the classic break. CLAUDE.md §5. */
+  /* A canvas that swallows clicks is the classic break. the brief §5. */
   pointer-events: none;
   contain: strict;
 }
@@ -307,7 +307,7 @@ a.link:hover {
 }
 
 /**
- * The text substrate (CLAUDE.md §5). Any text that could visually cross the
+ * The text substrate (the brief §5). Any text that could visually cross the
  * scene sits on a scrim — no backdrop-filter, because a blur behind moving
  * geometry costs more than it is worth and reads as glassmorphism, which
  * DESIGN.md §9 rules out.

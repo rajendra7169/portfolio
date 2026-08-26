@@ -1,6 +1,6 @@
 /**
  * fallbacks.css — metric-matched fallback faces so the swap from system font to
- * webfont causes no reflow. Target CLS < 0.05 (CLAUDE.md §5).
+ * webfont causes no reflow. Target CLS < 0.05 (the brief §5).
  *
  * The override values are measured, not guessed: scripts/measure-fallbacks.mjs
  * renders a probe string in the real face and in the fallback and solves for

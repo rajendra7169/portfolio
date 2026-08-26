@@ -95,7 +95,7 @@ export function ThemeProvider({ children }: { children: ReactNode }): ReactNode 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     try {
-      // The only thing this site ever stores. CLAUDE.md §4.8.
+      // The only thing this site ever stores. the brief §4.8.
       localStorage.setItem('theme', theme);
     } catch {
       /* storage disabled — the toggle still works for this session */

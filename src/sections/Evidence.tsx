@@ -69,7 +69,7 @@ export function Evidence() {
                   >
                     <span className="repo__name">{repo.name}</span>
                     {/* A repo with no description renders without one rather
-                        than with filler. CLAUDE.md §5. */}
+                        than with filler. the brief §5. */}
                     {repo.description ? (
                       <span className="repo__desc">{repo.description}</span>
                     ) : null}

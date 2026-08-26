@@ -2,7 +2,7 @@
  * useScrollProgress — mounts the scroll spine exactly once.
  *
  * Lenis smooths native scroll; the scrollbar stays real and every section stays
- * deep-linkable (CLAUDE.md §5). GSAP's ticker drives Lenis so the two are on one
+ * deep-linkable (the brief §5). GSAP's ticker drives Lenis so the two are on one
  * clock — running Lenis on its own rAF while GSAP runs on another is the usual
  * source of scroll jitter on these pages.
  */
