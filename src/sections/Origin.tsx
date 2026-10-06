@@ -22,9 +22,8 @@ export function Origin() {
               Origin
             </h2>
             <p className="act__standfirst">
-              Two years of accounting and business statistics, then three years of data
-              structures and deep learning. The second half is unusual on its own; the
-              first half is what makes it a pivot rather than a start.
+              Business studies first, then a degree in information technology: data
+              structures, algorithms, databases and deep learning, finished in 2024.
             </p>
           </header>
 

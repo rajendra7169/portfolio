@@ -29,9 +29,9 @@ export function Systems() {
               Systems
             </h2>
             <p className="act__standfirst">
-              Four categories, seventeen tools. The video and photography row is on this
-              page for the same reason the accounting years are: it is where the
-              framing came from, and leaving it off would be tidier and less true.
+              Four categories, thirty-four tools. Native and cross-platform apps,
+              backends and the servers they run on, design, and the video and
+              photography work where the eye for framing came from.
             </p>
           </header>
 

@@ -80,11 +80,11 @@ export interface Publication {
 /* -------------------------------------------------------------- 01 · meta -- */
 
 export const seo = {
-  title: 'Rajendra Pandey — accounting to game development',
+  title: 'Rajendra Pandey — software developer, Kathmandu',
   description:
-    'Rajendra Pandey, Kathmandu. BSc IT from Sunway International Business School. ' +
-    'Two years preparing balance sheets at a savings co-operative, then game ' +
-    'development at Yarsa Games. Full-stack, mobile and real-time graphics work.',
+    'Rajendra Pandey, software developer in Kathmandu at Matrika Technology. BSc IT, ' +
+    'Sunway International Business School. Builds Blazify, a free open-source music ' +
+    'player for Android, iPhone and desktop. Kotlin, Swift, Dart, C#, TypeScript, Python, Go.',
   url: 'https://rajendrapandey.info.np/',
   locale: 'en_NP',
 } as const;
@@ -97,11 +97,11 @@ export const greeting = {
    * DESIGN.md §8 replaces the template line — "A passionate individual who
    * always thrives to work on end to end products…" — with the pivot itself.
    */
-  thesis: 'I balanced books for two years, then went and built games.',
+  thesis: 'I build software people actually use.',
   supporting:
-    'Balance sheets and tax filings at a Kathmandu savings co-operative until ' +
-    '2022. Game mechanics, level design and frame budgets at Yarsa Games in ' +
-    '2024. The two halves use more of the same muscle than anyone expects.',
+    'Software developer at Matrika Technology in Kathmandu. On my own time I build ' +
+    'Blazify, a free and open-source music player for Android, iPhone and desktop ' +
+    'with thousands of downloads, and the servers it runs on.',
   resumeLink:
     'https://drive.google.com/file/d/1ccK09uY0vuos3whh8vuI50918UVYH0_i/view?usp=sharing',
   portfolioRepository: 'https://github.com/rajendra7169/portfolio',
@@ -185,7 +185,7 @@ export const degrees: Degree[] = [
     duration: '2015 – 2017',
     descriptions: [
       'I completed the business studies sequence — organisational behaviour, business communication and strategic management — which is the grounding in how a company actually operates that most developers never get.',
-      'On the accounting side I took financial accounting, cost accounting and taxation. Those three courses are the direct reason I could walk into a savings co-operative in 2021 and prepare statements from day one.',
+      'On the accounting side I took financial accounting, cost accounting and taxation — the grounding I now use building billing software for real businesses.',
       'I also took the optional mathematics track, business statistics and quantitative techniques, which is where the analytical habit came from: state the problem numerically before arguing about it.',
     ],
     websiteLink: 'https://www.stlawrence.edu.np',
@@ -195,36 +195,17 @@ export const degrees: Degree[] = [
 /* --------------------------------------------------------- 04 · experience -- */
 
 export const experience = {
-  /** Chronological, oldest first — the section reads as a pivot, not a résumé. */
   roles: [
     {
-      id: 'marketing',
+      id: 'matrika',
       kind: 'work',
-      title: 'Marketing Personnel',
-      duration: '2017 – 2018',
-      location: 'Kathmandu, Nepal',
-    },
-    {
-      id: 'nawakantipur',
-      kind: 'work',
-      title: 'Account Handler',
-      company: 'Nawakantipur Saving and Credit Co-operative Society Ltd.',
-      companyUrl: 'https://nawakantipur.com.np/',
-      duration: '2021 – 2022',
-      location: 'Kathmandu, Nepal',
+      title: 'Software Developer',
+      company: 'Matrika Technology',
+      companyUrl: 'https://matrikatec.com.np',
+      duration: 'Present',
+      location: 'New Baneshwor, Kathmandu',
       description:
-        'I collected data on sales revenue, liabilities and the other financial metrics the co-operative ran on, and prepared the balance sheets and income statements monthly, quarterly and annually. I kept the organisation compliant with tax regulation through accurate and timely payment, and analysed financial trends to forecast costs and revenue for the periods ahead.',
-    },
-    {
-      id: 'yarsa',
-      kind: 'internship',
-      title: 'Game Developer',
-      company: 'Yarsa Games',
-      companyUrl: 'https://www.yarsagames.com/',
-      duration: 'May 2024 – Aug 2024',
-      location: 'Kathmandu, Nepal',
-      description:
-        'I wrote game mechanics, designed levels, debugged and optimised performance alongside the studio team. Four months inside a shipping game development lifecycle — where a frame budget is not a metaphor and a regression is visible to the player immediately.',
+        'Matrika Technology makes IRD-certified jewellery billing and management software for Nepali jewellers. I work on its products across desktop, web, API and mobile.',
     },
   ] satisfies Role[] as Role[],
 };
@@ -235,35 +216,53 @@ export const skills: { data: SkillCategory[] } = {
   data: [
     {
       id: 'fullstack',
-      title: 'Full Stack Development',
+      title: 'Languages & Apps',
       bullets: [
-        'I write Python, Java, JavaScript, C, C++, Dart, HTML and CSS.',
-        'I build dynamic, responsive web applications with current tooling.',
-        'I build mobile applications in Flutter and React Native, and solo Android apps in Kotlin.',
-        'I write application backends in Node, Express and Flask.',
+        'I write Kotlin, Swift, Dart, C#, TypeScript, JavaScript, Python, Go, Java, PHP, C and C++.',
+        'I build native Android apps in Kotlin and Jetpack Compose, and iPhone apps in Swift and SwiftUI.',
+        'I build cross-platform mobile apps in Flutter, and desktop apps for Windows and Linux.',
+        'I write backends and APIs in .NET, Node and Express, Go and Python.',
+        'I build responsive web applications in React and TypeScript.',
       ],
       software: [
-        { name: 'HTML5', icon: 'html5', brand: '#E34F26' },
-        { name: 'CSS3', icon: 'css', brand: '#1572B6' },
+        { name: 'Kotlin', icon: 'kotlin', brand: '#7F52FF' },
+        { name: 'Swift', icon: 'swift', brand: '#F05138' },
+        { name: 'Dart', icon: 'dart', brand: '#0175C2' },
+        { name: 'C# / .NET', icon: 'dotnet', brand: '#512BD4' },
+        { name: 'TypeScript', icon: 'typescript', brand: '#3178C6' },
         { name: 'JavaScript', icon: 'javascript', brand: '#F7DF1E' },
+        { name: 'Python', icon: 'python', brand: '#3776AB' },
+        { name: 'Go', icon: 'go', brand: '#00ADD8' },
+        { name: 'Java', icon: 'openjdk', brand: '#000000' },
+        { name: 'PHP', icon: 'php', brand: '#777BB4' },
+        { name: 'Android', icon: 'android', brand: '#3DDC84' },
+        { name: 'Jetpack Compose', icon: 'jetpackcompose', brand: '#4285F4' },
+        { name: 'Flutter', icon: 'flutter', brand: '#02569B' },
         { name: 'React', icon: 'react', brand: '#61DAFB' },
         { name: 'Node.js', icon: 'nodedotjs', brand: '#5FA04E' },
-        { name: 'Flutter', icon: 'flutter', brand: '#02569B' },
+        { name: 'HTML5', icon: 'html5', brand: '#E34F26' },
+        { name: 'CSS3', icon: 'css', brand: '#1572B6' },
       ],
     },
     {
       id: 'cloud',
-      title: 'Cloud Infra-Architecture',
+      title: 'Cloud, Data & Delivery',
       bullets: [
-        'I have worked across multiple cloud platforms.',
-        'I host and maintain sites on virtual machine instances, with databases wired in behind them.',
-        'I have deployed deep learning models to the cloud for mobile devices to call.',
-        'I set up streaming jobs between database and server, in both directions, on GCP and AWS.',
+        'I run real services: Blazify\'s own Listen Together server, written in Go and deployed in Docker.',
+        'I deploy on Cloudflare Workers, Supabase, Firebase, Render and Netlify.',
+        'I work with PostgreSQL, SQLite, MongoDB and SQL Server.',
+        'I ship release builds for Android, iPhone, Windows and Linux, signed and reproducible.',
       ],
       software: [
+        { name: 'Docker', icon: 'docker', brand: '#2496ED' },
+        { name: 'Cloudflare', icon: 'cloudflare', brand: '#F38020' },
+        { name: 'Supabase', icon: 'supabase', brand: '#3FCF8E' },
         { name: 'Firebase', icon: 'firebase', brand: '#DD2C00' },
         { name: 'PostgreSQL', icon: 'postgresql', brand: '#4169E1' },
+        { name: 'SQLite', icon: 'sqlite', brand: '#003B57' },
         { name: 'MongoDB', icon: 'mongodb', brand: '#47A248' },
+        { name: 'Linux', icon: 'linux', brand: '#FCC624' },
+        { name: 'Git', icon: 'git', brand: '#F03C2E' },
       ],
     },
     {
@@ -380,8 +379,8 @@ export const contactPageData = {
 export const acts = [
   { id: 'arrival', entry: '01', qualifier: 'KATHMANDU', title: 'Arrival' },
   { id: 'origin', entry: '02', qualifier: '2015–2024', title: 'Origin' },
-  { id: 'pivot', entry: '03', qualifier: '2017–2024', title: 'Pivot' },
-  { id: 'systems', entry: '04', qualifier: '17 TOOLS', title: 'Systems' },
+  { id: 'pivot', entry: '03', qualifier: 'NOW', title: 'Work' },
+  { id: 'systems', entry: '04', qualifier: '34 TOOLS', title: 'Systems' },
   { id: 'practice', entry: '05', qualifier: '5 PROFILES', title: 'Practice' },
   { id: 'evidence', entry: '06', qualifier: 'GITHUB', title: 'Evidence' },
   { id: 'documentation', entry: '07', qualifier: 'DEC 2024', title: 'Documentation' },
@@ -413,7 +412,17 @@ export const featuredProjects: FeaturedProject[] = [
   {
     repo: 'blazify',
     title: 'Blazify',
-    subtitle: 'Android music streaming player, Kotlin and Jetpack Compose.',
+    subtitle: 'Free, open-source music player for Android. Kotlin and Jetpack Compose, thousands of downloads.',
+  },
+  {
+    repo: 'blazify-ios',
+    title: 'Blazify for iPhone',
+    subtitle: 'The same player rewritten in Swift and SwiftUI, built and signed without a Mac.',
+  },
+  {
+    repo: 'blazify-desktop',
+    title: 'Blazify for desktop',
+    subtitle: 'Linux and Windows edition in Kotlin and Compose Multiplatform.',
   },
   {
     repo: 'NexTerm',
@@ -431,9 +440,9 @@ export const featuredProjects: FeaturedProject[] = [
     subtitle: 'Local-first fitness and nutrition tracker. One sentence logs a meal.',
   },
   {
-    repo: 'sajilo-sawari',
-    title: 'Sajilo Sawari',
-    subtitle: 'Vehicle rental marketplace for Nepal, verified against real documents.',
+    repo: 'R-AI',
+    title: 'R-AI',
+    subtitle: 'An air-gapped, zero-dependency local AI environment.',
   },
   {
     repo: 'laundry_recommendation_app',

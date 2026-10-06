@@ -34,6 +34,9 @@ loadEnv();
 const USER = process.env.GITHUB_USERNAME || 'rajendra7169';
 const TOKEN = process.env.GITHUB_TOKEN || '';
 
+/** Work done for an employer: not mine to show, even where it is public. */
+const EMPLOYER_WORK = new Set(['sajilo-sawari', 'jjewellery-releases']);
+
 /**
  * Linguist colours for the languages that actually appear, baked in rather than
  * fetched. The upstream languages.yml is ~700 KB and the answer for these
@@ -154,6 +157,7 @@ async function main() {
   }
 
   const repos = raw
+    .filter((r) => !EMPLOYER_WORK.has(r.name))
     .filter((r) => !r.fork && !r.archived && !r.private)
     .map((r) => ({
       name: r.name,

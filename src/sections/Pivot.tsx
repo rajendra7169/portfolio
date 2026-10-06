@@ -1,10 +1,6 @@
 /**
- * Pivot — ENTRY 03, and the emotional centre of the page (DESIGN.md §7).
- *
- * Chronological, oldest first, so the arc is visible rather than asserted:
- * marketing, then two years of balance sheets, then a game studio. The Yarsa
- * entry is marked as the pivot and the scene's ridge morph is keyed to this
- * section, which is the one place the metaphor and the content line up exactly.
+ * Experience — ENTRY 03. Where I work now; the current role is marked and the
+ * scene's ridge morph is keyed to this section.
  */
 import { experience, acts } from '../content';
 import { EntryLabel } from '../components/EntryLabel';
@@ -24,19 +20,18 @@ export function Pivot() {
           <header className="act__head" data-reveal>
             <EntryLabel entry={act.entry} qualifier={act.qualifier} title="Experience" />
             <h2 className="act__title" id="pivot-title">
-              Pivot
+              Now
             </h2>
             <p className="act__standfirst">
-              Balance sheets, tax compliance and revenue forecasting until 2022. Game
-              mechanics, level design and frame budgets in 2024. Both jobs are the same
-              job: find the number that is wrong and work out why.
+              Building software for Nepali businesses by day, and open-source apps that
+              thousands of people use the rest of the time.
             </p>
           </header>
 
           <ol className="timeline">
             {experience.roles.map((role) => (
               <li
-                className={`timeline__item${role.id === 'yarsa' ? ' timeline__item--pivot' : ''}`}
+                className={`timeline__item${role.id === 'matrika' ? ' timeline__item--pivot' : ''}`}
                 key={role.id}
                 data-reveal
               >
