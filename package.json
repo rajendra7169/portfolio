@@ -1,47 +1,63 @@
 {
-  "name": "portfolio-v2",
   "private": true,
-  "version": "2.0.0",
-  "type": "module",
-  "engines": {
-    "node": ">=20"
-  },
+  "name": "portfolio",
+  "version": "0.1.0",
+  "homepage": ".",
   "scripts": {
-    "prefetch": "node scripts/fetch-repos.mjs",
-    "dev": "vite",
-    "build": "node scripts/fetch-repos.mjs && tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/.ssr && node scripts/prerender.mjs",
-    "build:offline": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/.ssr && node scripts/prerender.mjs",
-    "preview": "vite preview",
-    "typecheck": "tsc -b",
-    "contrast": "node scripts/check-contrast.mjs"
+    "build": "react-scripts --openssl-legacy-provider build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -b gh-pages -d build",
+    "eject": "react-scripts eject",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "test": "react-scripts test"
   },
   "dependencies": {
-    "@fontsource-variable/archivo": "^5.3.0",
-    "@fontsource-variable/public-sans": "^5.3.0",
-    "@fontsource/martian-mono": "^5.3.0",
-    "@fontsource/noto-sans-devanagari": "^5.3.0",
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.7.0",
-    "@react-three/postprocessing": "^3.1.0",
-    "gsap": "^3.15.0",
-    "lenis": "^1.3.26",
-    "lucide-react": "^1.34.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "three": "^0.185.0"
+    "apollo-boost": "^0.4.4",
+    "baseui": "^9.65.3",
+    "chart.js": "^2.9.3",
+    "gh-pages": "^2.1.1",
+    "node-fetch": "^2.6.0",
+    "prettier-package-json": "^2.1.3",
+    "react": "^16.10.2",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-chartjs-2": "^2.9.0",
+    "react-dom": "^16.10.2",
+    "react-helmet": "^6.1.0",
+    "react-reveal": "^1.2.2",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.2.0",
+    "styled-components": "^5.1.1",
+    "styletron-engine-atomic": "^1.4.6",
+    "styletron-react": "^5.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^22.20.1",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@types/three": "^0.185.0",
-    "@vitejs/plugin-react": "^5.0.0",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.0",
-    "vite": "^6.3.6"
+    "dotenv": "^6.2.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "2.0.5"
   },
-  "allowScripts": {
-    "esbuild@0.25.12": true
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.json": "prettier-package-json --write",
+    "*.{js,css,md}": "prettier --write"
   }
 }

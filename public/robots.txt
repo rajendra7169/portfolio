@@ -1,4 +1,1 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://rajendrapandey.info.np/sitemap.xml
