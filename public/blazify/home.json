@@ -1,4 +1,35 @@
 {
-  "_about": "Blazify's backup update source. The app reads this only when GitHub cannot answer. 'releases' names a GitHub-style release API; to list files directly instead, replace it with a 'latest' entry (version, date, notes, apks[{name,url,size}]).",
-  "releases": "https://codeberg.org/api/v1/repos/rajaindra7169/blazify"
+  "_about": "Blazify's backup update source, written by scripts/publish_backup.py. The app reads this only when GitHub cannot answer, and tries each APK's urls in order.",
+  "latest": {
+    "version": "9.16.0",
+    "date": "2026-09-26",
+    "notes": "<div align=\"center\">\n\n### [![Download Blazify for Android](https://img.shields.io/badge/Download_Blazify_9.16.0-FFA726?style=for-the-badge&logoColor=1A0E00&logo=android)](https://github.com/rajendra7169/blazify/releases/latest/download/Blazify-gms.apk)\n\n**One click. No choosing.** That button gives you the build for an ordinary phone: everything\nBlazify does, casting to a Chromecast, a smart speaker or a television included, and it tells you\nwhen there is a new version.\n\nOn a phone with no Google services — de-Googled, LineageOS, a Huawei — take\n[Blazify.apk](https://github.com/rajendra7169/blazify/releases/latest/download/Blazify.apk)\nbelow instead: the same app, without playing to a television.\n\n</div>\n\n---\n\n## Highlights\n- **Video Art player** — the song's own official video plays behind the player, muted and in step with the audio. It stays off on mobile data unless you ask for it\n- **Import a playlist from Spotify** — paste a share link and Blazify rebuilds it, song by song\n- **Skip the talking** — SponsorBlock skips intros, outros and non-music sections, and the lyrics shift with it so the words still match\n- **Radio stations play** — the live broadcasts in Listen together now work, marked LIVE while they are on air\n- **Block an artist** and they stay out of Home, search, picks and radio\n- Sideways works: every player design, the theme gallery and Look & Feel are laid out for a phone on its side\n- The app is now translated into 15 more languages\n\n## New features\n- **Swipe a song in the queue to the right** to play it next — no dragging it up eighty places\n- **Share a playlist** as a link or a QR code; opening one offers to keep it\n- **Jump to the playing song** in a long playlist, album or library list\n- **Play this a few times** — repeat a song 2, 3, 5 or 10 times, then carry on\n- **ListenBrainz** scrobbling, beside Last.fm\n- Speed dial and For you play straight from the greeting card on Home\n- Updates download inside the app now, with a progress bar, instead of handing the file to a browser\n- The queue got a proper look: one-line header, rounded artwork, amber shuffle and repeat, and it fades into the bar at the foot\n- Lyrics: the pill at the top is called **Sources**, because that is what it opens — the same words from every provider, so you can take whichever is best in time. It steps out of the way in full screen\n- Settings shows who is signed in, with your channel picture\n\n## Fixes and improvements\n- **Keep playing through a connection drop** — minutes of the song are fetched ahead, and a lost connection is picked up when it returns\n- Search shows results as soon as YouTube answers instead of waiting for artist lookups — about three times quicker\n- A song is put on top of the results when YouTube leads with a video of it\n- Artist names are read properly: no more songs by \"4:41\", \"2026\" or \",\"\n- Downloads that did not finish are asked for again at startup, and a failed one says so\n- Songs on your phone play straight off the phone, with their own covers kept\n- A song that loads but never starts is skipped instead of buffering for ever\n- The play button takes its colour from the artwork on every design, and the duplicate cast button is gone from the album art\n- The sleep timer opens as a sheet like the keys beside it, not a box in the middle of the screen\n- Fixed a crash that could kill the app at launch after the sideways work\n\n---\n\n**Also on this page:** `Blazify.apk` for phones without Google services, and `Blazify-izzy-9.16.0.apk`,\nthe build with no updater for F-Droid-style repositories.\n",
+    "prerelease": false,
+    "apks": [
+      {
+        "name": "Blazify-gms-9.16.0.apk",
+        "size": 28901237,
+        "urls": [
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.16.0/Blazify-gms-9.16.0.apk",
+          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.16.0/Blazify-gms-9.16.0.apk"
+        ]
+      },
+      {
+        "name": "Blazify-gms.apk",
+        "size": 28901237,
+        "urls": [
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.16.0/Blazify-gms.apk",
+          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.16.0/Blazify-gms.apk"
+        ]
+      },
+      {
+        "name": "Blazify.apk",
+        "size": 27351414,
+        "urls": [
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.16.0/Blazify.apk",
+          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.16.0/Blazify.apk"
+        ]
+      }
+    ]
+  }
 }
