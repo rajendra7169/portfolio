@@ -2,7 +2,7 @@
 const seo = {
   title: "Rajendra's Portfolio",
   description:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
+    "Software developer at Matrika Technology in Kathmandu, and the maker of Blazify — a free, open-source music player for Android, iPhone and desktop with thousands of downloads.",
   og: {
     title: "Rajendra's Portfolio",
     type: "website",
@@ -15,7 +15,7 @@ const greeting = {
   title: "Rajendra Pandey",
   logo_name: "RajendraPandey",
   subTitle:
-    "A passionate individual who always thrives to work on end to end products which develop sustainable and scalable social and technical systems to create impact.",
+    "Software developer at Matrika Technology in Kathmandu, and the maker of Blazify — a free, open-source music player for Android, iPhone and desktop with thousands of downloads.",
   resumeLink:
     "https://drive.google.com/file/d/1ccK09uY0vuos3whh8vuI50918UVYH0_i/view?usp=sharing",
   portfolio_repository: "https://github.com/rajendra7169/portfolio",
@@ -73,12 +73,90 @@ const skills = {
       title: "Full Stack Development",
       fileName: "FullStackImg",
       skills: [
-        "⚡ Experienced web developer with knowledge of Python, Java, HTML, CSS, JavaScript, C, C++, and Dart.",
-        "⚡ Skilled in developing dynamic and responsive web applications using modern technologies.",
-        "⚡ Developing mobile applications using Flutter, React Native and solo android apps using Kotlin",
-        "⚡ Creating application backend in Node, Express & Flask",
+        "⚡ Writing Kotlin, Swift, Dart, C#, TypeScript, JavaScript, Python, Go, Java, PHP, C and C++",
+        "⚡ Building native Android apps in Kotlin & Jetpack Compose, and iPhone apps in Swift & SwiftUI",
+        "⚡ Building cross-platform mobile apps in Flutter, and desktop apps for Windows and Linux",
+        "⚡ Creating backends and APIs in .NET, Node & Express, Go and Python",
+        "⚡ Building dynamic, responsive web applications with React and TypeScript",
       ],
       softwareSkills: [
+        {
+          skillName: "Kotlin",
+          fontAwesomeClassname: "simple-icons:kotlin",
+          style: {
+            color: "#7F52FF",
+          },
+        },
+        {
+          skillName: "Swift",
+          fontAwesomeClassname: "simple-icons:swift",
+          style: {
+            color: "#F05138",
+          },
+        },
+        {
+          skillName: "Dart",
+          fontAwesomeClassname: "simple-icons:dart",
+          style: {
+            color: "#0175C2",
+          },
+        },
+        {
+          skillName: "C# / .NET",
+          fontAwesomeClassname: "simple-icons:dotnet",
+          style: {
+            color: "#512BD4",
+          },
+        },
+        {
+          skillName: "TypeScript",
+          fontAwesomeClassname: "simple-icons:typescript",
+          style: {
+            color: "#3178C6",
+          },
+        },
+        {
+          skillName: "Python",
+          fontAwesomeClassname: "simple-icons:python",
+          style: {
+            color: "#3776AB",
+          },
+        },
+        {
+          skillName: "Go",
+          fontAwesomeClassname: "simple-icons:go",
+          style: {
+            color: "#00ADD8",
+          },
+        },
+        {
+          skillName: "Java",
+          fontAwesomeClassname: "simple-icons:openjdk",
+          style: {
+            color: "#ED8B00",
+          },
+        },
+        {
+          skillName: "PHP",
+          fontAwesomeClassname: "simple-icons:php",
+          style: {
+            color: "#777BB4",
+          },
+        },
+        {
+          skillName: "Android",
+          fontAwesomeClassname: "simple-icons:android",
+          style: {
+            color: "#3DDC84",
+          },
+        },
+        {
+          skillName: "Jetpack Compose",
+          fontAwesomeClassname: "simple-icons:jetpackcompose",
+          style: {
+            color: "#4285F4",
+          },
+        },
         {
           skillName: "HTML5",
           fontAwesomeClassname: "simple-icons:html5",
@@ -128,12 +206,54 @@ const skills = {
       title: "Cloud Infra-Architecture",
       fileName: "CloudInfraImg",
       skills: [
-        "⚡ Experience working on multiple cloud platforms",
-        "⚡ Hosting and maintaining websites on virtual machine instances along with integration of databases",
-        "⚡ Deploying deep learning models on cloud to use on mobile devices",
-        "⚡ Setting up streaming jobs from DB to Server or vice-versa on GCP and AWS",
+        "⚡ Running real services, like Blazify's own Listen Together server written in Go on Docker",
+        "⚡ Deploying on Cloudflare Workers, Supabase, Firebase, Render and Netlify",
+        "⚡ Working with PostgreSQL, SQLite, MongoDB and SQL Server",
+        "⚡ Shipping signed, reproducible release builds for Android, iPhone, Windows and Linux",
       ],
       softwareSkills: [
+        {
+          skillName: "Docker",
+          fontAwesomeClassname: "simple-icons:docker",
+          style: {
+            color: "#2496ED",
+          },
+        },
+        {
+          skillName: "Cloudflare",
+          fontAwesomeClassname: "simple-icons:cloudflare",
+          style: {
+            color: "#F38020",
+          },
+        },
+        {
+          skillName: "Supabase",
+          fontAwesomeClassname: "simple-icons:supabase",
+          style: {
+            color: "#3FCF8E",
+          },
+        },
+        {
+          skillName: "SQLite",
+          fontAwesomeClassname: "simple-icons:sqlite",
+          style: {
+            color: "#003B57",
+          },
+        },
+        {
+          skillName: "Linux",
+          fontAwesomeClassname: "simple-icons:linux",
+          style: {
+            color: "#FCC624",
+          },
+        },
+        {
+          skillName: "Git",
+          fontAwesomeClassname: "simple-icons:git",
+          style: {
+            color: "#F03C2E",
+          },
+        },
         {
           skillName: "Firebase",
           fontAwesomeClassname: "simple-icons:firebase",
@@ -371,9 +491,9 @@ const certifications = {
 // Experience Page
 const experience = {
   title: "Experience",
-  subtitle: "Work and Internship",
+  subtitle: "Work",
   description:
-    "I have professional experience as an Account Handler (2021-2022) and Marketing Personnel (2017-2018). As an Account Handler, my key responsibilities included preparing financial statements, ensuring tax compliance, analyzing financial trends, and predicting future revenues and costs.",
+    "I work as a software developer at Matrika Technology in Kathmandu, which makes IRD-certified jewellery billing and management software for Nepali jewellers. Outside work I build and maintain Blazify, a free and open-source music player for Android, iPhone and desktop.",
   header_image_path: "experience.svg",
   sections: [
     {
@@ -381,31 +501,15 @@ const experience = {
       work: true,
       experiences: [
         {
-          title: "Account Handler",
-          company: "Nawakantipur Saving and Credit Co-operative Society Ltd.",
-          company_url: "https://nawakantipur.com.np/",
-          logo_path: "nawakantipur.webp",
-          duration: "2021 - 2022",
-          location: "Kathmandu, Nepal",
+          title: "Software Developer",
+          company: "Matrika Technology",
+          company_url: "https://matrikatec.com.np",
+          logo_path: "matrika.png",
+          duration: "Present",
+          location: "New Baneshwor, Kathmandu, Nepal",
           description:
-            "Responsibilities involved collecting data on sales revenues, liabilities, and other financial metrics; preparing financial statements like balance sheets and income statements on a monthly, quarterly, and annual basis; ensuring compliance with tax regulations through accurate and timely payments; and analyzing financial trends to forecast future costs and revenues.",
-          color: "#000000",
-        },
-      ],
-    },
-    {
-      title: "Internships",
-      experiences: [
-        {
-          title: "Game Developer",
-          company: "Yarsa Games",
-          company_url: "https://www.yarsagames.com/",
-          logo_path: "yarsa.webp",
-          duration: "May 2024 - Aug 2024",
-          location: "Kathmandu, Nepal",
-          description:
-            "I contributed to creating engaging game experiences by coding mechanics, designing levels, debugging, and optimizing performance. Collaborating with a creative team, I gained hands-on experience in the game development lifecycle.",
-          color: "#000000",
+            "Matrika Technology makes IRD-certified jewellery billing and management software for Nepali jewellers. I work on its products across desktop, web, API and mobile.",
+          color: "#A3301E",
         },
       ],
     },
@@ -416,7 +520,7 @@ const experience = {
 const projectsHeader = {
   title: "Projects",
   description:
-    "My projects makes use of vast variety of latest technology tools. My best experience is to create MERN Stack projects and deploy them using cloud infrastructures such as vercel, aws and netlify.",
+    "My projects range from native Android and iPhone apps to desktop software, servers and web apps. The biggest is Blazify, a free and open-source music player used by thousands of people.",
   avatar_image_path: "projects_image.svg",
 };
 

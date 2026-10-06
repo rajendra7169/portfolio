@@ -1,11 +1,163 @@
 {
   "data": [
     {
-      "id": "R_kgDOJWL0-g",
-      "name": "Laundey Recommendation App",
-      "createdAt": "Sep 21, 2024",
-      "url": "https://github.com/rajendra7169/laundey_recommendation_app",
-      "description": "🧺 This is a MERN Stack Laundry Management App developed for Final Year Project for Sunway College Kathmandu.",
+      "id": "R_kgDOTZYrgw",
+      "name": "Blazify (Android)",
+      "createdAt": "Jul 15, 2026",
+      "url": "https://github.com/rajendra7169/blazify",
+      "description": "Blazify. A free, open-source music player for Android: millions of songs, offline downloads, word-by-word synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "Kotlin",
+          "iconifyClass": "logos-kotlin-icon"
+        },
+        {
+          "name": "JavaScript",
+          "iconifyClass": "logos-javascript"
+        },
+        {
+          "name": "HTML",
+          "iconifyClass": "logos-html-5"
+        },
+        {
+          "name": "Python",
+          "iconifyClass": "logos-python"
+        },
+        {
+          "name": "Shell",
+          "iconifyClass": "logos-bash-icon"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOTknFMQ",
+      "name": "Blazify for iPhone",
+      "createdAt": "Jul 27, 2026",
+      "url": "https://github.com/rajendra7169/blazify-ios",
+      "description": "Blazify for iPhone. A free, open-source music player in SwiftUI: streaming, local music, synced lyrics, equalizer. No ads, no tracking.",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "Swift",
+          "iconifyClass": "logos-swift"
+        },
+        {
+          "name": "Python",
+          "iconifyClass": "logos-python"
+        },
+        {
+          "name": "Shell",
+          "iconifyClass": "logos-bash-icon"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOTqaSMg",
+      "name": "Blazify for Desktop",
+      "createdAt": "Aug 01, 2026",
+      "url": "https://github.com/rajendra7169/blazify-desktop",
+      "description": "Blazify for desktop. A free, open-source music player for Linux and Windows: streaming, offline downloads, synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "Kotlin",
+          "iconifyClass": "logos-kotlin-icon"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOSTrfQA",
+      "name": "NexTerm",
+      "createdAt": "May 04, 2026",
+      "url": "https://github.com/rajendra7169/NexTerm",
+      "description": "A modern, feature-rich terminal for Windows — free and built from scratch. SSH, SFTP, port forwarding, jump-hosts, recording, snippets, workspaces, and more.",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "JavaScript",
+          "iconifyClass": "logos-javascript"
+        },
+        {
+          "name": "CSS",
+          "iconifyClass": "logos-css-3"
+        },
+        {
+          "name": "NSIS",
+          "iconifyClass": "logos-github-icon"
+        },
+        {
+          "name": "HTML",
+          "iconifyClass": "logos-html-5"
+        },
+        {
+          "name": "Batchfile",
+          "iconifyClass": "logos-github-icon"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOSrdZ5w",
+      "name": "Tally",
+      "createdAt": "May 29, 2026",
+      "url": "https://github.com/rajendra7169/attendance-system",
+      "description": "🌳 Tally — a modern, gamified attendance manager with a living forest visualization. Multi-tenant SaaS for small teams. Live: https://tally.rajendrapandey.info.np",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "JavaScript",
+          "iconifyClass": "logos-javascript"
+        },
+        {
+          "name": "CSS",
+          "iconifyClass": "logos-css-3"
+        },
+        {
+          "name": "Java",
+          "iconifyClass": "logos-java"
+        },
+        {
+          "name": "HTML",
+          "iconifyClass": "logos-html-5"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOS9NzEg",
+      "name": "Fitevo",
+      "createdAt": "Jun 17, 2026",
+      "url": "https://github.com/rajendra7169/fitevo",
+      "description": "Fitevo — local-first AI fitness, nutrition & workout tracker. One-sentence food logging, AI-built routines, no shaming. Flutter + Firebase + Groq.",
+      "isFork": false,
+      "languages": [
+        {
+          "name": "Dart",
+          "iconifyClass": "logos-dart"
+        },
+        {
+          "name": "HTML",
+          "iconifyClass": "logos-html-5"
+        },
+        {
+          "name": "C++",
+          "iconifyClass": "logos-github-icon"
+        },
+        {
+          "name": "CMake",
+          "iconifyClass": "logos-github-icon"
+        },
+        {
+          "name": "JavaScript",
+          "iconifyClass": "logos-javascript"
+        }
+      ]
+    },
+    {
+      "id": "R_kgDOSwSEWQ",
+      "name": "R-AI",
+      "createdAt": "Jun 03, 2026",
+      "url": "https://github.com/rajendra7169/R-AI",
+      "description": "Air-gapped, zero-dependency local AI environment",
       "isFork": false,
       "languages": [
         {
@@ -13,94 +165,38 @@
           "iconifyClass": "logos-html-5"
         },
         {
+          "name": "Python",
+          "iconifyClass": "logos-python"
+        },
+        {
+          "name": "Shell",
+          "iconifyClass": "logos-bash-icon"
+        },
+        {
+          "name": "JavaScript",
+          "iconifyClass": "logos-javascript"
+        },
+        {
           "name": "CSS",
           "iconifyClass": "logos-css-3"
-        },
-        {
-          "name": "JavaScript",
-          "iconifyClass": "logos-javascript"
         }
       ]
     },
     {
-      "id": "R_kgDOG_vYHA",
-      "name": "Blog Site",
-      "createdAt": "Aug 20, 2023",
-      "url": "https://github.com/rajendra7169/nextjs-crud-blog",
-      "description": "🙋‍♂️ Full-stack Next.js CRUD blog app with PostgreSQL and MongoDB",
+      "id": "R_kgDOM0kQxw",
+      "name": "Laundry Recommendation App",
+      "createdAt": "Sep 20, 2024",
+      "url": "https://github.com/rajendra7169/laundry_recommendation_app",
+      "description": "This is a MERN Stack Laundry Management App developed for Final Year Project for Sunway College Kathmandu",
       "isFork": false,
       "languages": [
         {
           "name": "JavaScript",
           "iconifyClass": "logos-javascript"
-        }
-      ]
-    },
-    {
-      "id": "MDEwOlJlcG9zaXRvcnkyNDU0NjcyNzQ=",
-      "name": "Travel Nepal",
-      "createdAt": "Sep 15, 2024",
-      "url": "https://github.com/rajendra7169/Travel-Nepal",
-      "description": "🧳 Travel app for exploring Nepal with detailed information, photos, and recommendations for popular destinations.",
-      "isFork": false,
-      "languages": [
-        {
-          "name": "Dart",
-          "iconifyClass": "logos-dart"
         },
         {
-          "name": "Flutter",
-          "iconifyClass": "logos-flutter"
-       }
-      ]
-    },
-    {
-      "id": "R_kgDOG0_8uQ",
-      "name": "MultiUIPage",
-      "createdAt": "Jul 20, 2024",
-      "url": "https://github.com/rajendra7169/MultiUIPage",
-      "description": "📟 Multi-page UI template with responsive design and customizable components for various applications.",
-      "isFork": false,
-      "languages": [
-        {
-          "name": "Dart",
-          "iconifyClass": "logos-dart"
-        },
-        {
-          "name": "Flutter",
-          "iconifyClass": "logos-flutter"
-        }
-      ]
-    },
-    {
-      "id": "R_kgDOGcPKSQ",
-      "name": "Flightfusion",
-      "createdAt": "Aug 30, 2024",
-      "url": "https://github.com/rajendra7169/flightfusion",
-      "description": "✈️ Flight booking app with search, booking management, and user authentication features.",
-      "isFork": false,
-      "languages": [
-        {
-          "name": "Dart",
-          "iconifyClass": "logos-dart"
-        },
-        {
-          "name": "Flutter",
-          "iconifyClass": "logos-flutter"
-        }
-      ]
-    },
-    {
-      "id": "MDEwOlJlcG9zaXRvcnkzMjU5NDM1MTE=",
-      "name": "Landing Page",
-      "createdAt": "Nov 28, 2024",
-      "url": "https://github.com/rajendra7169/landing_page",
-      "description": "🚀 Responsive and customizable landing page template built with modern web technologies, suitable for creating professional landing pages.",
-      "isFork": false,
-      "languages": [
-        {
-          "name": "JavaScript",
-          "iconifyClass": "logos-javascript"
+          "name": "HTML",
+          "iconifyClass": "logos-html-5"
         },
         {
           "name": "CSS",
