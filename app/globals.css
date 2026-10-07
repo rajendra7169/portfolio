@@ -10,7 +10,7 @@
   --color-paper: #f7fcff;    /* card bodies */
   --color-bolt: #f26b38;     /* ⚡ bullets */
 
-  --font-sig: var(--font-sig), cursive;
+  --font-sig: var(--font-mrs), cursive;
   --font-body: var(--font-figtree), system-ui, sans-serif;
   --font-mono: var(--font-gsc), ui-monospace, monospace;
 }
@@ -80,8 +80,11 @@ main {
 }
 
 /* Hidden until Motion animates them in (only when motion is allowed). */
-.motion-ok [data-anim]:not([data-anim="chars"]):not([data-anim="line"]):not([data-anim="mask"]) {
+.motion-ok [data-anim]:not([data-anim="chars"]):not([data-anim="line"]):not([data-anim="vline"]):not([data-anim="mask"]) {
   opacity: 0;
+}
+.motion-ok [data-anim="vline"] {
+  transform: scaleY(0);
 }
 .motion-ok [data-anim="chars"] .char {
   transform: translateY(118%);
@@ -779,9 +782,6 @@ main {
   width: 2px;
   background: linear-gradient(var(--color-navy), var(--color-steel));
   transform-origin: top;
-}
-.motion-ok .timeline-line[data-anim="line"] {
-  transform: scaleY(0);
 }
 .timeline-list {
   display: grid;
