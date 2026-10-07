@@ -42,7 +42,8 @@ export default function Contact() {
           {/* eslint-disable-next-line @next/next/no-img-element -- static SVG illustration */}
           <img src="/illustrations/contact.svg" alt="" data-anim="left" />
         </div>
-        <dl className="details" data-anim-group="0.1">
+        <div className="details" data-anim-group="0.1">
+        <dl>
           <div data-anim="up">
             <dt>Address</dt>
             <dd>{contact.address}</dd>
@@ -59,12 +60,13 @@ export default function Contact() {
               <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
             </dd>
           </div>
+        </dl>
           <div data-anim="up">
             <a className="btn" href={contact.maps} target="_blank" rel="noreferrer" data-magnetic>
               Visit on Google Maps
             </a>
           </div>
-        </dl>
+        </div>
       </section>
     </Motion>
   );
