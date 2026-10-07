@@ -1,28 +1,30 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Instrument_Sans, Martian_Mono } from "next/font/google";
+import { Figtree, Google_Sans_Code, Mrs_Saint_Delafield } from "next/font/google";
 import "lenis/dist/lenis.css";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
+import { PageTransition } from "@/components/PageTransition";
+import Header from "@/components/Header";
+import ScrollUI from "@/components/ScrollUI";
+import { Footer } from "@/components/Bits";
 
-// Display: Archivo's width axis (62–125) drives the kinetic type.
-const display = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
-const body = Instrument_Sans({ subsets: ["latin"], variable: "--font-instrument", display: "swap" });
-const mono = Martian_Mono({ subsets: ["latin"], variable: "--font-martian", display: "swap" });
+// Display: a signature script for the logo, standing in for the original's Agustina.
+const display = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-sig", display: "swap" });
+// Body: Figtree is the closest open match to the original's Google Sans.
+const body = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
+const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Rajendra Pandey — Software developer, Kathmandu",
+  title: { default: "Rajendra's Portfolio", template: "%s · Rajendra Pandey" },
   description:
-    "Software developer at Matrika Technology in Kathmandu and the maker of Blazify, a free, open-source music player for Android, iPhone and desktop.",
+    "Software developer at Matrika Technology in Kathmandu, and the maker of Blazify — a free, open-source music player for Android, iPhone and desktop.",
   metadataBase: new URL("https://rajendrapandey.info.np"),
-  openGraph: {
-    title: "Rajendra Pandey",
-    description: "Software developer in Kathmandu. Maker of Blazify.",
-    type: "website",
-  },
+  openGraph: { title: "Rajendra Pandey", description: "Software developer in Kathmandu. Maker of Blazify.", type: "website" },
 };
 
-export const viewport: Viewport = { themeColor: "#060607", colorScheme: "dark" };
+export const viewport: Viewport = { themeColor: "#edf9fe" };
 
-// Runs before paint so motion-enabled visitors never see the un-animated hero flash.
+// Runs before paint, so motion-enabled visitors never see content flash before it animates in.
 const motionFlag = `if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion-ok')`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -31,7 +33,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionFlag }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>
+          <PageTransition>
+            <a className="skip" href="#main">
+              Skip to content
+            </a>
+            <Header />
+            <main id="main">{children}</main>
+            <Footer />
+            <ScrollUI />
+          </PageTransition>
+        </SmoothScroll>
+      </body>
     </html>
   );
 }
