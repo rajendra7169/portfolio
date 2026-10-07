@@ -47,6 +47,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
 
   // First visit: write the signature, then lift the curtain.
   useEffect(() => {
+    root.current!.classList.add("is-live");
     if (!motionOk()) {
       covered.current = false;
       release();
