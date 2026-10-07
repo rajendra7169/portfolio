@@ -30,7 +30,7 @@ export default function Header() {
   // The underline slides to whichever link is active or hovered.
   const moveTo = contextSafe((link: Element | null | undefined, instant = false) => {
     const bar = root.current?.querySelector<HTMLElement>(".nav-indicator");
-    const list = root.current?.querySelector<HTMLElement>(".nav-list");
+    const list = root.current?.querySelector<HTMLElement>(".nav");
     if (!bar || !list) return;
     if (!link) return void gsap.to(bar, { autoAlpha: 0, duration: 0.2 });
     const l = link.getBoundingClientRect();
@@ -65,7 +65,7 @@ export default function Header() {
           <span />
         </button>
 
-        <nav id="site-nav" aria-label="Main">
+        <nav id="site-nav" className="nav" aria-label="Main">
           <ul className="nav-list" onPointerLeave={() => moveTo(activeLink())}>
             {nav.map((item, i) => (
               <li key={item.href} style={{ "--i": i } as React.CSSProperties}>
@@ -85,8 +85,8 @@ export default function Header() {
                 )}
               </li>
             ))}
-            <span className="nav-indicator" aria-hidden="true" />
           </ul>
+          <span className="nav-indicator" aria-hidden="true" />
         </nav>
       </div>
     </header>
