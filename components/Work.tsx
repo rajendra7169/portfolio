@@ -106,10 +106,7 @@ export default function Work() {
         () => {
           const rail = el.querySelector<HTMLElement>(".rail")!;
           // Slide until the last card's right edge meets the right gutter.
-          const distance = () => {
-            const gutter = parseFloat(getComputedStyle(rail.parentElement!).paddingLeft);
-            return Math.max(0, rail.scrollWidth - window.innerWidth + 2 * gutter);
-          };
+          const distance = () => Math.max(0, rail.scrollWidth - rail.clientWidth);
           const slide = gsap.to(rail, {
             x: () => -distance(),
             ease: "none",
