@@ -97,7 +97,11 @@ export default function Work() {
         `${DESKTOP} and ${MOTION_OK}`,
         () => {
           const rail = el.querySelector<HTMLElement>(".rail")!;
-          const distance = () => rail.scrollWidth - window.innerWidth;
+          // Slide until the last card's right edge meets the right gutter.
+          const distance = () => {
+            const gutter = parseFloat(getComputedStyle(rail.parentElement!).paddingLeft);
+            return Math.max(0, rail.scrollWidth - window.innerWidth + 2 * gutter);
+          };
           const slide = gsap.to(rail, {
             x: () => -distance(),
             ease: "none",
