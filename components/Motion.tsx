@@ -14,6 +14,7 @@ const PRESETS: Record<string, Preset> = {
   pop: { from: { scale: 0.2, autoAlpha: 0 }, to: { scale: 1, autoAlpha: 1 }, duration: 0.7, ease: "back.out(2.2)" },
   zoom: { from: { scale: 0.88, y: 40, autoAlpha: 0 }, to: { scale: 1, y: 0, autoAlpha: 1 }, duration: 1.1 },
   line: { from: { scaleX: 0 }, to: { scaleX: 1 }, duration: 1.3, ease: "expo.inOut" },
+  vline: { from: { scaleY: 0 }, to: { scaleY: 1 }, duration: 1.6, ease: "expo.inOut" },
   mask: { from: { clipPath: "inset(100% 0% 0% 0%)" }, to: { clipPath: "inset(0% 0% 0% 0%)" }, duration: 1.5, ease: "expo.inOut" },
   // Splits are rendered by <Chars>; each letter rises out of its line.
   chars: { from: { yPercent: 118, rotate: 6 }, to: { yPercent: 0, rotate: 0 }, duration: 1.1, ease: "expo.out", inner: ".char" },
