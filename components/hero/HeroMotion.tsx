@@ -64,8 +64,9 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             .from(q(".hx-field"), { autoAlpha: 0, duration: 1.6 }, 0.2)
             // Stage: disc blooms, rings draw, photo rises, logos pop onto their orbits.
             .from(q(".hx-disc"), { scale: 0, duration: 1.4, ease: "elastic.out(1, 0.6)" }, 0.1)
-            .from(q(".hx-ring--solid, .hx-ring--dots"), { drawSVG: "50% 50%", duration: 1.6, ease: "expo.inOut", stagger: 0.15 }, 0.15)
-            .from(q(".hx-ring--dash"), { scale: 0.6, transformOrigin: "50% 50%", autoAlpha: 0, duration: 1.4 }, 0.2)
+            // DrawSVG rewrites the dash pattern, so only the solid ring draws on; patterned rings zoom in.
+            .from(q(".hx-ring--solid"), { drawSVG: "50% 50%", duration: 1.6, ease: "expo.inOut" }, 0.15)
+            .from(q(".hx-ring--dash, .hx-ring--dots"), { scale: 0.6, svgOrigin: "300 300", autoAlpha: 0, duration: 1.4, stagger: 0.15 }, 0.2)
             .from(q(".hx-ring--arc"), { autoAlpha: 0, duration: 1 }, 0.9)
             .from(q(".hx-tick"), { autoAlpha: 0, duration: 0.02, stagger: { each: 0.012, from: "start" } }, 0.3)
             .from(q(".hx-photo"), { yPercent: 18, autoAlpha: 0, scale: 0.94, duration: 1.6 }, 0.35)
