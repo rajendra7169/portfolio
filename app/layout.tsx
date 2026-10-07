@@ -9,7 +9,7 @@ import ScrollUI from "@/components/ScrollUI";
 import { Footer } from "@/components/Bits";
 
 // Display: a signature script for the logo, standing in for the original's Agustina.
-const display = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-sig", display: "swap" });
+const display = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-mrs", display: "swap" });
 // Body: Figtree is the closest open match to the original's Google Sans.
 const body = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
 const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", display: "swap" });
