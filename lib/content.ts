@@ -7,6 +7,41 @@ export const profile = {
   repo: "https://github.com/rajendra7169/portfolio",
 };
 
+// Home hero. Every line here is drawn from the facts above and on the original site.
+export const hero = {
+  first: "Rajendra",
+  last: "Pandey",
+  // "I build …" cycles through these.
+  builds: [
+    "native Android apps",
+    "iPhone apps in SwiftUI",
+    "cross-platform Flutter apps",
+    "desktop apps for Windows & Linux",
+    "backends in Go, .NET & Node",
+    "open-source music players",
+  ],
+  stats: [
+    { value: 12, suffix: "", label: "languages" },
+    { value: 8, suffix: "", label: "projects shipped" },
+    { value: 3, suffix: "", label: "Blazify platforms" },
+  ],
+  // Logos riding the two orbit rings around the photo.
+  orbitInner: [
+    { name: "Kotlin", icon: "logos:kotlin-icon" },
+    { name: "Swift", icon: "logos:swift" },
+    { name: "React", icon: "logos:react" },
+    { name: "Go", icon: "simple-icons:go", color: "#00add8" },
+  ] as Tech[],
+  orbitOuter: [
+    { name: "Flutter", icon: "simple-icons:flutter", color: "#02569b" },
+    { name: "TypeScript", icon: "logos:typescript-icon" },
+    { name: "Docker", icon: "logos:docker-icon" },
+    { name: "Python", icon: "logos:python" },
+    { name: "Android", icon: "logos:android-icon" },
+    { name: ".NET", icon: "logos:dotnet" },
+  ] as Tech[],
+};
+
 export const nav = [
   { label: "Home", href: "/" },
   { label: "Education", href: "/education" },
