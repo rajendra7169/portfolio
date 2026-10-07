@@ -151,7 +151,7 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
               .to(q(".hx-stage"), { autoAlpha: 0, duration: 0.35 }, 0.65);
           } else {
             // Phones: no pin, just a light parallax as it scrolls away.
-            gsap.to(q(".hx-stage"), { yPercent: -12, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } });
+            gsap.to(q(".hx-stage"), { yPercent: -5, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } });
           }
 
           return () => {
