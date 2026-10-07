@@ -13,7 +13,7 @@ export default function Experience() {
       <section className="section">
         <SectionTitle>Work</SectionTitle>
         <div className="timeline">
-          <span className="timeline-line" data-anim="line" aria-hidden="true" />
+          <span className="timeline-line" data-anim="vline" aria-hidden="true" />
           <ol className="timeline-list">
           {experience.roles.map((r) => (
             <li className="role" key={r.company}>
