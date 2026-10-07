@@ -136,9 +136,21 @@ export default function Hero() {
             GitHub <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <span className="hero-cue hero-reveal" aria-hidden="true">
-          Scroll to play <span className="hero-cue-line" />
-        </span>
+        {profile.photo ? (
+          <figure className="hero-photo hero-reveal">
+            {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
+            <img
+              src={`/images/${profile.photo}-800.webp`}
+              srcSet={`/images/${profile.photo}-800.webp 800w, /images/${profile.photo}-1600.webp 1600w`}
+              sizes="220px"
+              alt={`Portrait of ${profile.name}`}
+            />
+          </figure>
+        ) : (
+          <span className="hero-cue hero-reveal" aria-hidden="true">
+            Scroll to play <span className="hero-cue-line" />
+          </span>
+        )}
       </div>
     </section>
   );
