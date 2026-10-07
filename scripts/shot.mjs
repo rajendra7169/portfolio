@@ -93,6 +93,17 @@ for (const vp of VIEWPORTS) {
         spill,
         counts: Object.fromEntries(Object.keys(counts).map((sel) => [sel, document.querySelectorAll(sel).length])),
         brokenImgs: [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.src),
+        // A button whose background got overridden turns invisible on the light page.
+        faintBtns: [...document.querySelectorAll(".btn")]
+          .filter((b) => {
+            const m = getComputedStyle(b).backgroundColor.match(/[\d.]+/g).map(Number);
+            return (m[3] ?? 1) < 0.9 || (m[0] > 200 && m[1] > 200 && m[2] > 200);
+          })
+          .map((b) => b.textContent.trim()),
+        // Logos should be icons, not long wordmarks.
+        wordmarks: [...document.querySelectorAll(".tech svg")]
+          .filter((s) => { const r = s.getBoundingClientRect(); return r.width > r.height * 1.6; })
+          .map((s) => s.closest(".tech").querySelector(".sr-only").textContent),
       };
     }, pg.counts);
     check(scope, after.hidden.length === 0, `every animated element ends visible${after.hidden.length ? ` (stuck: ${after.hidden.slice(0, 4).join(", ")})` : ""}`);
@@ -100,6 +111,8 @@ for (const vp of VIEWPORTS) {
     check(scope, after.overflow <= 0, `no horizontal overflow (${after.overflow}px)`);
     check(scope, after.spill.length === 0, `text fits its boxes${after.spill.length ? ` (spilling: ${after.spill.join(" | ")})` : ""}`);
     check(scope, after.brokenImgs.length === 0, `all images load${after.brokenImgs.length ? ` (broken: ${after.brokenImgs.join(", ")})` : ""}`);
+    check(scope, after.faintBtns.length === 0, `buttons are visible${after.faintBtns.length ? ` (faint: ${after.faintBtns.join(", ")})` : ""}`);
+    check(scope, after.wordmarks.length === 0, `tech logos are icons${after.wordmarks.length ? ` (wordmarks: ${after.wordmarks.join(", ")})` : ""}`);
     for (const [sel, n] of Object.entries(pg.counts)) check(scope, after.counts[sel] === n, `${n} × ${sel} (${after.counts[sel]})`);
 
     await page.evaluate(() => scrollTo(0, 0));
