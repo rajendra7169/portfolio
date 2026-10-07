@@ -66,10 +66,15 @@ for (const vp of VIEWPORTS) {
     const top = await page.evaluate(() => {
       const h1 = document.querySelector("h1");
       const r = h1.getBoundingClientRect();
-      return { text: h1.innerText.replace(/\s+/g, " ").trim(), left: r.left, right: r.right, top: r.top, bottom: r.bottom, vw: innerWidth, vh: innerHeight };
+      // Split headings carry their readable text in .sr-only.
+      const text = (h1.querySelector(".sr-only") ?? h1).textContent.replace(/\s+/g, " ").trim();
+      return { text, left: r.left, right: r.right, top: r.top, bottom: r.bottom, vw: innerWidth, vh: innerHeight };
     });
     check(scope, top.text === pg.h1, `h1 reads "${top.text}"`);
     check(scope, top.left >= 0 && top.right <= top.vw && top.top >= 0, "h1 is fully on screen");
+    // Before anything scrolls in, elements wait off to the side; they must not widen the page.
+    const early = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, innerWidth) - document.documentElement.clientWidth);
+    check(scope, early <= 0, `no horizontal overflow on load (${early}px)`);
     await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-top.png` });
 
     await scrollThrough(page);
@@ -83,7 +88,8 @@ for (const vp of VIEWPORTS) {
       return {
         hidden: hidden.map((el) => `${el.tagName.toLowerCase()}.${el.className}`.slice(0, 40)),
         stuckChars: stuckChars.length,
-        overflow: document.documentElement.scrollWidth - innerWidth,
+        // innerWidth grows with the layout viewport on mobile; clientWidth is the real screen.
+        overflow: Math.max(document.documentElement.scrollWidth, innerWidth) - document.documentElement.clientWidth,
         spill,
         counts: Object.fromEntries(Object.keys(counts).map((sel) => [sel, document.querySelectorAll(sel).length])),
         brokenImgs: [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.src),
@@ -127,7 +133,7 @@ for (const vp of VIEWPORTS) {
     check(scope, page.url().endsWith("/projects"), `lands on /projects (${page.url()})`);
     check(scope, await curtainClear(page), "curtain lifts after navigating");
     const state = await page.evaluate(() => ({
-      h1: document.querySelector("h1")?.innerText.replace(/\s+/g, " ").trim(),
+      h1: document.querySelector("h1 .sr-only")?.textContent.trim(),
       h1Visible: [...document.querySelectorAll("h1 .char")].every((c) => getComputedStyle(c).transform === "none" || /matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(c).transform)),
       scrollY,
       active: document.querySelector(".nav-list a[aria-current='page']")?.textContent,
