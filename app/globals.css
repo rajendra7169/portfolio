@@ -1633,7 +1633,7 @@ main {
   }
   .hx-stage {
     width: min(100%, 460px);
-    margin-top: 12px;
+    margin-top: 36px;
   }
   .hx-chip {
     padding: 6px 12px 6px 6px;
@@ -1652,9 +1652,11 @@ main {
   .hx-chip small {
     font-size: 10px;
   }
-  .hx-chip-pos--a { left: -2%; top: 30%; }
+  /* The stage is narrow here: keep cards off his face, and drop the role card
+     (the intro right above already says it). */
+  .hx-chip-pos--a { right: -2%; bottom: 12%; }
   .hx-chip-pos--b { right: -2%; top: 2%; }
-  .hx-chip-pos--c { right: -2%; bottom: 10%; }
+  .hx-chip-pos--c { display: none; }
   .hx-cue {
     display: none;
   }
