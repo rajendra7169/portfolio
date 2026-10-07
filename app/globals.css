@@ -973,7 +973,7 @@ main {
   font-size: clamp(17px, 1.5vw, 20px);
   color: var(--color-muted);
 }
-.details a {
+.details dd a {
   background: linear-gradient(currentColor, currentColor) 50% 100% / 0 1.5px no-repeat;
   transition: background-size 0.5s var(--ease), color 0.3s;
 }
@@ -1007,6 +1007,10 @@ main {
   }
   .logo-sig {
     font-size: 32px;
+  }
+  .logo {
+    position: relative;
+    z-index: 2; /* stays above the open menu */
   }
   .menu-btn {
     position: relative;
