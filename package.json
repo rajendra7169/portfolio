@@ -1,0 +1,13 @@
+{
+  "name": "rajendra-pandey-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "images": "node scripts/images.mjs",
+    "shot": "node scripts/shot.mjs"
+  }
+}
