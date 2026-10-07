@@ -340,6 +340,19 @@ a {
   background: var(--color-acid);
   animation: cue 2.2s var(--ease-out) infinite;
 }
+.hero-photo {
+  justify-self: end;
+  width: clamp(140px, 15vw, 220px);
+  padding: 6px;
+  border: 1px solid var(--color-line);
+}
+.hero-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.1);
+}
 @keyframes cue {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
