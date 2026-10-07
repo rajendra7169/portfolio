@@ -12,8 +12,9 @@ export default function Experience() {
 
       <section className="section">
         <SectionTitle>Work</SectionTitle>
-        <ol className="timeline">
+        <div className="timeline">
           <span className="timeline-line" data-anim="line" aria-hidden="true" />
+          <ol className="timeline-list">
           {experience.roles.map((r) => (
             <li className="role" key={r.company}>
               <span className="role-dot" style={{ background: r.color }} data-anim="pop" aria-hidden="true">
@@ -37,7 +38,8 @@ export default function Experience() {
               </article>
             </li>
           ))}
-        </ol>
+          </ol>
+        </div>
       </section>
     </Motion>
   );
