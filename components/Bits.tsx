@@ -5,11 +5,12 @@ import Icon from "./Icon";
 import { Chars } from "./Motion";
 
 /** Brand-coloured circles, as on the original site. They pop in one by one. */
-export function SocialLinks({ center = false }: { center?: boolean }) {
+export function SocialLinks({ center = false, anim = true }: { center?: boolean; anim?: boolean }) {
+  // anim={false} when a parent (the home hero) choreographs them itself.
   return (
-    <ul className={`socials${center ? " socials--center" : ""}`} data-anim-group="0.06">
+    <ul className={`socials${center ? " socials--center" : ""}`} data-anim-group={anim ? "0.06" : undefined}>
       {socials.map((s) => (
-        <li key={s.name} data-anim="pop">
+        <li key={s.name} data-anim={anim ? "pop" : undefined}>
           <a
             href={s.href}
             target={s.href.startsWith("http") ? "_blank" : undefined}
