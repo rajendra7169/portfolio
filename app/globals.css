@@ -234,7 +234,7 @@ a {
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
-  padding: calc(var(--nav-h) + 20px) var(--gutter) 28px;
+  padding: calc(var(--nav-h) + 20px) var(--gutter) calc(var(--bar-h) + 28px);
   overflow: clip;
 }
 .hero-grid {
@@ -268,8 +268,8 @@ a {
   font-family: var(--font-display);
   font-weight: 800;
   font-variation-settings: "wdth" var(--wdth);
-  /* Sized so RAJENDRA spans the content width at full stretch. */
-  font-size: calc((100vw - 2 * var(--gutter)) / 6.05);
+  /* RAJENDRA measures 6.97em at wdth 125, so this spans the content width exactly. */
+  font-size: calc((100vw - 2 * var(--gutter)) / 7);
   line-height: 0.8;
   letter-spacing: -0.035em;
   text-transform: uppercase;
@@ -626,6 +626,17 @@ a {
   padding: 0 var(--gutter);
   overflow: hidden;
 }
+/* While pinned, the rail fills the screen between nav and transport bar. */
+@media (min-width: 900px) {
+  .rail-wrap {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: calc(var(--nav-h) + 16px);
+    padding-bottom: calc(var(--bar-h) + 16px);
+  }
+}
 .rail-head {
   display: flex;
   align-items: center;
@@ -659,7 +670,7 @@ a {
 .card {
   flex: 0 0 auto;
   width: clamp(300px, 34vw, 520px);
-  min-height: min(68svh, 600px);
+  min-height: min(58svh, 520px);
   display: flex;
   flex-direction: column;
   gap: 16px;
