@@ -141,8 +141,13 @@ for (const vp of VIEWPORTS) {
         // A button whose background got overridden turns invisible on the light page.
         faintBtns: [...document.querySelectorAll(".btn")]
           .filter((b) => {
-            const m = getComputedStyle(b).backgroundColor.match(/[\d.]+/g).map(Number);
-            return (m[3] ?? 1) < 0.9 || (m[0] > 200 && m[1] > 200 && m[2] > 200);
+            const rgba = (c) => c.match(/[\d.]+/g).map(Number);
+            const bg = rgba(getComputedStyle(b).backgroundColor);
+            const fg = rgba(getComputedStyle(b).color);
+            const lightBg = (bg[3] ?? 1) < 0.9 || (bg[0] > 200 && bg[1] > 200 && bg[2] > 200);
+            const lightText = fg[0] > 160 && fg[1] > 160 && fg[2] > 160;
+            // Faint = light text on a light/transparent background. Outline buttons use navy text.
+            return lightBg && lightText;
           })
           .map((b) => b.textContent.trim()),
         // Logos should be icons, not long wordmarks. Wide icons (PHP, Cloudflare) sit
