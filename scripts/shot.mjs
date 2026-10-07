@@ -71,7 +71,7 @@ for (const vp of VIEWPORTS) {
   check(vp.name, hero.lineB.right <= hero.vw - hero.gutter + 2, "PANDEY stays inside the right gutter");
   check(vp.name, hero.meta.bottom <= hero.name.top + 1, "hero meta sits above the name");
   check(vp.name, hero.name.bottom <= hero.foot.top + 1, "hero name does not overlap the intro copy");
-  check(vp.name, hero.foot.bottom <= hero.vh - 56 + 1 || vp.isMobile, "hero copy clears the transport bar");
+  check(vp.name, hero.foot.bottom <= hero.vh - 56 + 1, `hero copy clears the transport bar (${hero.foot.bottom.toFixed(0)} ≤ ${hero.vh - 56})`);
   await page.screenshot({ path: `${OUT}/${vp.name}-01-top.png` });
 
   // Global chrome
