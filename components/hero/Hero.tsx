@@ -42,7 +42,9 @@ export default function Hero() {
       <div className="hx-bg" aria-hidden="true">
         <div className="hx-glow hx-glow--a" />
         <div className="hx-glow hx-glow--b" />
-        <div className="hx-floor" />
+        <div className="hx-floor">
+          <div className="hx-floor-grid" />
+        </div>
         <HeroField />
         <div className="hx-spot" />
       </div>
