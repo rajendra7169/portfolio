@@ -75,6 +75,51 @@ for (const vp of VIEWPORTS) {
     // Before anything scrolls in, elements wait off to the side; they must not widen the page.
     const early = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, innerWidth) - document.documentElement.clientWidth);
     check(scope, early <= 0, `no horizontal overflow on load (${early}px)`);
+
+    if (pg.name === "home") {
+      await wait(2200); // the hero intro runs ~3s after the curtain
+      const hxState = () =>
+        page.evaluate(() => {
+          const r = (s) => document.querySelector(s).getBoundingClientRect();
+          const copy = r(".hx-copy");
+          return {
+            a: document.querySelector(".hx-line--a").textContent,
+            b: document.querySelector(".hx-line--b").textContent,
+            linesFit: [...document.querySelectorAll(".hx-line")].every((l) => l.getBoundingClientRect().right <= copy.right + 1),
+            counts: [...document.querySelectorAll(".hx-count")].every((c) => c.textContent === c.dataset.to),
+            orbs: [...document.querySelectorAll(".hx-orb-pop")].filter((o) => parseFloat(getComputedStyle(o).opacity) > 0.99).length,
+            inner: getComputedStyle(document.querySelector(".hx-inner")).opacity,
+            chipsOff: [...document.querySelectorAll(".hx-chip")].filter((c) => {
+              const b = c.getBoundingClientRect();
+              return b.left < 0 || b.right > innerWidth;
+            }).length,
+            build: document.querySelector(".hx-build-text").textContent,
+            pinned: !!document.querySelector(".pin-spacer .hx"),
+          };
+        });
+      const hx = await hxState();
+      check(scope, hx.inner === "1", "hero copy is revealed");
+      check(scope, hx.a === "Rajendra" && hx.b === "Pandey", `name finishes decoding ("${hx.a} ${hx.b}")`);
+      check(scope, hx.linesFit, "name lines fit their column");
+      check(scope, hx.counts, "stat counters land on their values");
+      check(scope, hx.orbs === 10, `10 logos on orbit (${hx.orbs})`);
+      check(scope, hx.chipsOff === 0, `glass cards stay on screen (${hx.chipsOff} off)`);
+      check(scope, hx.pinned === !vp.isMobile, `hero ${vp.isMobile ? "is not" : "is"} pinned for the scroll exit`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-home-hero.png` });
+      await wait(3400);
+      const later = await hxState();
+      check(scope, later.build !== hx.build, `"I build" line cycles ("${hx.build}" → "${later.build}")`);
+      if (!vp.isMobile) {
+        // Halfway through the pinned exit the hero should be coming apart.
+        await page.evaluate(() => scrollTo(0, innerHeight * 0.4));
+        await wait(1200);
+        await page.screenshot({ path: `${OUT}/${vp.name}-home-exit.png` });
+        const exit = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector(".hx-copy")).opacity));
+        check(scope, exit < 0.8, `copy fades during the scroll exit (opacity ${exit.toFixed(2)})`);
+        await page.evaluate(() => scrollTo(0, 0));
+        await wait(800);
+      }
+    }
     await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-top.png` });
 
     await scrollThrough(page);
