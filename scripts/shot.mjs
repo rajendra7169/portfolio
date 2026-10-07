@@ -100,9 +100,10 @@ for (const vp of VIEWPORTS) {
             return (m[3] ?? 1) < 0.9 || (m[0] > 200 && m[1] > 200 && m[2] > 200);
           })
           .map((b) => b.textContent.trim()),
-        // Logos should be icons, not long wordmarks.
+        // Logos should be icons, not long wordmarks. Wide icons (PHP, Cloudflare) sit
+        // around 2:1; wordmarks like "Flutter" or "Go" are 2.7:1 and wider.
         wordmarks: [...document.querySelectorAll(".tech svg")]
-          .filter((s) => { const r = s.getBoundingClientRect(); return r.width > r.height * 1.6; })
+          .filter((s) => { const r = s.getBoundingClientRect(); return r.width > r.height * 2.4; })
           .map((s) => s.closest(".tech").querySelector(".sr-only").textContent),
       };
     }, pg.counts);
