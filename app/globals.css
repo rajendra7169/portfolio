@@ -258,6 +258,13 @@ main {
   display: block;
   pointer-events: auto;
 }
+/* Failsafe: if the script never takes over, the curtain still gets out of the way. */
+.motion-ok .curtain:not(.is-live) {
+  animation: curtain-failsafe 0.4s 4s forwards;
+}
+@keyframes curtain-failsafe {
+  to { opacity: 0; visibility: hidden; }
+}
 .curtain-layer {
   position: absolute;
   inset: 0;
