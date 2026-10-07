@@ -44,11 +44,17 @@ for (const vp of VIEWPORTS) {
   // Hero
   const hero = await page.evaluate(() => {
     const r = (s) => document.querySelector(s)?.getBoundingClientRect().toJSON();
+    // Measure the letters themselves: a flex line box clamps to its container
+    // even when the glyphs inside spill past it.
+    const ink = (s) => {
+      const g = [...document.querySelectorAll(`${s} .glyph`)].map((e) => e.getBoundingClientRect());
+      return { left: g[0].left, right: g.at(-1).right, width: g.at(-1).right - g[0].left };
+    };
     const name = document.querySelector(".hero-name");
     return {
       name: r(".hero-name"),
-      lineA: r(".hero-line--a"),
-      lineB: r(".hero-line--b"),
+      lineA: ink(".hero-line--a"),
+      lineB: ink(".hero-line--b"),
       foot: r(".hero-foot"),
       meta: r(".hero-meta"),
       visible: name && getComputedStyle(name).visibility === "visible" && getComputedStyle(name).opacity === "1",
