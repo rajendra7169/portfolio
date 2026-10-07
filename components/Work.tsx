@@ -39,6 +39,14 @@ function Art({ kind }: { kind: Project["art"] }) {
         <span className="acid">›</span> <span className="caret" />
       </pre>
     );
+  if (kind === "airgap")
+    return (
+      <pre className="art art-term" aria-hidden="true">
+        <span className="dim">internet</span> ──── <span className="acid">✕</span> ──── r-ai{"\n"}
+        <span className="dim">deps    </span> 0{"\n"}
+        <span className="dim">runs on </span> this machine only
+      </pre>
+    );
   if (kind === "forest")
     return (
       <div className="art art-forest" aria-hidden="true">
