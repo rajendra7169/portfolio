@@ -17,7 +17,8 @@ const PRESETS: Record<string, Preset> = {
   vline: { from: { scaleY: 0 }, to: { scaleY: 1 }, duration: 1.6, ease: "expo.inOut" },
   mask: { from: { clipPath: "inset(100% 0% 0% 0%)" }, to: { clipPath: "inset(0% 0% 0% 0%)" }, duration: 1.5, ease: "expo.inOut" },
   // Splits are rendered by <Chars>; each letter rises out of its line.
-  chars: { from: { yPercent: 118, rotate: 6 }, to: { yPercent: 0, rotate: 0 }, duration: 1.1, ease: "expo.out", inner: ".char" },
+  // y: 0 clears the CSS pre-hide offset, which GSAP would otherwise read as a fixed pixel y.
+  chars: { from: { y: 0, yPercent: 118, rotate: 6 }, to: { yPercent: 0, rotate: 0 }, duration: 1.1, ease: "expo.out", inner: ".char" },
 };
 
 /**
