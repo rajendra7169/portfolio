@@ -29,6 +29,8 @@ export default function Lyrics() {
               end: desktop ? `+=${words.length * 30}` : "bottom 40%",
               pin: desktop,
               scrub: 0.4,
+              // Pins are measured before the triggers below them (higher = first).
+              refreshPriority: 2,
               onUpdate(self) {
                 const i = Math.min(words.length - 1, Math.floor(self.progress * words.length));
                 if (i === now) return;
