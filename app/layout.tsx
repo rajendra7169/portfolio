@@ -6,6 +6,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { PageTransition } from "@/components/PageTransition";
 import Header from "@/components/Header";
 import ScrollUI from "@/components/ScrollUI";
+import Cursor from "@/components/Cursor";
 import { Footer } from "@/components/Bits";
 
 // Display: a signature script for the logo, standing in for the original's Agustina.
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main id="main">{children}</main>
             <Footer />
             <ScrollUI />
+            <Cursor />
           </PageTransition>
         </SmoothScroll>
       </body>
