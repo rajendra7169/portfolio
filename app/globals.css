@@ -75,8 +75,11 @@ img {
 .skip:focus {
   transform: none;
 }
+/* Clip here, not on body: body's overflow propagates to the viewport, which lets
+   elements waiting off to the side (x: ±80px) widen the mobile layout viewport. */
 main {
   min-height: 70svh;
+  overflow-x: clip;
 }
 
 /* Hidden until Motion animates them in (only when motion is allowed). */
