@@ -79,7 +79,7 @@ export type Project = {
   stack: string;
   blurb: string;
   links: { label: string; href: string }[];
-  art?: "eq" | "term" | "forest";
+  art?: "term" | "forest" | "airgap";
 };
 
 export const blazify = {
@@ -127,6 +127,7 @@ export const projects: Project[] = [
     stack: "HTML",
     blurb: "An air-gapped, zero-dependency local AI environment.",
     links: [{ label: "Source", href: "https://github.com/rajendra7169/R-AI" }],
+    art: "airgap",
   },
   {
     name: "Fitevo",
