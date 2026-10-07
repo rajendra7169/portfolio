@@ -1,6 +1,7 @@
 // Server component: renders an Iconify icon to inline SVG at build time, so no
 // icon data or fetches reach the browser. Don't import this from client components.
-import { getIconData, iconToSVG, replaceIDs, type IconifyJSON } from "@iconify/utils";
+import { getIconData, iconToSVG, replaceIDs } from "@iconify/utils";
+import type { IconifyJSON } from "@iconify/types";
 import logos from "@iconify-json/logos/icons.json";
 import simpleIcons from "@iconify-json/simple-icons/icons.json";
 
