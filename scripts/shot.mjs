@@ -92,6 +92,12 @@ for (const vp of VIEWPORTS) {
   }), SECTIONS);
   check(vp.name, counts.missing.length === 0, `all sections render${counts.missing.length ? ` (missing ${counts.missing})` : ""}`);
   check(vp.name, counts.cards === 5 && counts.releases === 3, `5 project cards + 3 Blazify releases (${counts.cards} + ${counts.releases})`);
+  const spill = await page.evaluate(() =>
+    [...document.querySelectorAll(".card-name, .feature-name, .craft-name, .contact-head")]
+      .filter((el) => el.scrollWidth > el.clientWidth + 1)
+      .map((el) => el.textContent.trim()),
+  );
+  check(vp.name, spill.length === 0, `headings fit their boxes${spill.length ? ` (spilling: ${spill.join(", ")})` : ""}`);
   check(vp.name, counts.certs === 6 && counts.stops === 5, `6 certifications + 5 timeline stops (${counts.certs} + ${counts.stops})`);
 
   // Walk every section, screenshot it, and check nothing spills sideways.
@@ -119,11 +125,14 @@ for (const vp of VIEWPORTS) {
       const before = document.querySelector(".card:last-child").getBoundingClientRect().left;
       scrollTo(0, top + box.offsetHeight - innerHeight - 10);
       await new Promise((r) => setTimeout(r, 1400));
-      const last = document.querySelector(".card:last-child").getBoundingClientRect();
-      return { before, after: last.left, right: last.right, vw: innerWidth };
+      const card = document.querySelector(".card:last-child");
+      const last = card.getBoundingClientRect();
+      // Hit-test just inside the card's right edge: catches clipping by a parent, not just geometry.
+      const hit = document.elementFromPoint(last.right - 6, last.top + last.height / 2);
+      return { before, after: last.left, right: last.right, vw: innerWidth, visible: card.contains(hit) };
     });
     check(vp.name, shift.after < shift.before - 100, `project rail scrolls sideways (${shift.before.toFixed(0)} → ${shift.after.toFixed(0)})`);
-    check(vp.name, shift.right <= shift.vw + 2, "last project card ends on screen");
+    check(vp.name, shift.right <= shift.vw + 2 && shift.visible, `last project card is fully visible at the end (right edge ${shift.right.toFixed(0)}, ${shift.visible ? "not clipped" : "clipped"})`);
     await page.screenshot({ path: `${OUT}/${vp.name}-04b-rail-end.png` });
   }
 
