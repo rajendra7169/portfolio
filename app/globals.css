@@ -621,10 +621,11 @@ a {
   border-top: 1px solid var(--color-line);
 }
 
+/* No negative margins here: pinning moves margins onto the spacer, which would
+   shrink the pinned box and clip the cards. body's overflow-x: clip keeps the
+   off-screen cards from causing sideways scroll. */
 .rail-wrap {
-  margin: 0 calc(-1 * var(--gutter));
-  padding: 0 var(--gutter);
-  overflow: hidden;
+  position: relative;
 }
 /* While pinned, the rail fills the screen between nav and transport bar. */
 @media (min-width: 900px) {
@@ -678,6 +679,7 @@ a {
   border: 1px solid var(--color-line);
   background: var(--color-panel);
   transition: border-color 0.3s;
+  container-type: inline-size;
 }
 .card:hover {
   border-color: var(--color-ash);
@@ -695,7 +697,8 @@ a {
   font-family: var(--font-display);
   font-weight: 800;
   font-variation-settings: "wdth" 70;
-  font-size: clamp(40px, 4.6vw, 76px);
+  /* Sized to the card so the longest word ("Recommendation") still fits. */
+  font-size: clamp(30px, 10.5cqi, 72px);
   line-height: 0.9;
   letter-spacing: -0.02em;
   text-transform: uppercase;
