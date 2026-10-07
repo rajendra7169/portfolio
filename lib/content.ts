@@ -170,7 +170,6 @@ export const experience = {
       color: "#001c55",
       points: [
         "Building IRD-certified billing and management software for Nepali jewellers",
-        "Working across mobile, desktop and backend code for the product",
       ],
     },
     {
