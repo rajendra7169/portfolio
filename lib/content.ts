@@ -64,10 +64,13 @@ export const socials: (Tech & { href: string })[] = [
   { name: "Instagram", icon: "simple-icons:instagram", color: "#e4405f", href: "https://www.instagram.com/raja.indra7169" },
 ];
 
-export const skills: { title: string; art: string; techs: Tech[]; points: string[] }[] = [
+// "What I Do?" modules. `app` titles the module window; `tagline` sums up the points below it.
+export const skills: { title: string; short: string; app: string; tagline: string; techs: Tech[]; points: string[] }[] = [
   {
     title: "Full Stack Development",
-    art: "fullstack",
+    short: "Full Stack",
+    app: "editor — Player.kt",
+    tagline: "Native Android and iPhone apps, Flutter, desktop, backends and the web — end to end.",
     techs: [
       { name: "Kotlin", icon: "logos:kotlin-icon" },
       { name: "Swift", icon: "logos:swift" },
@@ -97,7 +100,9 @@ export const skills: { title: string; art: string; techs: Tech[]; points: string
   },
   {
     title: "Cloud Infra-Architecture",
-    art: "cloud",
+    short: "Cloud",
+    app: "terminal — rajendra@ktm",
+    tagline: "Real services in production, deployed to the edge and shipped as signed builds.",
     techs: [
       { name: "Docker", icon: "logos:docker-icon" },
       { name: "Cloudflare", icon: "logos:cloudflare-icon" },
@@ -119,7 +124,9 @@ export const skills: { title: string; art: string; techs: Tech[]; points: string
   },
   {
     title: "UI/UX Design",
-    art: "design",
+    short: "UI/UX",
+    app: "blazify-ui — design canvas",
+    tagline: "Interfaces, logos and app flows, designed from a blank canvas.",
     techs: [
       { name: "Adobe XD", icon: "logos:adobe-xd" },
       { name: "Figma", icon: "logos:figma" },
@@ -134,7 +141,9 @@ export const skills: { title: string; art: string; techs: Tech[]; points: string
   },
   {
     title: "Video/Photography",
-    art: "video",
+    short: "Video",
+    app: "timeline — DaVinci Resolve",
+    tagline: "Shooting, editing and grading visuals that tell the story.",
     techs: [
       { name: "Photoshop", icon: "logos:adobe-photoshop" },
       { name: "DaVinci Resolve", icon: "simple-icons:davinciresolve", color: "#233a51" },
