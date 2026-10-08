@@ -11,14 +11,14 @@ export default function Transmit() {
     <section className="cm section" aria-labelledby="transmit">
       <header className="cm-head">
         <p className="wd-eyebrow">✦ Transmit</p>
-        <h2 className="cm-h2" id="transmit">
+        <h2 className="cm-h2" id="transmit" data-anim="chars">
           <Chars text="Send a message" />
         </h2>
-        <p className="cm-sub">Pick a topic, write a line, and your email app opens with it ready to send.</p>
+        <p className="cm-sub" data-anim="up" data-delay="0.2">Pick a topic, write a line, and your email app opens with it ready to send.</p>
       </header>
 
       <div className="cm-grid">
-        <div className="cm-art">
+        <div className="cm-art" data-anim="left">
           <Floaties />
           {/* eslint-disable-next-line @next/next/no-img-element -- static SVG illustration */}
           <img src="/illustrations/contact.svg" alt="" className="cm-art-img" />
