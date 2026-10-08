@@ -912,15 +912,21 @@ main {
   left: 0;
   top: 0;
   z-index: 2;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.hx-lens-in {
+  position: absolute;
+  left: calc(var(--d) / -2);
+  top: calc(var(--d) / -2);
   width: var(--d);
   height: var(--d);
-  margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2);
-  pointer-events: none;
   opacity: 0;
   scale: 0.5;
   transition: opacity 0.3s, scale 0.55s var(--ease);
 }
-.hx-cyber.is-active .hx-lens {
+.hx-cyber.is-active .hx-lens-in {
   opacity: 1;
   scale: 1;
 }
@@ -945,8 +951,8 @@ main {
   to { rotate: 360deg; }
 }
 /* Crosshair at the centre of the lens */
-.hx-lens::before,
-.hx-lens::after {
+.hx-lens-in::before,
+.hx-lens-in::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -954,11 +960,11 @@ main {
   background: rgb(124 200 240 / 0.95);
   translate: -50% -50%;
 }
-.hx-lens::before {
+.hx-lens-in::before {
   width: 16px;
   height: 1.5px;
 }
-.hx-lens::after {
+.hx-lens-in::after {
   width: 1.5px;
   height: 16px;
 }
@@ -977,12 +983,15 @@ main {
   white-space: nowrap;
   box-shadow: 0 0 18px rgb(74 168 224 / 0.6);
 }
+/* Centred with flex, not translate: GSAP animates this box and would fold a CSS translate into its own. */
 .hx-cyber-hint {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: 4%;
   z-index: 4;
-  translate: -50% 0;
+  display: flex;
+  justify-content: center;
   pointer-events: none;
 }
 .hx-cyber-hint-in {
