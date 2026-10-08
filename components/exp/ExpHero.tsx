@@ -11,10 +11,19 @@ import ExpHeroMotion from "./ExpHeroMotion";
 
 // Decorative barcode / QR patterns, deterministic so server and client agree.
 const BARS = Array.from({ length: 38 }, (_, i) => 1 + ((i * 7 + 3) % 4));
-const QR = Array.from({ length: 81 }, (_, i) => (i * 37 + (i % 7) * 11) % 5 < 2);
+const QR = Array.from({ length: 81 }, (_, i) => {
+  const r = Math.floor(i / 9);
+  const c = i % 9;
+  // Three QR-style finder squares in the corners…
+  for (const [fr, fc] of [[0, 0], [0, 6], [6, 0]]) {
+    if (r >= fr && r < fr + 3 && c >= fc && c < fc + 3) return true;
+  }
+  // …and a hashed scatter everywhere else.
+  return ((i * 2654435761) >>> 0) % 7 < 3;
+});
 
 export default function ExpHero() {
-  const releases2026 = careerLog.filter((c) => c.date.startsWith("2026") && !c.scope?.includes("extractor")).length;
+  const releases2026 = careerLog.filter((c) => c.date.startsWith("2026")).length;
   const stats = [
     { value: experience.roles.length, label: "roles" },
     { value: 3, label: "Blazify platforms" },
@@ -103,7 +112,7 @@ export default function ExpHero() {
                           <small>ID</small>RP-7169
                         </span>
                         <span>
-                          <small>Since</small>Present
+                          <small>Status</small>Active
                         </span>
                       </span>
                       <span className="xh-barcode" aria-hidden="true">
