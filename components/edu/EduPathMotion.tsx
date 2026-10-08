@@ -9,15 +9,17 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const q = gsap.utils.selector(el);
       const stops = q(".ep-stop");
       const cards = q(".ep-card");
       const mm = gsap.matchMedia();
 
+      // Plain functions: they only make short one-off tweens. (Inside matchMedia
+      // callbacks, wrap with inContext, never useGSAP's contextSafe; see lib/gsap.)
       // A card's content builds in: logo pops, text rises, points follow.
-      const reveal = contextSafe!((card: HTMLElement) => {
+      const reveal = (card: HTMLElement) => {
         const c = gsap.utils.selector(card);
         gsap
           .timeline()
@@ -25,17 +27,17 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
           .to(c(".ep-when, .ep-school, .ep-degree"), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" }, 0.1)
           .to(c(".ep-points li"), { autoAlpha: 1, x: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, 0.25)
           .to(c(".ep-links > *"), { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "back.out(2)" }, 0.45);
-      });
+      };
       // The stamp slams down, kicks up a ring of dust and shakes the card.
-      const slam = contextSafe!((card: HTMLElement) => {
+      const slam = (card: HTMLElement) => {
         const c = gsap.utils.selector(card);
         gsap
           .timeline()
           .fromTo(c(".ep-stamp-in"), { scale: 2.8, rotation: -35, autoAlpha: 0 }, { scale: 1, rotation: 0, autoAlpha: 1, duration: 0.34, ease: "power4.in" })
           .fromTo(c(".ep-dust"), { scale: 0.5, autoAlpha: 0.9 }, { scale: 1.9, autoAlpha: 0, duration: 0.7, ease: "power2.out" })
           .fromTo(card, { x: 0 }, { keyframes: { x: [0, -7, 6, -4, 2, 0] }, duration: 0.4, ease: "none" }, "<");
-      });
-      const unslam = contextSafe!((card: HTMLElement) => gsap.to(card.querySelector(".ep-stamp-in"), { autoAlpha: 0, scale: 1.4, duration: 0.25 }));
+      };
+      const unslam = (card: HTMLElement) => gsap.to(card.querySelector(".ep-stamp-in"), { autoAlpha: 0, scale: 1.4, duration: 0.25 });
       const hideContent = () => {
         gsap.set(q(".ep-logo"), { scale: 0, rotation: -90 });
         gsap.set(q(".ep-when, .ep-school, .ep-degree"), { autoAlpha: 0, y: 18 });
