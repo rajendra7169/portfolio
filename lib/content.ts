@@ -235,7 +235,6 @@ export const experience = {
       company: "Matrika Technology",
       where: "Kathmandu, Nepal",
       when: "Present",
-      color: "#001c55",
       points: [
         "Building IRD-certified billing and management software for Nepali jewellers",
       ],
@@ -245,7 +244,6 @@ export const experience = {
       company: "Blazify",
       where: "Open source",
       when: "2026",
-      color: "#e8501f",
       points: [
         "Native apps for Android (Kotlin), iPhone (SwiftUI) and desktop (Linux & Windows)",
         "Runs Blazify's own Listen Together server, written in Go on Docker",
@@ -254,6 +252,131 @@ export const experience = {
     },
   ],
 };
+
+// Experience page: his work as a git log, oldest first. Dates are repo creation
+// dates from GitHub (and the paper date from his site); "now" is the present.
+export type Commit = {
+  date: string; // ISO date, or "now"
+  lane: "main" | "side" | "blazify";
+  type: string;
+  scope?: string;
+  title: string;
+  body: string;
+  repo?: string;
+  live?: string;
+  tag?: string;
+};
+export const careerLog: Commit[] = [
+  {
+    date: "2024-09-20",
+    lane: "main",
+    type: "feat",
+    title: "Laundry Recommendation app (final year project)",
+    body: "A MERN stack laundry management and recommendation web app, built as my final year project at Sunway College Kathmandu.",
+    repo: "https://github.com/rajendra7169/laundry_recommendation_app",
+    live: "https://laundry-frontend-pearl.vercel.app",
+  },
+  {
+    date: "2024-12-20",
+    lane: "main",
+    type: "docs",
+    title: "publish the final-year paper",
+    body: "Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB — published December 20, 2024.",
+    tag: "BSc. IT",
+  },
+  {
+    date: "2026-05-04",
+    lane: "side",
+    type: "feat",
+    scope: "nexterm",
+    title: "a terminal for Windows, from scratch",
+    body: "A modern, feature-rich terminal for Windows — free and built from scratch. SSH, SFTP, port forwarding, jump-hosts, recording, snippets, workspaces, and more.",
+    repo: "https://github.com/rajendra7169/NexTerm",
+  },
+  {
+    date: "2026-05-29",
+    lane: "side",
+    type: "feat",
+    scope: "tally",
+    title: "gamified attendance with a living forest",
+    body: "A modern, gamified attendance manager with a living forest visualization. Multi-tenant SaaS for small teams.",
+    repo: "https://github.com/rajendra7169/attendance-system",
+    live: "https://tally.rajendrapandey.info.np",
+  },
+  {
+    date: "2026-06-03",
+    lane: "side",
+    type: "feat",
+    scope: "r-ai",
+    title: "air-gapped local AI",
+    body: "Air-gapped, zero-dependency local AI environment.",
+    repo: "https://github.com/rajendra7169/R-AI",
+  },
+  {
+    date: "2026-06-17",
+    lane: "side",
+    type: "feat",
+    scope: "fitevo",
+    title: "local-first AI fitness tracker",
+    body: "Local-first AI fitness, nutrition & workout tracker. One-sentence food logging, AI-built routines, no shaming. Flutter + Firebase + Groq.",
+    repo: "https://github.com/rajendra7169/fitevo",
+  },
+  {
+    date: "2026-07-15",
+    lane: "blazify",
+    type: "feat",
+    scope: "android",
+    title: "ship Blazify for Android",
+    body: "A free, open-source music player for Android: millions of songs, offline downloads, word-by-word synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
+    repo: "https://github.com/rajendra7169/blazify",
+    live: "https://rajendra7169.github.io/blazify/",
+    tag: "v1",
+  },
+  {
+    date: "2026-07-15",
+    lane: "blazify",
+    type: "feat",
+    scope: "extractor",
+    title: "stream extraction library",
+    body: "Stream extraction library for Blazify.",
+    repo: "https://github.com/rajendra7169/BlazifyExtractor",
+  },
+  {
+    date: "2026-07-27",
+    lane: "blazify",
+    type: "feat",
+    scope: "ios",
+    title: "Blazify for iPhone in SwiftUI",
+    body: "A free, open-source music player in SwiftUI: streaming, local music, synced lyrics, equalizer. No ads, no tracking.",
+    repo: "https://github.com/rajendra7169/blazify-ios",
+  },
+  {
+    date: "2026-08-01",
+    lane: "blazify",
+    type: "feat",
+    scope: "desktop",
+    title: "Blazify for Linux and Windows",
+    body: "A free, open-source music player for Linux and Windows: streaming, offline downloads, synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
+    repo: "https://github.com/rajendra7169/blazify-desktop",
+  },
+  {
+    date: "2026-10-04",
+    lane: "blazify",
+    type: "feat",
+    scope: "server",
+    title: "Listen Together server",
+    body: "Blazify's own Listen Together server, written in Go and running on Docker.",
+    repo: "https://github.com/rajendra7169/blazify-together-server",
+  },
+  {
+    date: "now",
+    lane: "main",
+    type: "work",
+    title: "Software Developer at Matrika Technology",
+    body: "IRD-certified jewellery billing and management software for Nepali jewellers, in Kathmandu.",
+    tag: "HEAD",
+  },
+];
 
 export type Project = {
   name: string;
