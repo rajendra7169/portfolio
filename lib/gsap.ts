@@ -4,10 +4,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+import { Physics2DPlugin } from "gsap/Physics2DPlugin";
 import { useGSAP } from "@gsap/react";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, useGSAP);
+  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, Physics2DPlugin, useGSAP);
 }
 
 /**
