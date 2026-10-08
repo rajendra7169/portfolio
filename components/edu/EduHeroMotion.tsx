@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
+import { gsap, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
@@ -10,7 +10,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const q = gsap.utils.selector(el);
       const mm = gsap.matchMedia();
@@ -26,7 +26,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
         ];
 
         // Confetti: every piece launches from the cap with its own velocity and angle.
-        const burst = contextSafe!(() => {
+        const burst = inContext(ctx, () => {
           const pieces = q(".eh-confetti i");
           gsap.killTweensOf(pieces);
           gsap.set(pieces, { x: 0, y: 0, rotation: 0, autoAlpha: 1, scale: () => gsap.utils.random(0.6, 1.2) });
@@ -40,7 +40,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
         });
 
         // Toss: the cap flies up spinning, lands with a squash, and the confetti pops.
-        const toss = contextSafe!(() => {
+        const toss = inContext(ctx, () => {
           const cap = q(".eh-cap");
           gsap.killTweensOf(cap); // a second click restarts the toss cleanly
           gsap.set(cap, { autoAlpha: 1 }); // in case that cut the intro's fade-in short
@@ -89,7 +89,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
             x: gsap.quickTo(node, "x", { duration: 1, ease: "power3.out" }),
             y: gsap.quickTo(node, "y", { duration: 1, ease: "power3.out" }),
           }));
-          onMove = contextSafe!((e: PointerEvent) => {
+          onMove = inContext(ctx, (e: PointerEvent) => {
             const r = el.getBoundingClientRect();
             const nx = (e.clientX - r.left) / r.width - 0.5;
             const ny = (e.clientY - r.top) / r.height - 0.5;
