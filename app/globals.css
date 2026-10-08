@@ -352,7 +352,6 @@ main {
 }
 
 /* ── Shared layout ──────────────────────────────────────────────────────── */
-.skills,
 .section,
 .page-head {
   padding-left: var(--gutter);
