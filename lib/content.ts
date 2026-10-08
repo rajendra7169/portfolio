@@ -158,12 +158,13 @@ export const skills: { title: string; short: string; app: string; tagline: strin
   },
 ];
 
-export const codingProfiles: (Tech & { href: string })[] = [
-  { name: "LeetCode", icon: "simple-icons:leetcode", color: "#f79f1b", href: "https://leetcode.com/u/rajendrapandey/" },
-  { name: "HackerRank", icon: "simple-icons:hackerrank", color: "#2ec866", href: "https://www.hackerrank.com/rajendrapandey" },
-  { name: "Kaggle", icon: "simple-icons:kaggle", color: "#20beff", href: "https://www.kaggle.com/rajaindra" },
-  { name: "CodeChef", icon: "simple-icons:codechef", color: "#5b4638", href: "https://www.codechef.com/users/rajendrapandey" },
-  { name: "Codeforces", icon: "simple-icons:codeforces", color: "#1f8acb", href: "http://codeforces.com/profile/rajendrapandey7169" },
+// handle = the username in each profile URL.
+export const codingProfiles: (Tech & { href: string; handle: string })[] = [
+  { name: "LeetCode", icon: "simple-icons:leetcode", color: "#f79f1b", href: "https://leetcode.com/u/rajendrapandey/", handle: "rajendrapandey" },
+  { name: "HackerRank", icon: "simple-icons:hackerrank", color: "#2ec866", href: "https://www.hackerrank.com/rajendrapandey", handle: "rajendrapandey" },
+  { name: "Kaggle", icon: "simple-icons:kaggle", color: "#20beff", href: "https://www.kaggle.com/rajaindra", handle: "rajaindra" },
+  { name: "CodeChef", icon: "simple-icons:codechef", color: "#5b4638", href: "https://www.codechef.com/users/rajendrapandey", handle: "rajendrapandey" },
+  { name: "Codeforces", icon: "simple-icons:codeforces", color: "#1f8acb", href: "http://codeforces.com/profile/rajendrapandey7169", handle: "rajendrapandey7169" },
 ];
 
 export const degrees = [
@@ -193,14 +194,37 @@ export const degrees = [
   },
 ];
 
-export const certifications: { title: string; by: string; color: string; logo: string }[] = [
-  { title: "Machine Learning", by: "Andrew Ng", color: "#b5706f", logo: "/logos/stanford_logo.png" },
-  { title: "Deep Learning", by: "Andrew Ng", color: "#5f6364", logo: "/logos/deeplearning_ai_logo.png" },
-  { title: "ML on GCP", by: "GCP Training", color: "#63c397", logo: "logos:google-icon" },
-  { title: "Data Science", by: "Alex Aklson", color: "#74a7dc", logo: "/logos/ibm_logo.png" },
-  { title: "Big Data", by: "Kim Akers", color: "#e2876a", logo: "logos:microsoft-icon" },
-  { title: "Advanced Data Science", by: "Romeo Kienzler", color: "#74a7dc", logo: "/logos/ibm_logo.png" },
+// provider = the organisation behind the logo shown on the original site.
+export const certifications: { title: string; by: string; color: string; logo: string; provider: string }[] = [
+  { title: "Machine Learning", by: "Andrew Ng", color: "#b5706f", logo: "/logos/stanford_logo.png", provider: "Stanford Online" },
+  { title: "Deep Learning", by: "Andrew Ng", color: "#5f6364", logo: "/logos/deeplearning_ai_logo.png", provider: "DeepLearning.AI" },
+  { title: "ML on GCP", by: "GCP Training", color: "#63c397", logo: "logos:google-icon", provider: "Google Cloud" },
+  { title: "Data Science", by: "Alex Aklson", color: "#74a7dc", logo: "/logos/ibm_logo.png", provider: "IBM" },
+  { title: "Big Data", by: "Kim Akers", color: "#e2876a", logo: "logos:microsoft-icon", provider: "Microsoft" },
+  { title: "Advanced Data Science", by: "Romeo Kienzler", color: "#74a7dc", logo: "/logos/ibm_logo.png", provider: "IBM" },
 ];
+
+// Education page: the stops on "the path", oldest first. `year` drives the year counter.
+export const journey = [
+  { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"] },
+  { year: 2021, degree: degrees[0], stamp: ["Graduated", "2024"] },
+] as const;
+export const paperStop = {
+  year: 2024,
+  title: "Paper published",
+  subtitle: "Laundry Recommendation System",
+  duration: "Dec 20, 2024",
+  logo: "/logos/sunway.png",
+  points: [
+    "A MERN stack laundry management and recommendation web app, built as my final year project at Sunway College Kathmandu.",
+    "Its documentation — Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB — was published on December 20, 2024.",
+  ],
+  links: [
+    { label: "Live app", href: "https://laundry-frontend-pearl.vercel.app" },
+    { label: "Source", href: "https://github.com/rajendra7169/laundry_recommendation_app" },
+  ],
+  stamp: ["Published", "Dec 2024"],
+};
 
 export const experience = {
   intro:
