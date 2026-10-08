@@ -129,6 +129,9 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
 
   return (
     <div className="cm-form-wrap" ref={root}>
+      {/* The reveal animates this inner box, never the wrapper: a transformed ancestor
+          would turn the fixed flight overlay below into an absolutely positioned one. */}
+      <div data-anim="right">
       <form className="cm-card" onSubmit={submit} noValidate>
         <fieldset className="cm-topics">
           <legend>What&apos;s it about?</legend>
@@ -185,6 +188,7 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
         </p>
         {status && !sending && <p className="cm-status">{status}</p>}
       </form>
+      </div>
 
       {/* Flight overlay: the folded letter, the plane, its trail and the touchdown burst. */}
       <div className="cm-flight" aria-hidden="true">
