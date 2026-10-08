@@ -36,7 +36,8 @@ export default function ContactHeroMotion({ children }: { children: ReactNode })
       const status = el.querySelector<HTMLElement>("[data-copy-status]")!;
       const timers = new Map<HTMLElement, number>();
       const onCopy = async (e: Event) => {
-        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".ch-copy");
+        // Only the copy buttons: match on the data attribute, not a class that could be reused.
+        const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("button[data-copy]");
         if (!btn) return;
         const ok = await copyText(btn.dataset.copy ?? "");
         btn.textContent = ok ? "Copied ✓" : "Press Ctrl+C";
