@@ -7,7 +7,7 @@ import { mkdir } from "node:fs/promises";
 const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const OUT = "shots";
 const PAGES = [
-  { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".skill": 4, ".social": 7 } },
+  { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
   { path: "/education", name: "education", h1: "Education", counts: { ".degree": 2, ".cert": 6, ".profile-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".role": 2 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
@@ -15,6 +15,7 @@ const PAGES = [
 ];
 const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
+  { name: "laptop", width: 1280, height: 720 },
   { name: "mobile", width: 390, height: 844, isMobile: true, hasTouch: true },
 ];
 
@@ -163,6 +164,66 @@ for (const vp of VIEWPORTS) {
         await page.evaluate(() => scrollTo(0, 0));
         await wait(800);
       }
+
+      // What I Do? — four live modules.
+      const SCENE_OK = [
+        // editor: the phone preview has assembled, but the build hasn't "succeeded"
+        // yet — the code is still being typed at this point.
+        () =>
+          [...document.querySelectorAll(".wd-item:nth-child(1) .wd-ph-el")].every((e) => getComputedStyle(e).opacity === "1") &&
+          getComputedStyle(document.querySelector(".wd-item:nth-child(1) .wd-ok")).opacity === "0",
+        // cloud: the hub is up and at least one service is lit
+        () => document.querySelectorAll(".wd-item:nth-child(2) .wd-node[data-on=\"1\"]").length > 0,
+        // design: blocks have landed on the artboard
+        () => [...document.querySelectorAll(".wd-item:nth-child(3) .wd-ab-el")].some((e) => getComputedStyle(e).opacity === "1"),
+        // video: clips are on the timeline and the timecode runs
+        () => getComputedStyle(document.querySelector(".wd-item:nth-child(4) .wd-clip--b")).opacity === "1" && document.querySelector(".wd-item:nth-child(4) .wd-tc").textContent !== "00:00:00:00",
+      ];
+      const NAMES = ["editor", "cloud", "design", "video"];
+      if (!vp.isMobile) {
+        const deck = await page.evaluate(() => ({ deck: document.querySelector(".wd").classList.contains("is-deck"), pinned: !!document.querySelector(".pin-spacer .wd") }));
+        check(scope, deck.deck && deck.pinned, "What I Do? is a pinned deck");
+        for (let i = 0; i < 4; i++) {
+          await page.evaluate((i) => {
+            const spacer = document.querySelector(".wd").parentElement;
+            const top = spacer.getBoundingClientRect().top + scrollY;
+            scrollTo(0, top + (spacer.offsetHeight - innerHeight) * ((i + 0.5) / 4));
+          }, i);
+          await wait(2800);
+          const m = await page.evaluate((i) => {
+            const item = document.querySelectorAll(".wd-item")[i];
+            const panel = item.querySelector(".wd-panel").getBoundingClientRect();
+            const win = item.querySelector(".wd-win").getBoundingClientRect();
+            return {
+              live: item.classList.contains("is-live"),
+              onlyLive: document.querySelectorAll(".wd-item.is-live").length === 1,
+              panelShown: getComputedStyle(item.querySelector(".wd-panel")).opacity === "1",
+              fits: panel.bottom <= innerHeight + 1 && win.bottom <= innerHeight + 1 && win.right <= innerWidth + 1 && panel.top >= 0,
+              rect: `panel ${Math.round(panel.top)}–${Math.round(panel.bottom)}, window to ${Math.round(win.bottom)} of ${innerHeight}`,
+              current: document.querySelector(".wd-rail-btn[aria-current]")?.dataset.i,
+            };
+          }, i);
+          const played = await page.evaluate(SCENE_OK[i]);
+          check(scope, m.live && m.onlyLive && m.panelShown, `module ${i + 1} (${NAMES[i]}) is the live one`);
+          check(scope, m.fits, `module ${i + 1} fits the screen (${m.rect})`);
+          check(scope, played, `module ${i + 1} scene plays`);
+          check(scope, m.current === String(i), `rail marks module ${i + 1}`);
+          await page.screenshot({ path: `${OUT}/${vp.name}-wid-${i + 1}-${NAMES[i]}.png` });
+        }
+        await page.evaluate(() => scrollTo(0, 0));
+        await wait(800);
+      } else {
+        for (let i = 0; i < 4; i++) {
+          await page.locator(".wd-win").nth(i).scrollIntoViewIfNeeded();
+          await wait(2800);
+          const live = await page.evaluate((i) => document.querySelectorAll(".wd-item")[i].classList.contains("is-live"), i);
+          const played = await page.evaluate(SCENE_OK[i]);
+          check(scope, live && played, `module ${i + 1} (${NAMES[i]}) plays when scrolled to`);
+          await page.screenshot({ path: `${OUT}/${vp.name}-wid-${i + 1}-${NAMES[i]}.png` });
+        }
+        await page.evaluate(() => scrollTo(0, 0));
+        await wait(800);
+      }
     }
     await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-top.png` });
 
@@ -172,7 +233,8 @@ for (const vp of VIEWPORTS) {
         const s = getComputedStyle(el);
         return s.visibility === "hidden" || parseFloat(s.opacity) < 0.99;
       });
-      const stuckChars = [...document.querySelectorAll(".char")].filter((c) => getComputedStyle(c).transform !== "none" && !/matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(c).transform));
+      // Only letters you can see: hidden deck modules keep theirs rolled away on purpose.
+      const stuckChars = [...document.querySelectorAll(".char")].filter((c) => c.checkVisibility({ visibilityProperty: true, opacityProperty: true }) && getComputedStyle(c).transform !== "none" && !/matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(c).transform));
       const spill = [...document.querySelectorAll("h1, h2, h3, .btn, .project-desc")].filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.textContent.trim().slice(0, 30));
       return {
         hidden: hidden.map((el) => `${el.tagName.toLowerCase()}.${el.className}`.slice(0, 40)),
