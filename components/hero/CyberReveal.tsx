@@ -236,9 +236,12 @@ export default function CyberReveal() {
         <span className="hx-lens-label">Cyber mode</span>
       </span>
       <button type="button" className="hx-cyber-btn" aria-label="Show Rajendra's cyber suit for two seconds" data-cursor-hide />
+      {/* Outer box: intro animation (GSAP). Inner box: fades once used (CSS). */}
       <span className="hx-cyber-hint" aria-hidden="true">
-        <span className="hx-hint-fine">✦ Hover to scan · click for the full suit</span>
-        <span className="hx-hint-touch">✦ Tap for the cyber suit</span>
+        <span className="hx-cyber-hint-in">
+          <span className="hx-hint-fine">✦ Hover to scan · click for the full suit</span>
+          <span className="hx-hint-touch">✦ Tap for the cyber suit</span>
+        </span>
       </span>
     </div>
   );
