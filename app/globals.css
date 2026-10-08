@@ -2860,7 +2860,7 @@ main {
   }
   .wd-cloud {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: 56% 44%;
   }
   .wd-design {
     grid-template-columns: 9% minmax(0, 1fr);
