@@ -88,7 +88,8 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             .from(q(".hx-count"), { textContent: 0, snap: { textContent: 1 }, duration: 1.6, ease: "power2.out", stagger: 0.15 }, 1.6)
             // fromTo: these start at CSS opacity 0, so a plain from() would animate 0 → 0.
             .fromTo(q(".hx-marquee-in"), { yPercent: 100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 1 }, 1.6)
-            .fromTo(q(".hx-cue-in"), { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 2);
+            .fromTo(q(".hx-cue-in"), { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 2)
+            .from(q(".hx-cyber-hint"), { y: 14, autoAlpha: 0, duration: 0.9, ease: "back.out(2)" }, 2.3);
 
           // After the intro: "I build …" cycles, decoding each phrase.
           const builds = gsap.timeline({ paused: true, repeat: -1 });
