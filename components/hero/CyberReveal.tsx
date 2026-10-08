@@ -44,7 +44,7 @@ export default function CyberReveal() {
     let running = false;
     let img: HTMLImageElement | null = null;
     const now = () => performance.now() / 1000;
-    const radius = () => w * 0.15;
+    const radius = () => w * 0.16;
 
     // Faint horizontal scanlines laid over whatever is revealed.
     const scan = document.createElement("canvas");
