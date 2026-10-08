@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, useGSAP, MOTION_OK } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
 import { afterReveal } from "./PageTransition";
 
 type Preset = { from: gsap.TweenVars; to: gsap.TweenVars; duration?: number; ease?: string; inner?: string };
@@ -30,13 +30,13 @@ export default function Motion({ children, className }: { children: ReactNode; c
   const root = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const mm = gsap.matchMedia();
 
       mm.add(
         MOTION_OK,
-        () => {
+        (ctx) => {
           const groups = Array.from(el.querySelectorAll<HTMLElement>("[data-anim-group]"));
           const loose = Array.from(el.querySelectorAll<HTMLElement>("[data-anim]")).filter((a) => !a.closest("[data-anim-group]"));
           const units: [HTMLElement, HTMLElement[], number][] = [
@@ -52,7 +52,7 @@ export default function Motion({ children, className }: { children: ReactNode; c
               if (p.inner) gsap.set(item, { autoAlpha: 1 });
               return { p, targets, delay: Number(item.dataset.delay || 0) };
             });
-            const play = contextSafe!(() =>
+            const play = inContext(ctx, () =>
               plan.forEach(({ p, targets, delay }, i) =>
                 gsap.to(targets, {
                   ...p.to,
@@ -80,11 +80,11 @@ export default function Motion({ children, className }: { children: ReactNode; c
       // Pointer flourishes only where there's a real mouse.
       mm.add(
         `${MOTION_OK} and (hover: hover) and (pointer: fine)`,
-        () => {
+        (ctx) => {
           const off: (() => void)[] = [];
           const bind = (node: HTMLElement, move: (e: PointerEvent) => void, leave: () => void) => {
-            const m = contextSafe!(move);
-            const l = contextSafe!(leave);
+            const m = inContext(ctx, move);
+            const l = inContext(ctx, leave);
             node.addEventListener("pointermove", m);
             node.addEventListener("pointerleave", l);
             off.push(() => {
