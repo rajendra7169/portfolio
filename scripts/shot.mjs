@@ -11,7 +11,7 @@ const PAGES = [
   { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 6, ".eh-arena-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".xg-branch": 2, ".xg-commit": 12 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
-  { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".details dt": 3, ".social": 7 } },
+  { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".ch-row": 3, ".ch-blip": 7, ".cm-topic": 6 } },
 ];
 const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
@@ -49,6 +49,7 @@ for (const vp of VIEWPORTS) {
     isMobile: vp.isMobile ?? false,
     hasTouch: vp.hasTouch ?? false,
   });
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: BASE });
 
   for (const pg of PAGES) {
     const scope = `${vp.name} ${pg.path}`;
@@ -56,7 +57,12 @@ for (const vp of VIEWPORTS) {
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+    // Headless Chrome has no email app, so following a mailto: link logs an error; that one is expected.
+    page.on("console", (m) => {
+      if (m.type() === "error" && !/mailto:/.test(m.text())) errors.push(m.text());
+      // A GSAP "target not found" means an animation points at a class that isn't rendered.
+      if (m.type() === "warning" && /GSAP target .* not found/.test(m.text())) errors.push(m.text());
+    });
 
     const res = await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
     check(scope, res?.ok(), `loads (${res?.status()})`);
@@ -423,6 +429,91 @@ for (const vp of VIEWPORTS) {
       }
       await page.evaluate(() => scrollTo(0, 0));
       await wait(800);
+    }
+
+    if (pg.name === "contact") {
+      await wait(1600);
+      const chState = await page.evaluate(async () => {
+        const sweep = document.querySelector(".ch-sweep");
+        const angle = () => { const m = new DOMMatrixReadOnly(getComputedStyle(sweep).transform); return Math.atan2(m.b, m.a); };
+        const a1 = angle();
+        await new Promise((r) => setTimeout(r, 400));
+        const a2 = angle();
+        // Watch the blips for one full turn of the beam.
+        const pinged = new Set();
+        const obs = new MutationObserver((ms) => ms.forEach((m) => m.target.classList.contains("is-ping") && pinged.add(m.target.getAttribute("aria-label"))));
+        document.querySelectorAll(".ch-blip").forEach((b) => obs.observe(b, { attributes: true, attributeFilter: ["class"] }));
+        await new Promise((r) => setTimeout(r, 4600));
+        obs.disconnect();
+        return {
+          title: document.querySelector(".ch-title-text").textContent,
+          turning: Math.abs(a2 - a1) > 0.05,
+          pinged: pinged.size,
+          avatar: getComputedStyle(document.querySelector(".ch-avatar-img")).transform,
+        };
+      });
+      check(scope, chState.title === "Contact Me", `contact hero decodes ("${chState.title}")`);
+      const rowsFit = await page.evaluate(() => [...document.querySelectorAll(".ch-copy")].every((b) => b.getBoundingClientRect().right <= innerWidth));
+      check(scope, rowsFit, "every copy button is on screen");
+      check(scope, chState.turning, "the radar beam sweeps");
+      check(scope, chState.pinged === 7, `every channel pings as the beam passes (${chState.pinged}/7)`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-contact-radar.png` });
+
+      // Copy the email address.
+      await page.locator(".ch-copy").first().click();
+      await wait(200);
+      const copied = await page.evaluate(async () => ({
+        label: document.querySelector(".ch-copy").textContent,
+        clip: await navigator.clipboard.readText().catch(() => ""),
+      }));
+      check(scope, copied.label.startsWith("Copied") && copied.clip === "rajendrapandey199971@gmail.com", `copy puts the email on the clipboard ("${copied.clip}")`);
+
+      // The composer: an empty send is refused...
+      await page.locator(".cm-card").scrollIntoViewIfNeeded();
+      await wait(500);
+      await page.locator(".cm-send").click();
+      await wait(300);
+      const refused = await page.evaluate(() => ({
+        error: document.querySelector(".cm-error").textContent,
+        flying: getComputedStyle(document.querySelector(".cm-flight")).visibility === "visible",
+      }));
+      check(scope, refused.error.length > 0 && !refused.flying, `an empty message is refused ("${refused.error}")`);
+
+      // ...a real one folds into a plane, flies to the envelope, then opens the email app.
+      await page.locator(".cm-topic", { hasText: "React" }).click();
+      await page.locator(".cm-field input").fill("Test Visitor");
+      await page.locator(".cm-field textarea").fill("Hello Rajendra, can we talk about a React project?");
+      await page.locator(".cm-send").click();
+      await wait(1500);
+      const mid = await page.evaluate(() => ({
+        flying: getComputedStyle(document.querySelector(".cm-flight")).visibility === "visible",
+        plane: parseFloat(getComputedStyle(document.querySelector(".cm-plane")).opacity),
+        // Fixed to the viewport: the plane must be somewhere on screen mid-flight.
+        onScreen: (() => {
+          const r = document.querySelector(".cm-plane").getBoundingClientRect();
+          return r.left + r.width / 2 > 0 && r.left + r.width / 2 < innerWidth && r.top + r.height / 2 > -60 && r.top + r.height / 2 < innerHeight;
+        })(),
+      }));
+      await page.screenshot({ path: `${OUT}/${vp.name}-contact-flight.png` });
+      check(scope, mid.flying && mid.plane > 0.5, "the message flies as a paper plane");
+      check(scope, mid.onScreen, "the plane is on screen mid-flight");
+      await wait(2600);
+      const done = await page.evaluate(() => ({
+        landed: getComputedStyle(document.querySelector(".cm-check")).opacity === "1",
+        overlayGone: getComputedStyle(document.querySelector(".cm-flight")).visibility === "hidden",
+        mailto: document.querySelector(".cm-form-wrap").dataset.mailto ?? "",
+      }));
+      await page.screenshot({ path: `${OUT}/${vp.name}-contact-landed.png` });
+      const decoded = decodeURIComponent(done.mailto);
+      check(scope, done.landed && done.overlayGone, "it lands on the envelope with a check");
+      check(
+        scope,
+        decoded.startsWith("mailto:rajendrapandey199971@gmail.com?subject=Portfolio message · React — from Test Visitor") && decoded.includes("can we talk about a React project?"),
+        "the email opens pre-filled with topic, name and message",
+      );
+      // Following the mailto: link leaves headless Chrome on an error page; come back.
+      await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
+      await wait(2600);
     }
 
     await scrollThrough(page);
