@@ -118,7 +118,7 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
         let onMove: ((e: PointerEvent) => void) | null = null;
         let onLeave: (() => void) | null = null;
         if (fine) {
-          const tilt = q(".xh-badge-tilt")[0];
+          const tilt = q(".xh-badge-tilt")[0] as HTMLElement;
           gsap.set(tilt, { transformPerspective: 900 });
           const ry = gsap.quickTo(tilt, "rotationY", { duration: 0.6, ease: "power3.out" });
           const rx = gsap.quickTo(tilt, "rotationX", { duration: 0.6, ease: "power3.out" });
@@ -142,8 +142,8 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
 
         return () => {
           drag.kill();
-          if (onMove) q(".xh-badge-tilt")[0].removeEventListener("pointermove", onMove);
-          if (onLeave) q(".xh-badge-tilt")[0].removeEventListener("pointerleave", onLeave);
+          if (onMove) (q(".xh-badge-tilt")[0] as HTMLElement).removeEventListener("pointermove", onMove);
+          if (onLeave) (q(".xh-badge-tilt")[0] as HTMLElement).removeEventListener("pointerleave", onLeave);
         };
       }, el);
 
