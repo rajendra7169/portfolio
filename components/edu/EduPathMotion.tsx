@@ -100,7 +100,9 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
           for (let x = 16; x <= W + 16; x += 16) d += `L${x} ${wave(x).toFixed(1)}`;
           bg.setAttribute("d", d);
           fg.setAttribute("d", d);
-          centres = stops.map((s) => s.offsetLeft + s.offsetWidth / 2);
+          // Measured against the track itself (offsetLeft would be relative to the list).
+          const t = track.getBoundingClientRect().left;
+          centres = stops.map((s) => s.getBoundingClientRect().left - t + s.offsetWidth / 2);
           nodes.forEach((n, i) => gsap.set(n, { x: centres[i], y: wave(centres[i]) }));
         };
 
