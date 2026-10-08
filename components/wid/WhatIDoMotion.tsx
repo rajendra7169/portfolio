@@ -22,7 +22,8 @@ function editorScene(q: Q) {
   const lines = q(".wd-code-text");
   tl.set(lines, { clipPath: "inset(0 100% 0 0)" })
     .set(q(".wd-ph-el"), { autoAlpha: 0, y: 14 })
-    .set(q(".wd-ok"), { autoAlpha: 0 });
+    .set(q(".wd-ok"), { autoAlpha: 0 })
+    .set(q(".wd-status"), { backgroundColor: "#001c55" });
   // Typing: each line uncovers one character per step.
   lines.forEach((line) => {
     const n = Math.max(1, (line.textContent ?? "").length);
