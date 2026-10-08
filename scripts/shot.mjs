@@ -8,7 +8,7 @@ const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, ""
 const OUT = "shots";
 const PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
-  { path: "/education", name: "education", h1: "Education", counts: { ".degree": 2, ".cert": 6, ".profile-link": 5 } },
+  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 6, ".eh-arena-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".role": 2 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
   { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".details dt": 3, ".social": 7 } },
@@ -226,6 +226,104 @@ for (const vp of VIEWPORTS) {
       }
     }
     await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-top.png` });
+
+    if (pg.name === "education") {
+      await wait(1600); // intro + automatic cap toss
+      const eh = await page.evaluate(() => ({
+        title: document.querySelector(".eh-title-text").textContent,
+        counts: [...document.querySelectorAll(".eh-count")].every((c) => c.textContent === c.dataset.to),
+        inner: getComputedStyle(document.querySelector(".eh-inner")).opacity,
+      }));
+      check(scope, eh.inner === "1" && eh.title === "Education", `education hero decodes ("${eh.title}")`);
+      check(scope, eh.counts, "education counters land on their values");
+      await page.locator(".eh-toss").scrollIntoViewIfNeeded();
+      const toss = await page.locator(".eh-toss").boundingBox();
+      await page.mouse.click(toss.x + toss.width / 2, toss.y + toss.height / 2);
+      await wait(1150);
+      const flying = await page.evaluate(() => [...document.querySelectorAll(".eh-confetti i")].filter((c) => parseFloat(getComputedStyle(c).opacity) > 0.5).length);
+      await page.screenshot({ path: `${OUT}/${vp.name}-edu-toss.png` });
+      check(scope, flying > 20, `cap toss fires confetti (${flying} pieces in the air)`);
+
+      const STAMPS = ["2017", "2024", "Dec 2024"];
+      const YEARS = ["2015", "2021", "2024"];
+      if (!vp.isMobile) {
+        const rail = await page.evaluate(() => document.querySelector(".ep").classList.contains("is-rail") && !!document.querySelector(".pin-spacer .ep-viewport"));
+        check(scope, rail, "degrees path is a pinned horizontal rail");
+        for (let i = 0; i < 3; i++) {
+          await page.evaluate((i) => {
+            const vpEl = document.querySelector(".ep-viewport");
+            const spacer = vpEl.parentElement;
+            const track = document.querySelector(".ep-track");
+            const stop = document.querySelectorAll(".ep-stop")[i];
+            const distance = track.scrollWidth - innerWidth;
+            const centre = stop.getBoundingClientRect().left - track.getBoundingClientRect().left + stop.offsetWidth / 2;
+            const p = Math.max(0, (centre - innerWidth / 2) / distance);
+            const top = spacer.getBoundingClientRect().top + scrollY;
+            scrollTo(0, top + p * (spacer.offsetHeight - innerHeight));
+          }, i);
+          await wait(2000);
+          const st = await page.evaluate((i) => {
+            const card = document.querySelectorAll(".ep-card")[i];
+            const r = card.getBoundingClientRect();
+            const line = document.querySelector(".ep-line").getBoundingClientRect();
+            const rider = document.querySelector(".ep-rider").getBoundingClientRect();
+            const stamp = card.querySelector(".ep-stamp-in");
+            return {
+              stamp: getComputedStyle(stamp).opacity,
+              stampText: stamp.querySelector("b").textContent,
+              year: document.querySelector(".ep-year").textContent,
+              fits: r.top >= 0 && r.bottom <= line.top + 30 && r.left >= 0 && r.right <= innerWidth,
+              rect: `card ${Math.round(r.top)}–${Math.round(r.bottom)}, line at ${Math.round(line.top)}`,
+              riderCentred: Math.abs(rider.left + rider.width / 2 - innerWidth / 2) < 4,
+              // The stamp must not land on his text.
+              stampClear: (() => {
+                const a = stamp.getBoundingClientRect();
+                const b = card.querySelector(".ep-points").getBoundingClientRect();
+                return a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom;
+              })(),
+            };
+          }, i);
+          check(scope, st.stamp === "1" && st.stampText === STAMPS[i], `stop ${i + 1}: stamp "${st.stampText}" has landed`);
+          check(scope, st.year === YEARS[i], `stop ${i + 1}: year counter reads ${st.year}`);
+          check(scope, st.fits, `stop ${i + 1}: card fits above the path (${st.rect})`);
+          check(scope, st.riderCentred, `stop ${i + 1}: rider rides the centre of the path`);
+          check(scope, st.stampClear, `stop ${i + 1}: stamp clears the text`);
+          await page.screenshot({ path: `${OUT}/${vp.name}-edu-stop-${i + 1}.png` });
+        }
+      } else {
+        for (let i = 0; i < 3; i++) {
+          await page.locator(".ep-card").nth(i).evaluate((c) => c.scrollIntoView({ block: "start" }));
+          await page.evaluate(() => scrollBy(0, -120));
+          await wait(1400);
+          const stamp = await page.evaluate((i) => getComputedStyle(document.querySelectorAll(".ep-stamp-in")[i]).opacity, i);
+          check(scope, stamp === "1", `stop ${i + 1}: stamp lands on arrival`);
+        }
+        await page.screenshot({ path: `${OUT}/${vp.name}-edu-stop.png` });
+      }
+
+      // The vault: cards dealt into place, and a click flips one.
+      await page.locator(".cv-grid").scrollIntoViewIfNeeded();
+      await wait(2600);
+      const dealt = await page.evaluate(() =>
+        [...document.querySelectorAll(".cv-card")].every((c) => {
+          // Settled = fully visible, unrotated, unscaled, and within a pixel of its slot.
+          const m = new DOMMatrixReadOnly(getComputedStyle(c).transform === "none" ? undefined : getComputedStyle(c).transform);
+          return getComputedStyle(c).opacity === "1" && Math.abs(m.a - 1) < 0.01 && Math.abs(m.b) < 0.01 && Math.abs(m.e) < 1 && Math.abs(m.f) < 1;
+        }),
+      );
+      check(scope, dealt, "all six certificate cards are dealt into place");
+      await page.locator(".cv-flip").first().click();
+      await wait(1100);
+      const flipped = await page.evaluate(() => {
+        const card = document.querySelector(".cv-card");
+        return card.classList.contains("is-flipped") && card.querySelector(".cv-flip").getAttribute("aria-pressed") === "true";
+      });
+      await page.screenshot({ path: `${OUT}/${vp.name}-edu-vault.png` });
+      check(scope, flipped, "clicking a certificate flips it");
+      await page.locator(".cv-flip").first().click();
+      await page.evaluate(() => scrollTo(0, 0));
+      await wait(800);
+    }
 
     await scrollThrough(page);
     const after = await page.evaluate((counts) => {
