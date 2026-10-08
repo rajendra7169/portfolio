@@ -152,10 +152,10 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
           // The first card is on screen before the pin starts, so it reveals on arrival.
           if (i === 0) ScrollTrigger.create({ trigger: viewport, start: "top 70%", once: true, onEnter: () => reveal(card) });
           else ScrollTrigger.create({ trigger: stops[i], containerAnimation: slide, start: "left 85%", once: true, onEnter: () => reveal(card) });
+          // The first card starts centred, so it's stamped as the section arrives;
+          // the rest are stamped as they reach the middle of the screen.
           ScrollTrigger.create({
-            trigger: stops[i],
-            containerAnimation: slide,
-            start: "center 60%",
+            ...(i === 0 ? { trigger: viewport, start: "top 35%" } : { trigger: stops[i], containerAnimation: slide, start: "center 60%" }),
             onEnter: () => slam(card),
             onLeaveBack: () => unslam(card),
           });
