@@ -3149,71 +3149,680 @@ main {
   color: #7cc8f0;
 }
 
-/* ── Experience ─────────────────────────────────────────────────────────── */
-.timeline {
+/* ── Experience: hero with the lanyard badge ──────────────────────────────
+   Badge layers: .xh-drop (intro) > .xh-swing (pendulum, pivots at the top)
+   > .xh-badge-tilt (cursor tilt) > .xh-badge-inner (CSS flip). */
+.xh {
+  --mx: 50%;
+  --my: 30%;
+  --fx: 50%;
   position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--header-h) + 8px) var(--gutter) 40px;
+  overflow: clip;
 }
-.timeline-line {
+.motion-ok .xh-bg,
+.motion-ok .xh-inner {
+  opacity: 0;
+}
+.xh-bg {
   position: absolute;
-  left: 27px;
-  top: 10px;
-  bottom: 10px;
-  width: 2px;
-  background: linear-gradient(var(--color-navy), var(--color-steel));
-  transform-origin: top;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 }
-.timeline-list {
+.xh-inner {
+  flex: 1;
   display: grid;
-  gap: 32px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+}
+.xh-eyebrow {
+  padding-left: 14px;
+}
+.xh-title {
+  margin-top: 20px;
+  font-size: clamp(52px, 7vw, 132px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.xh-intro {
+  max-width: 34rem;
+  margin-top: 18px;
+  font-size: clamp(16px, 1.35vw, 20px);
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+.xh-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  width: fit-content;
+  margin-top: 22px;
+  padding: 10px 16px;
+  border: 1px solid rgb(255 255 255 / 0.95);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 14px 28px -20px rgb(0 28 85 / 0.5);
+  font-size: 15px;
+}
+.xh-status-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+.xh-status-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.xh-status-time {
+  font: 500 12px var(--font-mono);
+  color: var(--color-muted);
+}
+.xh-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.xh-stage {
+  --stage-h: min(82svh, 740px);
+  /* The badge scales with the stage height so it always clears the hint below. */
+  --bw: min(300px, calc(var(--stage-h) * 0.43));
+  position: relative;
+  align-self: start;
+  justify-self: center;
+  width: min(100%, 520px);
+  height: var(--stage-h);
+  perspective: 1200px;
+}
+.xh-anchor {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: 54px;
+  height: 14px;
+  margin-left: -27px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(#d6e1ee, #8fa4bd);
+  box-shadow: 0 6px 12px -6px rgb(0 28 85 / 0.5);
+}
+.xh-drop {
+  position: absolute;
+  inset: 0;
+}
+/* Zero-width box at the top centre: its origin is the pivot. */
+.xh-swing {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 0;
+  height: 100%;
+  transform-origin: 0 0;
+}
+.xh-strap {
+  position: absolute;
+  top: 0;
+  left: -15px;
+  width: 30px;
+  height: 30%;
+  border-radius: 0 0 4px 4px;
+  background:
+    repeating-linear-gradient(180deg, rgb(255 255 255 / 0.07) 0 6px, transparent 6px 12px),
+    linear-gradient(90deg, #001c55, #2f7fc1 50%, #001c55);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+.xh-clip {
+  position: absolute;
+  top: calc(30% - 8px);
+  left: -17px;
+  width: 34px;
+  height: 36px;
+  border-radius: 8px 8px 5px 5px;
+  background: linear-gradient(#eef3f9, #9fb3c9);
+  box-shadow: 0 4px 8px -4px rgb(0 28 85 / 0.6), inset 0 -6px 0 rgb(0 28 85 / 0.12);
+}
+.xh-badge-tilt {
+  position: absolute;
+  top: calc(30% + 20px);
+  left: calc(var(--bw) / -2);
+  width: var(--bw);
+  transform-style: preserve-3d;
+}
+.xh-badge {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: grab;
+  transform-style: preserve-3d;
+  touch-action: pan-y;
+}
+.xh.is-grabbed .xh-badge {
+  cursor: grabbing;
+}
+.xh-badge:focus-visible {
+  outline-offset: 6px;
+}
+.xh-badge-inner {
+  position: relative;
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.9s var(--ease);
+}
+.xh.is-flipped .xh-badge-inner {
+  transform: rotateY(180deg);
+}
+.xh-face {
+  grid-area: 1 / 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  aspect-ratio: 300 / 440;
+  padding: 26px 22px 18px;
+  overflow: hidden;
+  border-radius: 22px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 0 50px 80px -36px rgb(0 28 85 / 0.6), 0 0 0 1px rgb(0 28 85 / 0.08);
+}
+.xh-front {
+  background: #fff;
+}
+.xh-hole {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 56px;
+  height: 10px;
+  margin-left: -28px;
+  border-radius: 999px;
+  background: rgb(0 28 85 / 0.12);
+  box-shadow: inset 0 2px 3px rgb(0 28 85 / 0.3);
+}
+.xh-band {
+  display: grid;
+  gap: 2px;
+  align-self: stretch;
+  margin: 14px -22px 0;
+  padding: 12px 16px;
+  background: linear-gradient(120deg, var(--color-navy), #2f7fc1);
+  color: #fff;
+}
+.xh-band b {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.xh-band small {
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #a6dff7;
+}
+.xh-photo {
+  width: 50%;
+  aspect-ratio: 1;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, #d3f0fd, #93d3f3);
+  box-shadow: 0 0 0 5px #fff, 0 0 0 7px rgb(166 223 247 / 0.9);
+}
+.xh-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 8%;
+  user-select: none;
+  pointer-events: none;
+}
+.xh-name {
+  margin-top: 14px;
+  font-size: 22px;
+  font-weight: 800;
+}
+.xh-role {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f7fc1;
+}
+.xh-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  font: 600 12px var(--font-mono);
+}
+.xh-meta small {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+.xh-barcode {
+  display: flex;
+  gap: 2px;
+  height: 30px;
+  margin-top: auto;
+}
+.xh-barcode i {
+  display: block;
+  background: var(--color-navy);
+}
+/* Holographic foil, same recipe as the certificate cards. */
+.xh-foil {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at var(--mx) var(--my), rgb(255 255 255 / 0.75), transparent 42%),
+    linear-gradient(115deg, transparent 20%, rgb(124 200 240 / 0.55) 32%, rgb(185 205 245 / 0.6) 42%, rgb(255 217 199 / 0.5) 52%, rgb(166 255 220 / 0.45) 60%, rgb(124 200 240 / 0.5) 68%, transparent 80%);
+  background-size: 100% 100%, 300% 300%;
+  background-position: 0 0, var(--fx) 50%;
+  transition: opacity 0.4s;
+}
+.xh-badge-tilt:hover .xh-foil {
+  opacity: 0.55;
+}
+.xh-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(160deg, var(--color-navy), #1e4e8c);
+  color: #fff;
+}
+.xh-back-head {
+  display: grid;
+  gap: 4px;
+  margin-top: 30px;
+}
+.xh-back-head small {
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7cc8f0;
+}
+.xh-back-head b {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+.xh-back-head span {
+  font-size: 15px;
+  color: #cfe8f7;
+}
+.xh-platforms {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 22px;
+}
+.xh-platforms svg {
+  box-sizing: content-box;
+  padding: 9px;
+  border-radius: 12px;
+  background: #fff;
+}
+.xh-promises {
+  margin-top: 16px;
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  color: #a6dff7;
+}
+.xh-qr {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 2px;
+  width: 34%;
+  aspect-ratio: 1;
+  margin-top: auto;
+  padding: 6px;
+  border-radius: 8px;
+  background: #fff;
+}
+.xh-qr i.on {
+  background: var(--color-navy);
+}
+.xh-back-foot {
+  margin-top: 10px;
+  font: 500 10px var(--font-mono);
+  color: #7cc8f0;
+}
+.xh-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -30px;
+  text-align: center;
+  font: 500 13px var(--font-mono);
+  color: var(--color-muted);
+}
+.xh-hint-touch {
+  display: none;
+}
+@media (hover: none) {
+  .xh-hint-fine { display: none; }
+  .xh-hint-touch { display: inline; }
+}
+
+/* ── Experience: positions (git branch) and the commit graph (git log) ──── */
+.xg-section {
+  padding: clamp(64px, 10vh, 120px) var(--gutter) 0;
+}
+.xg-head {
+  display: grid;
+  gap: 8px;
+  margin-bottom: clamp(28px, 5vh, 52px);
+}
+.xg-h2 {
+  font-size: clamp(40px, 5vw, 84px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+.xg-h2 .chars-word + .chars-word:last-child {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-navy);
+}
+.xg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.xg-ref {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 600 11px var(--font-mono);
+}
+.xg-ref--blazify { background: #2f7fc1; }
+.xg-ref--side { background: #f26b38; }
+.xg-tag {
+  padding: 2px 10px;
+  border: 1px dashed #2f7fc1;
+  border-radius: 999px;
+  color: #2f7fc1;
+  font: 600 11px var(--font-mono);
+}
+
+/* Branch cards with a glowing border that runs around them. */
+@property --spin {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.xg-branches {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 2.4vw, 36px);
   list-style: none;
 }
-.role {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
+.xg-branch {
+  --lane: var(--color-navy);
+  padding: 2px;
+  border-radius: 24px;
+  background: conic-gradient(from var(--spin), var(--lane), transparent 22%, transparent 50%, var(--lane) 72%, transparent);
+  animation: spin-border 6s linear infinite;
+  box-shadow: 0 40px 70px -46px rgb(0 28 85 / 0.6);
 }
-.role-dot {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 22px;
-  font-weight: 700;
-  box-shadow: 0 0 0 6px var(--color-sky), var(--shadow);
+.xg-branch--blazify {
+  --lane: #2f7fc1;
 }
-.role-card {
-  overflow: hidden;
-  border-radius: 8px;
-  background: var(--color-paper);
-  box-shadow: var(--shadow);
+@keyframes spin-border {
+  to { --spin: 360deg; }
 }
-.role-head {
+.xg-branch-in {
+  height: 100%;
+  padding: clamp(22px, 2.4vw, 32px);
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(12px);
+}
+.xg-branch-ref {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 20px 24px;
-  background: var(--color-steel);
-  border-top: 4px solid var(--accent);
+  align-items: baseline;
+  gap: 10px;
+  font: 600 14px var(--font-mono);
 }
-.role-head h3 {
-  font-size: 22px;
+.xg-branch-ref > span {
+  width: 1ch;
+  color: #16a34a;
+}
+.xg-branch-ref b {
+  color: var(--lane);
+}
+.xg-branch-ref small {
+  margin-left: auto;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(166 223 247 / 0.45);
+  color: #2f7fc1;
+  font: 600 11px var(--font-mono);
+}
+.xg-branch-title {
+  margin-top: 14px;
+  font-size: clamp(24px, 2.4vw, 36px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.xg-branch-org {
+  margin-top: 6px;
+  font-weight: 600;
+  color: #2f4f80;
+}
+.xg-branch-points {
+  margin-top: 18px;
+}
+
+.xg-log {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(28px, 4vw, 72px);
+  padding-bottom: 40px;
+}
+.xg-term {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--color-navy);
+  box-shadow: 0 50px 90px -46px rgb(0 28 85 / 0.7);
+}
+.xg-term-bar {
+  background: rgb(255 255 255 / 0.06);
+  border-bottom-color: rgb(255 255 255 / 0.08);
+}
+.xg-term-bar .wd-bar-title {
+  color: #cfe8f7;
+}
+.xg-term-body {
+  min-height: 360px;
+  padding: 18px 20px 22px;
+  font: 500 clamp(12px, 0.95vw, 14px) / 1.7 var(--font-mono);
+  color: #d8eefb;
+}
+.xg-show {
+  display: none;
+}
+.xg-show.is-on {
+  display: block;
+}
+.xg-line {
+  white-space: pre-wrap;
+}
+.xg-line--commit {
+  color: #febc2e;
+}
+.xg-term-tag {
+  color: #7cc8f0;
+}
+.xg-line--subject {
+  margin-top: 1em;
+  color: #fff;
   font-weight: 700;
 }
-.role-head p {
-  margin-top: 4px;
-  font-weight: 600;
+.xg-line--body {
+  margin-top: 0.6em;
+  padding-left: 4ch;
+  color: #a9bfdc;
+  white-space: normal;
 }
-.role-when {
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
+
+.xg-graph {
+  position: relative;
 }
-.role-card .points {
-  padding: 22px 24px 24px;
+/* Above the rows (so the current row's highlight can't hide the lines), below the dots. */
+.xg-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  overflow: visible;
+  pointer-events: none;
+}
+.xg-lane {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+}
+.xg-lane--main { stroke: var(--color-navy); }
+.xg-lane--side { stroke: #f26b38; }
+.xg-lane--blazify { stroke: #2f7fc1; }
+.xg-ptr {
+  position: absolute;
+  top: 0;
+  left: 34px;
+  z-index: 3;
+  margin-top: -11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #16a34a;
+  color: #fff;
+  font: 700 11px var(--font-mono);
+  box-shadow: 0 6px 14px -6px rgb(22 163 74 / 0.8);
+}
+.xg-commits {
+  display: grid;
+  gap: 14px;
+  list-style: none;
+}
+/* --lx must match LX in ExpLogMotion. */
+.xg-commit {
+  --lx: 18px;
+  --lane-c: var(--color-navy);
+  position: relative;
+  padding: 14px 18px 14px 130px;
+  border-radius: 16px;
+  transition: background-color 0.4s, box-shadow 0.4s;
+}
+.xg-commit--side { --lx: 52px; --lane-c: #f26b38; }
+.xg-commit--blazify { --lx: 86px; --lane-c: #2f7fc1; }
+.xg-commit.is-current {
+  background: rgb(255 255 255 / 0.78);
+  box-shadow: 0 20px 40px -26px rgb(0 28 85 / 0.45);
+}
+.xg-dot {
+  position: absolute;
+  top: 22px;
+  left: calc(var(--lx) - 9px);
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  border: 4px solid var(--lane-c);
+  border-radius: 50%;
+  background: #fff;
+}
+.xg-commit.is-in .xg-dot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--lane-c);
+  border-radius: 50%;
+  animation: commit-ring 1s ease-out forwards;
+}
+@keyframes commit-ring {
+  from { scale: 1; opacity: 1; }
+  to { scale: 2.8; opacity: 0; }
+}
+.xg-c-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font: 500 12px var(--font-mono);
+  color: var(--color-muted);
+}
+.xg-c-meta time {
+  font-weight: 600;
+  color: var(--color-navy);
+}
+.xg-c-msg {
+  margin-top: 6px;
+  font-size: clamp(17px, 1.4vw, 21px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+.xg-type {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--lane-c);
+}
+.xg-c-text {
+  margin-top: 6px;
+  font-size: 15px;
+  color: #2f4f80;
+}
+.xg-c-links {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  font: 600 12px var(--font-mono);
+}
+.xg-c-links a {
+  color: #2f7fc1;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+  transition: background-size 0.4s var(--ease);
+}
+.xg-c-links a:hover {
+  background-size: 100% 1.5px;
+}
+/* Desktop: the terminal shows each commit's body, so rows keep it for screen readers only. */
+@media (min-width: 900px) {
+  .xg-c-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 
 /* ── Projects ───────────────────────────────────────────────────────────── */
@@ -3546,6 +4155,45 @@ main {
   .page-head--details .details {
     order: 0;
   }
+  /* Experience on phones */
+  .xh-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    text-align: center;
+  }
+  .xh-title {
+    font-size: clamp(46px, 15vw, 110px);
+  }
+  .xh-eyebrow {
+    white-space: normal;
+    text-align: left;
+  }
+  .xh-intro,
+  .xh-status {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .xh-stats,
+  .xh-ctas {
+    justify-content: center;
+  }
+  .xh-stage {
+    --stage-h: 600px;
+    --bw: 250px;
+    margin-top: 12px;
+  }
+  .xg-branches,
+  .xg-log {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .xg-term {
+    display: none;
+  }
+  .xg-commit {
+    padding-left: 116px;
+    padding-right: 4px;
+  }
+
   /* Education on phones. minmax(0, 1fr): a bare 1fr column grows to its widest
      child (the no-wrap title), pushing the page past the screen. */
   .eh-inner {
@@ -3609,10 +4257,6 @@ main {
 }
 
 @media (max-width: 600px) {
-  .role-head {
-    flex-direction: column;
-    gap: 6px;
-  }
   .cv-grid,
   .projects {
     grid-template-columns: 1fr;
@@ -3626,18 +4270,6 @@ main {
   }
   .tech {
     font-size: 38px;
-  }
-  .role {
-    grid-template-columns: 44px minmax(0, 1fr);
-    gap: 14px;
-  }
-  .role-dot {
-    width: 44px;
-    height: 44px;
-    font-size: 18px;
-  }
-  .timeline-line {
-    left: 21px;
   }
 }
 
