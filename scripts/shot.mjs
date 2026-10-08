@@ -109,6 +109,44 @@ for (const vp of VIEWPORTS) {
       await wait(3400);
       const later = await hxState();
       check(scope, later.build !== hx.build, `"I build" line cycles ("${hx.build}" → "${later.build}")`);
+      // Cyber reveal: how much of the canvas is painted (share of pixels with alpha).
+      const painted = () =>
+        page.evaluate(() => {
+          const c = document.querySelector(".hx-cyber-canvas");
+          const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+          let n = 0;
+          for (let i = 3; i < d.length; i += 16) if (d[i] > 40) n++;
+          return n / (d.length / 16);
+        });
+      await page.locator(".hx-cyber-btn").scrollIntoViewIfNeeded();
+      await wait(600);
+      const btn = await page.locator(".hx-cyber-btn").boundingBox();
+      if (!vp.isMobile) {
+        // Sweep the lens across his face and chest.
+        await page.mouse.move(btn.x + btn.width * 0.3, btn.y + btn.height * 0.2);
+        await page.mouse.move(btn.x + btn.width * 0.6, btn.y + btn.height * 0.45, { steps: 12 });
+        await wait(250);
+        const lens = await page.evaluate(() => getComputedStyle(document.querySelector(".hx-lens")).opacity);
+        const trail = await painted();
+        await page.screenshot({ path: `${OUT}/${vp.name}-home-cyber-lens.png` });
+        check(scope, lens === "1", "cyber lens appears on hover");
+        check(scope, trail > 0.03, `hover reveals the cyber look (${(trail * 100).toFixed(1)}% painted)`);
+        await page.mouse.move(5, 300); // leave the photo
+        await wait(2600);
+        const faded = await painted();
+        check(scope, faded < 0.002, `revealed patches fade after 2s (${(faded * 100).toFixed(2)}% left)`);
+      }
+      // Click / tap: full-suit scan, held, then wiped back.
+      await page.mouse.click(btn.x + btn.width / 2, btn.y + btn.height * 0.4);
+      await wait(1300);
+      const full = await painted();
+      await page.screenshot({ path: `${OUT}/${vp.name}-home-cyber-full.png` });
+      check(scope, full > 0.25, `click scans into the full suit (${(full * 100).toFixed(1)}% painted)`);
+      await page.mouse.move(5, 300);
+      await wait(2400);
+      const back = await painted();
+      check(scope, back < 0.002, `full suit wipes back after its hold (${(back * 100).toFixed(2)}% left)`);
+
       if (!vp.isMobile) {
         // Halfway through the pinned exit the hero should be coming apart.
         await page.evaluate(() => scrollTo(0, innerHeight * 0.4));
