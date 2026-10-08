@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { useLenis } from "@/components/SmoothScroll";
 
 type Q = (sel: string) => HTMLElement[];
@@ -142,7 +142,7 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
   lenisRef.current = lenis;
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const items = Array.from(el.querySelectorAll<HTMLElement>(".wd-item"));
       const scenes = items.map((item, i) => BUILDERS[i](gsap.utils.selector(item) as Q));
@@ -207,7 +207,7 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
           let current = -1;
           let swap: gsap.core.Timeline | null = null;
 
-          const show = contextSafe!((i: number) => {
+          const show = inContext(ctx, (i: number) => {
             if (i === current) return;
             const prev = current;
             current = i;
