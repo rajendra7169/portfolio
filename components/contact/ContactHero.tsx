@@ -25,7 +25,7 @@ export default function ContactHero() {
       </div>
 
       <div className="ch-inner">
-        <div className="ch-copy">
+        <div className="ch-main">
           <p className="hx-eyebrow ch-eyebrow">
             <span aria-hidden="true">📡</span> Open a channel · replies within 24h
           </p>
