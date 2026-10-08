@@ -927,9 +927,18 @@ main {
 .hx-lens-ring {
   position: absolute;
   inset: 0;
-  border: 1.5px dashed rgb(124 200 240 / 0.95);
+  border: 2px solid rgb(74 168 224 / 0.95);
   border-radius: 50%;
-  box-shadow: 0 0 26px rgb(74 168 224 / 0.55), inset 0 0 26px rgb(74 168 224 / 0.35);
+  background: radial-gradient(circle, transparent 55%, rgb(124 200 240 / 0.18));
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.7), 0 0 30px rgb(74 168 224 / 0.6), inset 0 0 30px rgb(74 168 224 / 0.4);
+}
+/* Outer dashed ring turning slowly, like a focusing bezel. */
+.hx-lens-ring::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border: 1.5px dashed rgb(0 28 85 / 0.55);
+  border-radius: 50%;
   animation: lens-spin 7s linear infinite;
 }
 @keyframes lens-spin {
