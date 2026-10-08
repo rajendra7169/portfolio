@@ -275,6 +275,12 @@ for (const vp of VIEWPORTS) {
     await page.evaluate(() => scrollTo(0, 0));
     await wait(600);
     await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-full.png`, fullPage: true });
+    // Toggling reduced motion reverts and re-runs every gsap.matchMedia context —
+    // the moment a context cycle would recurse forever. Any error shows up below.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await wait(500);
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await wait(500);
     check(scope, errors.length === 0, `no console errors${errors.length ? `: ${errors.slice(0, 2).join(" | ")}` : ""}`);
     await page.close();
   }
