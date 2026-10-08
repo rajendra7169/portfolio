@@ -135,5 +135,5 @@ export default function HeroField() {
     };
   }, []);
 
-  return <canvas ref={canvas} className="hero-field" aria-hidden="true" />;
+  return <canvas ref={canvas} className="hx-field" aria-hidden="true" />;
 }
