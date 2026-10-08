@@ -9,7 +9,7 @@ const OUT = "shots";
 const PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
   { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 6, ".eh-arena-link": 5 } },
-  { path: "/experience", name: "experience", h1: "Experience", counts: { ".role": 2 } },
+  { path: "/experience", name: "experience", h1: "Experience", counts: { ".xg-branch": 2, ".xg-commit": 12 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
   { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".details dt": 3, ".social": 7 } },
 ];
@@ -321,6 +321,106 @@ for (const vp of VIEWPORTS) {
       await page.screenshot({ path: `${OUT}/${vp.name}-edu-vault.png` });
       check(scope, flipped, "clicking a certificate flips it");
       await page.locator(".cv-flip").first().click();
+      await page.evaluate(() => scrollTo(0, 0));
+      await wait(800);
+    }
+
+    if (pg.name === "experience") {
+      await wait(1800); // intro + the badge settling
+      const xh = await page.evaluate(() => {
+        const b = document.querySelector(".xh-badge").getBoundingClientRect();
+        return {
+          title: document.querySelector(".xh-title-text").textContent,
+          counts: [...document.querySelectorAll(".xh-count")].every((c) => c.textContent === c.dataset.to),
+          badgeOn: b.left >= 0 && b.right <= innerWidth && b.width > 150,
+          hintClear: b.bottom <= document.querySelector(".xh-hint").getBoundingClientRect().top + 2,
+        };
+      });
+      check(scope, xh.title === "Experience", `experience hero decodes ("${xh.title}")`);
+      check(scope, xh.counts, "experience counters land on their values");
+      check(scope, xh.badgeOn, "the ID badge hangs on screen");
+      check(scope, xh.hintClear, "the badge clears the hint below it");
+
+      const rot = () => page.evaluate(() => { const m = new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".xh-swing")).transform); return Math.round((Math.atan2(m.b, m.a) * 180) / Math.PI); });
+      if (!vp.isMobile) {
+        // Grab the badge and fling it sideways: it swings, then settles near centre without flipping.
+        await page.locator(".xh-badge").evaluate((b) => b.scrollIntoView({ block: "center" })); // it sways, so never "stable"
+        await wait(400);
+        const b = await page.locator(".xh-badge").boundingBox();
+        await page.mouse.move(b.x + b.width / 2, b.y + b.height * 0.7);
+        await page.mouse.down();
+        await page.mouse.move(b.x + b.width / 2 + 220, b.y + b.height * 0.6, { steps: 12 });
+        const held = await rot();
+        await page.screenshot({ path: `${OUT}/${vp.name}-exp-drag.png` });
+        await page.mouse.up();
+        await wait(3200);
+        const settled = await rot();
+        const flippedByDrag = await page.evaluate(() => document.querySelector(".xh").classList.contains("is-flipped"));
+        check(scope, Math.abs(held) > 15, `dragging swings the badge (${held}°)`);
+        check(scope, Math.abs(settled) <= 4, `the badge settles back (${settled}°)`);
+        check(scope, !flippedByDrag, "a drag does not flip the badge");
+      }
+      // The badge never stops swaying, so click where it is rather than waiting for it to be "stable".
+      const clickBadge = async () => {
+        const bb = await page.locator(".xh-badge").boundingBox();
+        await page.mouse.click(bb.x + bb.width / 2, bb.y + bb.height * 0.6);
+      };
+      await page.locator(".xh-badge").evaluate((b) => b.scrollIntoView({ block: "center" }));
+      await wait(400);
+      await clickBadge();
+      await wait(1100);
+      const flipped = await page.evaluate(() => document.querySelector(".xh").classList.contains("is-flipped") && document.querySelector(".xh-badge").getAttribute("aria-pressed") === "true");
+      await page.screenshot({ path: `${OUT}/${vp.name}-exp-badge-back.png` });
+      check(scope, flipped, "clicking the badge flips it to the Blazify pass");
+      await clickBadge();
+
+      // The git graph: every commit dot sits on its lane line.
+      await page.locator(".xg-graph").scrollIntoViewIfNeeded();
+      await wait(600);
+      const onLines = await page.evaluate(() => {
+        const svg = document.querySelector(".xg-svg").getBoundingClientRect();
+        const lanes = { main: ".xg-lane--main", side: ".xg-lane--side", blazify: ".xg-lane--blazify" };
+        return [...document.querySelectorAll(".xg-commit")].every((row) => {
+          const lane = Object.keys(lanes).find((l) => row.classList.contains(`xg-commit--${l}`));
+          const path = document.querySelector(lanes[lane]);
+          const dot = row.querySelector(".xg-dot").getBoundingClientRect();
+          const cx = dot.left + dot.width / 2 - svg.left;
+          const cy = dot.top + dot.height / 2 - svg.top;
+          // Nearest point on the path to the dot centre.
+          const len = path.getTotalLength();
+          let best = Infinity;
+          for (let d = 0; d <= len; d += 2) {
+            const p = path.getPointAtLength(d);
+            best = Math.min(best, Math.hypot(p.x - cx, p.y - cy));
+          }
+          return best < 3;
+        });
+      });
+      check(scope, onLines, "every commit dot sits on its branch line");
+
+      const rows = await page.locator(".xg-commit").count();
+      for (const i of [0, 6, rows - 1]) {
+        // Centre the row on the "in view" line (58%), or scroll as far as the page allows.
+        await page.locator(".xg-commit").nth(i).evaluate((r) => { const b = r.getBoundingClientRect(); scrollTo(0, b.top + scrollY + b.height / 2 - innerHeight * 0.58); });
+        await wait(1500);
+        const g = await page.evaluate((i) => {
+          const row = document.querySelectorAll(".xg-commit")[i];
+          const show = document.querySelectorAll(".xg-show")[i];
+          const ptr = document.querySelector(".xg-ptr").getBoundingClientRect();
+          return {
+            rowIn: getComputedStyle(row.querySelector(".xg-c-msg")).opacity === "1",
+            termOn: show.classList.contains("is-on"),
+            termVisible: getComputedStyle(document.querySelector(".xg-term")).display !== "none",
+            textShown: row.querySelector(".xg-c-text").getBoundingClientRect().width > 50,
+            ptrBelow: ptr.top > row.getBoundingClientRect().top - 40,
+          };
+        }, i);
+        check(scope, g.rowIn, `commit ${i + 1} lands as the graph reaches it`);
+        check(scope, g.ptrBelow, `HEAD has travelled down to commit ${i + 1}`);
+        if (vp.isMobile) check(scope, !g.termVisible && g.textShown, `commit ${i + 1} shows its text inline (no terminal on phones)`);
+        else check(scope, g.termVisible && g.termOn, `terminal runs git show for commit ${i + 1}`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-exp-log-${i + 1}.png` });
+      }
       await page.evaluate(() => scrollTo(0, 0));
       await wait(800);
     }
