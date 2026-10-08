@@ -12,6 +12,7 @@ import { hero, profile, skills, type Tech } from "@/lib/content";
 import HeroMotion from "./HeroMotion";
 import HeroField from "./HeroField";
 import KtmClock from "./KtmClock";
+import CyberReveal from "./CyberReveal";
 
 function Orbit({ items, kind }: { items: Tech[]; kind: "inner" | "outer" }) {
   return (
@@ -142,7 +143,7 @@ export default function Hero() {
             <Orbit items={hero.orbitInner} kind="inner" />
 
             <div className="hx-photo-depth" data-depth="0.15">
-              <div className="hx-photo" data-cursor="Hi!">
+              <div className="hx-photo">
                 {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
                 <img
                   src="/images/hero-800.webp"
@@ -156,6 +157,7 @@ export default function Hero() {
                 />
                 {/* Hologram beam, masked to his silhouette by the photo's own alpha. */}
                 <span className="hx-scan" aria-hidden="true" />
+                <CyberReveal />
               </div>
             </div>
 
