@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { hero } from "@/lib/content";
 import { afterReveal } from "@/components/PageTransition";
 
@@ -11,7 +11,7 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const q = gsap.utils.selector(el);
       const mm = gsap.matchMedia();
@@ -36,7 +36,7 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
 
           // Hovering the stage spins everything up.
           const stage = q(".hx-stage")[0] as HTMLElement;
-          const rev = contextSafe!((speed: number) => [...spins, ticker].forEach((t) => gsap.to(t, { timeScale: speed, duration: 0.8, ease: "power2.out" })));
+          const rev = inContext(ctx, (speed: number) => [...spins, ticker].forEach((t) => gsap.to(t, { timeScale: speed, duration: 0.8, ease: "power2.out" })));
           const onEnter = () => rev(3.5);
           const onLeave = () => rev(1);
           stage.addEventListener("pointerenter", onEnter);
@@ -47,7 +47,7 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             trigger: el,
             start: "top top",
             end: "bottom top",
-            onUpdate: contextSafe!((self: ScrollTrigger) => {
+            onUpdate: inContext(ctx, (self: ScrollTrigger) => {
               const v = Math.min(Math.abs(self.getVelocity()) / 250, 6);
               gsap.to(ticker, { timeScale: self.direction * (1 + v), duration: 0.2, overwrite: true });
               gsap.to(ticker, { timeScale: 1, duration: 1.4, delay: 0.25, ease: "power2.out" });
@@ -117,7 +117,7 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             const spotX = gsap.quickTo(spot, "x", { duration: 0.6, ease: "power3.out" });
             const spotY = gsap.quickTo(spot, "y", { duration: 0.6, ease: "power3.out" });
 
-            onMove = contextSafe!((e: PointerEvent) => {
+            onMove = inContext(ctx, (e: PointerEvent) => {
               const r = el.getBoundingClientRect();
               const nx = (e.clientX - r.left) / r.width - 0.5; // -0.5 … 0.5
               const ny = (e.clientY - r.top) / r.height - 0.5;
