@@ -107,8 +107,9 @@ main {
   margin-bottom: -0.08em;
   vertical-align: bottom;
 }
-.chars-word + .chars-word {
-  margin-left: 0.26em;
+/* Space after each word (not before), so a wrapped line doesn't start indented. */
+.chars-word:not(:last-child) {
+  margin-right: 0.26em;
 }
 .char {
   display: inline-block;
@@ -2076,7 +2077,7 @@ main {
 .wd-sel i:nth-child(4) { right: -4px; bottom: -4px; }
 .wd-sel-label {
   position: absolute;
-  top: calc(100% + 6px);
+  bottom: calc(100% + 6px);
   left: 50%;
   translate: -50% 0;
   padding: 0.15em 0.5em;
@@ -2246,7 +2247,7 @@ main {
   aspect-ratio: 1;
   border-radius: 0.6em;
   background: #fff;
-  font-size: 1.9em;
+  font-size: 3.2em;
   box-shadow: 0 8px 16px -10px rgb(0 28 85 / 0.5);
 }
 .wd-timeline {
