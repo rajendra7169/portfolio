@@ -5,10 +5,11 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { Physics2DPlugin } from "gsap/Physics2DPlugin";
+import { Draggable } from "gsap/Draggable";
 import { useGSAP } from "@gsap/react";
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, Physics2DPlugin, useGSAP);
+  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, Physics2DPlugin, Draggable, useGSAP);
 }
 
 /**
@@ -25,4 +26,4 @@ export function inContext<T extends (...args: never[]) => unknown>(ctx: gsap.Con
 export const MOTION_OK = "(prefers-reduced-motion: no-preference)";
 export const DESKTOP = "(min-width: 900px)";
 
-export { gsap, ScrollTrigger, useGSAP };
+export { gsap, ScrollTrigger, Draggable, useGSAP };
