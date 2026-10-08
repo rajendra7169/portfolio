@@ -28,20 +28,20 @@ export default function EduHero() {
 
       <div className="eh-inner">
         <div className="eh-copy">
-          <p className="eh-eyebrow">
+          <p className="hx-eyebrow eh-eyebrow">
             <span aria-hidden="true">🎓</span> Basic Qualification and Certifications
           </p>
           <h1 className="eh-title">
             <span className="sr-only">Education</span>
             <span className="eh-title-clip" aria-hidden="true">
-              <span className="eh-title-text">Education</span>
+              <span className="hx-line hx-line--a eh-title-text">Education</span>
             </span>
           </h1>
           <p className="eh-sub">Two degrees, six certifications and five coding arenas: the learning behind the work.</p>
 
-          <dl className="eh-stats">
+          <dl className="hx-stats eh-stats">
             {stats.map((s) => (
-              <div className="eh-stat" key={s.label}>
+              <div className="hx-stat eh-stat" key={s.label}>
                 <dt>{s.label}</dt>
                 <dd className="eh-count" data-to={s.value}>
                   {s.value}
@@ -71,6 +71,12 @@ export default function EduHero() {
 
         <div className="eh-stage">
           <div className="eh-tilt">
+            {/* Ribbons first so they sit behind the seal (z-index is unreliable inside preserve-3d). */}
+            <div className="eh-ribbons" aria-hidden="true">
+              <span className="eh-ribbon eh-ribbon--l" />
+              <span className="eh-ribbon eh-ribbon--r" />
+            </div>
+
             <div className="eh-depth" data-depth="0.4">
               <svg className="eh-seal" viewBox="0 0 600 600" aria-hidden="true">
                 <defs>
@@ -101,11 +107,6 @@ export default function EduHero() {
                   </text>
                 </g>
               </svg>
-            </div>
-
-            <div className="eh-ribbons" aria-hidden="true">
-              <span className="eh-ribbon eh-ribbon--l" />
-              <span className="eh-ribbon eh-ribbon--r" />
             </div>
 
             <div className="eh-cap-depth" data-depth="0.9">
