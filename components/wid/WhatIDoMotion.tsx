@@ -104,7 +104,8 @@ function designScene(q: Q) {
     .to(q(".wd-logo-fill"), { autoAlpha: 1, duration: 0.5 }, ">")
     .set(layers[layers.length - 1], { attr: { "data-on": "1" } }, "<")
     .to(q(".wd-swatch"), { scale: 1, duration: 0.4, stagger: 0.08, ease: "back.out(3)" }, "<")
-    .to(cursor, { x: () => area.clientWidth * 0.92, y: () => area.clientHeight * 0.9, duration: 0.8, ease: "power2.inOut" }, ">0.2");
+    // Park the cursor where its name tag stays inside the canvas.
+    .to(cursor, { x: () => area.clientWidth * 0.78, y: () => area.clientHeight * 0.84, duration: 0.8, ease: "power2.inOut" }, ">0.2");
   return tl;
 }
 
