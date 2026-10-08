@@ -126,10 +126,16 @@ for (const vp of VIEWPORTS) {
         await page.mouse.move(btn.x + btn.width * 0.3, btn.y + btn.height * 0.2);
         await page.mouse.move(btn.x + btn.width * 0.6, btn.y + btn.height * 0.45, { steps: 12 });
         await wait(250);
-        const lens = await page.evaluate(() => getComputedStyle(document.querySelector(".hx-lens")).opacity);
+        await wait(450); // lens grows in
+        const lens = await page.evaluate(() => {
+          const ring = document.querySelector(".hx-lens-ring").getBoundingClientRect().width;
+          const box = document.querySelector(".hx-cyber").getBoundingClientRect().width;
+          return { opacity: getComputedStyle(document.querySelector(".hx-lens-in")).opacity, share: ring / box };
+        });
         const trail = await painted();
         await page.screenshot({ path: `${OUT}/${vp.name}-home-cyber-lens.png` });
-        check(scope, lens === "1", "cyber lens appears on hover");
+        check(scope, lens.opacity === "1", "cyber lens appears on hover");
+        check(scope, lens.share > 0.28, `lens is full size (${(lens.share * 100).toFixed(0)}% of photo width)`);
         check(scope, trail > 0.03, `hover reveals the cyber look (${(trail * 100).toFixed(1)}% painted)`);
         await page.mouse.move(5, 300); // leave the photo
         await wait(2600);
