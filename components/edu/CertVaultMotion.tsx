@@ -7,7 +7,7 @@ export default function CertVaultMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
-    (_, contextSafe) => {
+    () => {
       const el = root.current!;
       const q = gsap.utils.selector(el);
       const cards = q(".cv-card");
@@ -41,7 +41,8 @@ export default function CertVaultMotion({ children }: { children: ReactNode }) {
         // Deal: every card starts in one shuffled stack at the centre of the grid,
         // then flies to its slot. Measured at deal time, so it survives resizes.
         gsap.set(cards, { autoAlpha: 0 });
-        const deal = contextSafe!(() => {
+        // Plain function: a one-off tween set, nothing to clean up later.
+        const deal = () => {
           const g = grid.getBoundingClientRect();
           const cx = g.left + g.width / 2;
           const cy = g.top + g.height / 2;
@@ -58,7 +59,7 @@ export default function CertVaultMotion({ children }: { children: ReactNode }) {
           );
           // A foil glint sweeps each card as it lands.
           gsap.fromTo(q(".cv-front .cv-foil"), { "--fx": "0%", opacity: 0.9 }, { "--fx": "100%", opacity: 0, duration: 1.2, stagger: 0.09, delay: 0.6, ease: "power2.inOut", clearProps: "all" }); // hand --fx back to the cursor
-        });
+        };
         ScrollTrigger.create({ trigger: grid, start: "top 78%", once: true, onEnter: deal });
 
         if (!fine) return;
