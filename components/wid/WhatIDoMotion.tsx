@@ -27,11 +27,14 @@ function editorScene(q: Q) {
   // Typing: each line uncovers one character per step.
   lines.forEach((line) => {
     const n = Math.max(1, (line.textContent ?? "").length);
-    tl.to(line, { clipPath: "inset(0 0% 0 0)", duration: Math.min(1.1, n * 0.034), ease: `steps(${n})` }, ">0.06");
+    tl.to(line, { clipPath: "inset(0 0% 0 0)", duration: Math.min(0.75, n * 0.024), ease: `steps(${n})` }, ">0.06");
   });
-  tl.to(q(".wd-ph-el"), { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.14, ease: "back.out(1.7)" }, 1.5)
-    .to(q(".wd-ok"), { autoAlpha: 1, duration: 0.3 }, ">0.2")
-    .fromTo(q(".wd-status"), { backgroundColor: "#16a34a" }, { backgroundColor: "#001c55", duration: 1.4 }, "<");
+  tl.addLabel("typed")
+    // The preview assembles while the code is still being typed…
+    .to(q(".wd-ph-el"), { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.14, ease: "back.out(1.7)" }, 1.1)
+    // …and the build only succeeds once the last line is in.
+    .to(q(".wd-ok"), { autoAlpha: 1, duration: 0.3 }, "typed+=0.25")
+    .fromTo(q(".wd-status"), { backgroundColor: "#16a34a" }, { backgroundColor: "#001c55", duration: 1.4, immediateRender: false }, "<");
   return tl;
 }
 
@@ -48,7 +51,7 @@ function cloudScene(q: Q) {
     const out = row.querySelector(".wd-out")!;
     const n = Math.max(1, (cmd.textContent ?? "").length);
     tl.set(row, { autoAlpha: 1 }, ">0.15")
-      .to(cmd, { clipPath: "inset(0 0% 0 0)", duration: Math.min(1, n * 0.028), ease: `steps(${n})` })
+      .to(cmd, { clipPath: "inset(0 0% 0 0)", duration: Math.min(0.8, n * 0.022), ease: `steps(${n})` })
       .to(out, { autoAlpha: 1, x: 0, duration: 0.3 }, ">0.2");
     // Each deploy lights its service on the map, with packets flowing.
     (row.dataset.nodes ?? "")
