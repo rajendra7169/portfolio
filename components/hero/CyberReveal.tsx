@@ -231,9 +231,13 @@ export default function CyberReveal() {
   return (
     <div className="hx-cyber" ref={root}>
       <canvas className="hx-cyber-canvas" aria-hidden="true" />
+      {/* Outer box: GSAP moves it. Inner box: CSS grows/fades it. GSAP folds CSS
+          `scale` into its own transform, so the two jobs need separate elements. */}
       <span className="hx-lens" aria-hidden="true">
-        <span className="hx-lens-ring" />
-        <span className="hx-lens-label">Cyber mode</span>
+        <span className="hx-lens-in">
+          <span className="hx-lens-ring" />
+          <span className="hx-lens-label">Cyber mode</span>
+        </span>
       </span>
       <button type="button" className="hx-cyber-btn" aria-label="Show Rajendra's cyber suit for two seconds" data-cursor-hide />
       {/* Outer box: intro animation (GSAP). Inner box: fades once used (CSS). */}
