@@ -32,6 +32,8 @@ export default function Cursor() {
           el.classList.add("is-on");
         };
         const over = (e: PointerEvent) => {
+          // Some areas bring their own pointer (the hero's cyber lens).
+          el.classList.toggle("is-hidden", !!(e.target as Element).closest("[data-cursor-hide]"));
           const target = (e.target as Element).closest<HTMLElement>("a, button, [data-cursor], input, label");
           el.classList.toggle("is-hover", !!target);
           const text = target?.dataset.cursor ?? "";
