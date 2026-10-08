@@ -117,7 +117,9 @@ export default function ExpLogMotion({ children }: { children: ReactNode }) {
         });
 
         // The graph draws itself as you scroll, with HEAD riding the edge.
-        const draw = { trigger: graph, start: "top 62%", end: "bottom 62%", scrub: 0.4, invalidateOnRefresh: true };
+        // clamp(): the last commits sit near the page bottom and could never reach these
+        // lines otherwise; clamping keeps every trigger within the scrollable range.
+        const draw = { trigger: graph, start: "top 62%", end: "clamp(bottom 62%)", scrub: 0.4, invalidateOnRefresh: true };
         gsap.fromTo(svg, { clipPath: "inset(0% 0% 100% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", scrollTrigger: draw });
         gsap.fromTo(ptr, { y: 0 }, { y: () => graph.offsetHeight, ease: "none", scrollTrigger: draw });
 
@@ -127,7 +129,7 @@ export default function ExpLogMotion({ children }: { children: ReactNode }) {
         rows.forEach((row) => {
           ScrollTrigger.create({
             trigger: row,
-            start: "top 66%",
+            start: "clamp(top 66%)",
             once: true,
             onEnter: () => {
               row.classList.add("is-in");
@@ -139,10 +141,25 @@ export default function ExpLogMotion({ children }: { children: ReactNode }) {
 
         // Desktop: the sticky terminal follows the commit in the middle of the screen.
         if (desktop) {
-          rows.forEach((row, i) =>
-            ScrollTrigger.create({ trigger: row, start: "top 58%", end: "bottom 58%", onToggle: (self) => self.isActive && setActive(i) }),
-          );
-          ScrollTrigger.create({ trigger: graph, start: "top 80%", once: true, onEnter: () => active < 0 && setActive(0) });
+          // One tracker instead of a trigger per row: the commit nearest the reading
+          // line wins, and HEAD wins once the page can't scroll any further (the last
+          // rows can never reach the line, and per-row triggers would overlap there).
+          const pick = () => {
+            if (ScrollTrigger.maxScroll(window) - window.scrollY < 4) return setActive(rows.length - 1);
+            const line = window.innerHeight * 0.58;
+            let best = 0;
+            let bestD = Infinity;
+            rows.forEach((r, i) => {
+              const b = r.getBoundingClientRect();
+              const d = Math.abs(b.top + b.height / 2 - line);
+              if (d < bestD) {
+                bestD = d;
+                best = i;
+              }
+            });
+            setActive(best);
+          };
+          ScrollTrigger.create({ trigger: graph, start: "top bottom", end: "bottom top", onUpdate: pick, onToggle: pick, onRefresh: pick });
         }
       }, el);
 
