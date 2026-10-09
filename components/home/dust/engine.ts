@@ -347,17 +347,13 @@ export class DustEngine {
       B = A;
       f = 0;
     }
-    let eA = this.entries.get(A), eB = this.entries.get(B);
+    const gotA = this.entries.get(A), gotB = this.entries.get(B);
     // a shape that isn't built yet: hold whatever is
-    if (!eA && !eB) return this.integrate(null, null, 0);
-    if (!eA) {
-      eA = eB;
-      f = 1;
-    }
-    if (!eB) {
-      eB = eA;
-      f = 0;
-    }
+    if (!gotA && !gotB) return this.integrate(null, null, 0);
+    const eA: Entry = gotA ?? gotB!;
+    const eB: Entry = gotB ?? gotA!;
+    if (!gotA) f = 1;
+    if (!gotB) f = 0;
     if (A !== B) this.buildDelays(A, B);
 
     // per-frame dynamics shared by all particles
