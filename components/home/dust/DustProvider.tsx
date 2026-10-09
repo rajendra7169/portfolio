@@ -35,7 +35,7 @@ export default function DustProvider({ children }: { children: ReactNode }) {
       const c2d = cv.getContext("2d")!;
       const phone = !desktop;
       const cores = navigator.hardwareConcurrency ?? 8;
-      const n = phone ? (cores <= 4 ? 1800 : 2500) : cores <= 4 ? 4000 : 7000;
+      const n = phone ? (cores <= 4 ? 1800 : 2500) : cores <= 4 ? 4500 : 8000;
       const engine = new DustEngine({ n, phone, W: window.innerWidth, H: window.innerHeight });
       window.__dust = { engine, state: engine.state, layout: engine.layout };
 

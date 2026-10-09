@@ -98,6 +98,8 @@ export type ImageOptions = {
   redIsOrange?: boolean;
   /** weight darker pixels more (halftone look) — 0 = uniform over alpha, 1 = strong */
   darkBias?: number;
+  /** curve on luminance before the bias (>1 keeps mid-tones like skin populated) */
+  gamma?: number;
 };
 
 /**
@@ -107,7 +109,8 @@ export type ImageOptions = {
 export function fromImage(px: { data: Uint8ClampedArray; w: number; h: number }, n: number, opt: ImageOptions = {}): Shape {
   const { data, w, h } = px;
   const rand = rng(opt.seed ?? 7);
-  const darkBias = opt.darkBias ?? 0.7;
+  const darkBias = opt.darkBias ?? 0.55;
+  const gamma = opt.gamma ?? 1.3;
   // Per-pixel weight = alpha × (1 − darkBias·luma). Build a cumulative table for O(log) sampling.
   const weights = new Float64Array(w * h);
   let total = 0;
@@ -116,7 +119,7 @@ export function fromImage(px: { data: Uint8ClampedArray; w: number; h: number },
     if (a < 0.2) continue;
     const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2];
     const luma = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-    total += weights[i] = a * (1 - darkBias * luma + 0.08);
+    total += weights[i] = a * (1 - darkBias * Math.pow(luma, gamma) + 0.08);
   }
   const cdf = new Float64Array(w * h);
   let acc = 0;
@@ -137,8 +140,9 @@ export function fromImage(px: { data: Uint8ClampedArray; w: number; h: number },
     s.y[k] = (pxY + rand()) / h;
     const R = data[i * 4], G = data[i * 4 + 1], B = data[i * 4 + 2];
     const luma = (0.2126 * R + 0.7152 * G + 0.0722 * B) / 255;
-    s.size[k] = 1.3 + 2.4 * (1 - luma);
-    if (opt.redIsOrange && R > 110 && R > G * 1.45 && R > B * 1.45) s.pal[k] = ORANGE;
+    s.size[k] = 1.2 + 1.8 * (1 - luma);
+    // A red kurta: a dotted warm tone (about 40% of its dots), not a solid orange block.
+    if (opt.redIsOrange && R > 110 && R > G * 1.45 && R > B * 1.45 && rand() < 0.4) s.pal[k] = ORANGE;
     else s.pal[k] = luma < 0.32 ? NAVY : luma < 0.55 ? BLUE : luma < 0.76 ? SKY : PALE;
   }
   const sparks = opt.sparks ?? 0.01;
