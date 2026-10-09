@@ -1,0 +1,304 @@
+/* ── Home: Shipped (section 6) ──────────────────────────────────────────────
+   Pasted into globals.css after the shared .dm-* block. The dust forms eight
+   tiles on the fixed canvas; the DOM tiles below are laid on them by GSAP
+   (left/top/width/height from layout.tiles()). GSAP owns `transform` on
+   .ds-tile, the copy and the CTA, so the hover lift lives on .ds-tile-in with
+   the standalone `translate` property. */
+
+/* Desktop: a 160vh section with a sticky 100vh stage (no pin spacer). */
+.ds.dm-section {
+  display: block;
+  min-height: 0;
+  height: 160vh;
+  padding: 0;
+}
+.ds-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+  padding: calc(var(--header-h) + 8px) var(--gutter) 24px;
+}
+.ds-copy {
+  max-width: 36rem;
+}
+.ds-count {
+  font-variant-numeric: tabular-nums;
+}
+.ds-ctas {
+  margin-top: 28px;
+}
+/* The right column stays empty (the dust is behind it); it only holds the reduced-motion still. */
+.ds-right {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* The tile layer spans the whole stage so tile px = viewport px while the stage is stuck.
+   It never catches the pointer itself; the tiles do. */
+.ds-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.ds-tile {
+  position: absolute; /* left/top/width/height: GSAP, from layout.tiles() */
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+}
+.ds-tile-in {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 7%;
+  border-radius: 16%;
+  box-shadow: inset 0 0 0 0 rgb(0 28 85 / 0);
+  transition: translate 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.ds-tile:hover .ds-tile-in,
+.ds-tile:focus-within .ds-tile-in {
+  translate: 0 -6px;
+  box-shadow: inset 0 0 0 1.5px rgb(0 28 85 / 0.28);
+}
+.ds-tile:focus-within .ds-tile-in {
+  box-shadow: inset 0 0 0 2px var(--color-bolt);
+}
+/* Logos: a small sky chip in the top-left corner, on top of the dust. */
+.ds-tile-techs {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgb(237 249 254 / 0.88);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 0 rgb(0 28 85 / 0.06);
+}
+.ds-tile-ic {
+  display: inline-grid;
+  place-items: center;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1;
+}
+/* Name + date: a plate along the bottom edge, so the dust shows above it. */
+.ds-tile-label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgb(237 249 254 / 0.9);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 0 rgb(0 28 85 / 0.06);
+}
+.ds-tile-link {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  text-decoration: none;
+  outline: none;
+}
+/* The repo link covers its whole tile (contained by .ds-tile-in). */
+.ds-tile-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.ds-tile-date {
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+/* Live: a sibling of .ds-tile-in (never nested in the repo link), top-right. */
+.ds-tile-live {
+  position: absolute;
+  right: 7%;
+  top: 7%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 500 10px/1.4 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+.ds-tile-live:hover,
+.ds-tile-live:focus-visible {
+  background: var(--color-bolt);
+}
+
+/* ── Flow mode: phones and reduced motion ───────────────────────────────────
+   No sticky stage; the tiles are an in-flow list of rows under the dust / still. */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    height: auto;
+    min-height: 100svh;
+  }
+  .ds-stage {
+    position: static;
+    height: auto;
+    padding: 0;
+  }
+  .ds-grid {
+    position: static;
+    width: auto;
+    height: auto;
+    display: grid;
+    gap: 10px;
+    margin-top: 28px;
+    pointer-events: auto;
+  }
+  .ds-tile {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgb(0 28 85 / 0.08);
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.55);
+  }
+  .ds-tile-in {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .ds-tile:hover .ds-tile-in,
+  .ds-tile:focus-within .ds-tile-in {
+    translate: 0 0;
+    box-shadow: none;
+  }
+  .ds-tile:focus-within {
+    border-color: var(--color-bolt);
+  }
+  .ds-tile-label {
+    order: -1;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .ds-tile-link {
+    font-size: 15px;
+    -webkit-line-clamp: 1;
+  }
+  .ds-tile-date {
+    font-size: 11px;
+  }
+  .ds-tile-techs {
+    position: static;
+    flex: none;
+    padding: 0;
+    gap: 8px;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .ds-tile-ic {
+    font-size: 20px;
+  }
+  .ds-tile-live {
+    position: static;
+    flex: none;
+    font-size: 11px;
+  }
+}
+
+/* Reduced motion on desktop: copy left, still right, the list under both. */
+@media (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    padding: calc(var(--header-h) + 8px) var(--gutter) 24px;
+  }
+  .ds-right {
+    grid-row: 1;
+    align-self: center;
+  }
+  .ds-grid {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 40px;
+  }
+}
+
+/* Phones: dust (2 × 4 tiles) in the top 42%, copy from 46svh, the list below. */
+@media (max-width: 899px) {
+  .ds.dm-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    padding: 46svh var(--gutter) 24px;
+  }
+  /* The shared mobile rule hides every non-copy child of a .dm-section; the stage
+     holds the copy here, so it stays (type selector beats the :not() chain). */
+  .ds.dm-section > div.ds-stage {
+    display: block;
+  }
+  .ds-right {
+    grid-column: auto;
+  }
+  .ds-grid {
+    grid-column: auto;
+    grid-row: auto;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 28px;
+  }
+  .ds-tile {
+    flex-wrap: wrap;
+  }
+  .ds-tile-live {
+    margin-left: auto;
+  }
+}
+/* Phones + reduced motion: no dust in the top 42%, so the still takes the top instead. */
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    padding-top: calc(var(--header-h) + 16px);
+  }
+  .ds.dm-section > div.ds-stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-right {
+    order: -1;
+    margin-bottom: 16px;
+  }
+}
