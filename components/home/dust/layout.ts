@@ -28,7 +28,7 @@ export type Layout = {
   rect: (shape: number, aspect: number) => Rect;
   /** eight tile rects, in project order */
   tiles: () => Rect[];
-  /** the three inactive-cell rail discs: centre + radius, in skill order (desktop only) */
+  /** the four rail slots (one per skill): centre + radius (desktop only) */
   rail: () => { x: number; y: number; r: number }[];
   /** globe centre + radius */
   globe: () => { x: number; y: number; r: number };
@@ -92,7 +92,7 @@ export function layout(W: number, H: number, phone: boolean): Layout {
 
   const rail = () => {
     const box = rect(SHAPES.CELLS, 1.6);
-    return [0, 1, 2].map((d) => ({ x: box.x + (0.16 / 1.6) * box.w, y: box.y + (0.2 + (d / 2) * 0.6) * box.h, r: 0.085 * box.h }));
+    return [0, 1, 2, 3].map((d) => ({ x: box.x + (0.16 / 1.6) * box.w, y: box.y + (0.2 + (d / 3) * 0.6) * box.h, r: 0.085 * box.h }));
   };
 
   const globe = () => {

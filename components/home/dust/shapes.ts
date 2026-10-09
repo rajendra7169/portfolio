@@ -360,15 +360,15 @@ export function pinch(n: number, seed = 37): Shape {
 }
 
 /**
- * The same `n` points shared between a large "active" silhouette and three
- * small discs, like one cell that has divided: `active` gets 70% of the dots.
+ * One of four cells: the active skill's illustration large on the right and
+ * the other three as small discs on a rail of four slots (the active slot is
+ * left empty, so the DOM rail button there can draw a ring instead).
  */
-export function cells(n: number, active: Shape, others: number, activeIndex: number, seed = 41): Shape {
+export function cells(n: number, active: Shape, activeIndex: number, slots = 4, seed = 41): Shape {
   const rand = rng(seed + activeIndex);
-  const A = 1.6; // layout box aspect: big shape on the right, rail of discs on the left
+  const A = 1.6; // layout box aspect
   const s = alloc(n, A);
   const big = Math.round(n * 0.7);
-  // big silhouette fills the right 72% of the box, fitted by its own aspect
   const boxW = 0.7 * A, boxH = 1, fitW = Math.min(boxW, boxH * active.aspect), fitH = fitW / active.aspect;
   const ox = A - 0.02 - fitW, oy = (1 - fitH) / 2;
   for (let k = 0; k < big; k++) {
@@ -378,20 +378,20 @@ export function cells(n: number, active: Shape, others: number, activeIndex: num
     s.size[k] = active.size[i];
     s.pal[k] = active.pal[i];
   }
-  const per = Math.floor((n - big) / others);
-  for (let d = 0; d < others; d++) {
-    const cy = 0.2 + (d / Math.max(1, others - 1)) * 0.6, cx = 0.16, r = 0.085;
-    for (let k = 0; k < per; k++) {
-      const idx = big + d * per + k;
-      if (idx >= n) break;
+  const others = Array.from({ length: slots }, (_, d) => d).filter((d) => d !== activeIndex);
+  const per = Math.floor((n - big) / others.length);
+  let idx = big;
+  for (const d of others) {
+    const cy = 0.2 + (d / (slots - 1)) * 0.6, cx = 0.16, r = 0.085;
+    for (let k = 0; k < per && idx < n; k++, idx++) {
       const a = rand() * Math.PI * 2, rr = Math.sqrt(rand()) * r;
       s.x[idx] = (cx + Math.cos(a) * rr) / A;
       s.y[idx] = cy + Math.sin(a) * rr;
       s.size[idx] = 1.4 + rand() * 1.2;
-      s.pal[idx] = rand() < 0.5 ? SKY : PALE;
+      s.pal[idx] = rr > r * 0.88 ? BLUE : rand() < 0.5 ? SKY : PALE;
     }
   }
-  for (let idx = big + others * per; idx < n; idx++) {
+  for (; idx < n; idx++) {
     s.x[idx] = s.x[idx - 1];
     s.y[idx] = s.y[idx - 1];
     s.size[idx] = 1.4;
