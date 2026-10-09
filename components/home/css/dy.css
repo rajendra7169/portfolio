@@ -1,0 +1,78 @@
+/* ── Home: Say hello (section 7) ────────────────────────────────────────────
+   Pasted into globals.css after the shared .dm-* block. The dust (kurta) is on
+   the fixed canvas in the empty right column; GSAP owns `transform` on the
+   copy, the buttons and the social <li>s, so no CSS transforms live here. */
+.dy {
+  /* The last section: room under the foot line before the page footer. */
+  padding-bottom: clamp(40px, 6vh, 72px);
+}
+.dy-copy {
+  max-width: 36rem;
+}
+.dy-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.dy-socials .socials {
+  margin: 26px 0 0;
+}
+.dy-email {
+  display: inline-block;
+  margin-top: 24px;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid rgb(0 28 85 / 0.25);
+  font: 500 14px var(--font-mono);
+  letter-spacing: 0.03em;
+  color: var(--color-navy);
+  transition: color 0.3s, border-color 0.3s;
+}
+.dy-email:hover,
+.dy-email:focus-visible {
+  color: var(--color-bolt);
+  border-color: var(--color-bolt);
+}
+/* Foot line: the HUD name tag docks into the empty slot at max scroll. */
+.dy-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(32px, 6vh, 64px);
+}
+.dy-foot-slot {
+  display: inline-block;
+  flex: none;
+  width: 160px;
+  height: 34px;
+}
+.dy-foot-text {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+/* Reduced motion: the still kurta takes the dust column, bottom-anchored like the dust. */
+.dy > .dm-still {
+  grid-column: 2;
+  align-self: end;
+  justify-self: center;
+  width: min(100%, calc(62svh * 0.7226));
+}
+@media (max-width: 899px) {
+  .dy-copy {
+    max-width: none;
+  }
+  .dy-foot {
+    margin-top: 36px;
+  }
+  /* The still sits above the copy, where the dust would be. */
+  .dy > .dm-still {
+    grid-column: 1;
+    order: -1;
+    align-self: start;
+    width: min(72%, calc(38svh * 0.7226));
+  }
+  .dy:has(> .dm-still) {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+}
