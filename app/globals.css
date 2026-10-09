@@ -502,6 +502,75 @@ main {
   width: 100%;
 }
 
+/* Shared section frame: copy on the left, dust on the right (the canvas is
+   behind everything, so the right column is deliberately empty). */
+.dm-section {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+  padding: calc(var(--header-h) + 8px) var(--gutter) 24px;
+}
+/* Copy insurance: a soft sky halo behind every copy block, in case a streak strays. */
+.dm-copy {
+  position: relative;
+}
+.dm-copy::before {
+  content: "";
+  position: absolute;
+  inset: -8% -12%;
+  z-index: -1;
+  background: radial-gradient(60% 55% at 40% 50%, rgb(237 249 254 / 0.96), rgb(237 249 254 / 0) 72%);
+  pointer-events: none;
+}
+.dm-kicker {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2f7fc1;
+}
+.dm-h2 {
+  margin-top: 10px;
+  font-size: clamp(40px, 5vw, 84px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+.dm-h2 .chars-word + .chars-word:last-child {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--color-navy);
+}
+.dm-lead {
+  max-width: 34rem;
+  margin-top: 18px;
+  font-size: clamp(16px, 1.35vw, 20px);
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+.dm-mono {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+.dm-orange {
+  color: var(--color-bolt);
+}
+@media (max-width: 899px) {
+  /* Phones: dust lives in the top 42% of the screen, copy starts below it. */
+  .dm-section {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    padding-top: 46svh;
+    gap: 16px;
+  }
+  .dm-section > :not(.dm-copy):not(.dm-still) {
+    display: none;
+  }
+}
+
 /* ── Home: hero ─────────────────────────────────────────────────────────────
    GSAP owns `transform` on these elements. Ambient CSS loops below use the
    standalone `translate` / `rotate` properties so the two never collide. */
