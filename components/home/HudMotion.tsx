@@ -124,7 +124,7 @@ export default function HudMotion({ children }: { children: ReactNode }) {
 
         // Phones: the name bar appears once the hero is left behind.
         if (!desktop) {
-          ScrollTrigger.create({ trigger: ".dk", start: "top 80%", onEnter: () => gsap.to(q(".dn-bar"), { autoAlpha: 1, duration: 0.5 }), onLeaveBack: () => gsap.to(q(".dn-bar"), { autoAlpha: 0, duration: 0.3 }) });
+          ScrollTrigger.create({ trigger: document.querySelector(".dk"), start: "top 80%", onEnter: () => gsap.to(q(".dn-bar"), { autoAlpha: 1, duration: 0.5 }), onLeaveBack: () => gsap.to(q(".dn-bar"), { autoAlpha: 0, duration: 0.3 }) });
         }
 
         // Autoplay: scroll the whole page slowly; any input cancels; Replay at the end.
