@@ -81,10 +81,22 @@ export default function HudMotion({ children }: { children: ReactNode }) {
         });
         gsap.set(here, { y: ticks[0].offsetTop + ticks[0].offsetHeight / 2 });
         ticks[0].setAttribute("aria-current", "step");
-        sections().forEach((s, i) => {
-          if (!s) return;
-          ScrollTrigger.create({ trigger: s, start: "top 55%", end: "bottom 55%", onToggle: (self) => self.isActive && setChapter(i) });
-        });
+        // Chapter bounds are measured after every refresh (pins are in place by then),
+        // so pinned sections count their whole pin as theirs.
+        let bounds: number[] = [];
+        const measure = () => {
+          bounds = CHAPTERS.map((_, i) => chapterTop(i));
+          pick();
+        };
+        const pick = () => {
+          const line = window.scrollY + window.innerHeight * 0.55;
+          let i = 0;
+          for (let k = 0; k < bounds.length; k++) if (line >= bounds[k]) i = k;
+          setChapter(i);
+        };
+        ScrollTrigger.addEventListener("refresh", measure);
+        ScrollTrigger.create({ start: 0, end: "max", onUpdate: pick });
+        measure();
 
         // The tag docks into the "— made in Kathmandu" line: at max scroll it sits in .dy-foot-slot.
         if (desktop) {
@@ -176,6 +188,7 @@ export default function HudMotion({ children }: { children: ReactNode }) {
         ScrollTrigger.create({ start: 0, end: "max", onUpdate: (self) => Math.abs(self.getVelocity()) > 50 && zeroOff() });
 
         return () => {
+          ScrollTrigger.removeEventListener("refresh", measure);
           play.removeEventListener("click", onPlay);
           window.removeEventListener("wheel", cancel);
           window.removeEventListener("touchstart", cancel);

@@ -130,7 +130,7 @@ export default function HeroDustMotion({ children }: { children: ReactNode }) {
           });
           pin = tl.scrollTrigger;
           tl.to(q(".dh-cue"), { autoAlpha: 0, duration: 0.1 }, 0)
-            .to(rest, { y: -120, autoAlpha: 0, duration: 0.45, stagger: 0.02 }, 0.1)
+            .to(rest, { y: -120, autoAlpha: 0, duration: 0.25, stagger: 0.012 }, 0.04)
             .fromTo(state, { t: SHAPES.PORTRAIT }, { t: SHAPES.NEPAL, duration: 0.68, immediateRender: false }, 0.12)
             .to(
               name,
@@ -139,10 +139,10 @@ export default function HeroDustMotion({ children }: { children: ReactNode }) {
                 y: () => tagBase().top - nameBase().top,
                 scale: () => (tagBase().h * 2.1) / nameBase().h,
                 transformOrigin: "left top",
-                duration: 0.7,
+                duration: 0.62,
                 ease: "power2.inOut",
               },
-              0.15,
+              0.23,
             )
             .set(name, { autoAlpha: 0 }, 0.85)
             .set(tag ?? {}, { autoAlpha: 1 }, 0.85)
