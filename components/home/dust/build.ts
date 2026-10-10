@@ -20,7 +20,7 @@ export async function buildShapes(engine: DustEngine): Promise<void> {
   const heroPx = await readPixels("/images/hero-800.webp", 320);
   const portrait = fromImage(heroPx, n, { seed: 7, sparks: 0 });
   // Second palette: the cyber-suit version of the same pose, shifted 2.1% left
-  // (see CyberReveal.OFFSET_X), for the press-and-hold flicker.
+  //, for the press-and-hold flicker.
   let palAlt: Uint8Array | undefined;
   try {
     const cyber = await readPixels("/images/hero-cyber-800.webp", 320);
