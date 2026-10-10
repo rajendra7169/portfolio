@@ -161,9 +161,7 @@ export default function FourMatterMotion({ children, labels }: { children: React
           ))}
         </div>
       ) : (
-        <div className="dc-still">
-          <StillShape shape="cells-row" label="Four silhouettes drawn in particles: a laptop, a cloud, a design canvas and a video timeline." />
-        </div>
+        <StillShape shape="cells-row" label="Four silhouettes drawn in particles: a laptop, a cloud, a design canvas and a video timeline." />
       )}
     </section>
   );
