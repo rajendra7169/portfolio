@@ -76,6 +76,8 @@
   position: absolute;
   left: 0;
   top: 0;
+  display: grid;
+  place-items: center;
   width: 0;
   height: 0;
   padding: 0;

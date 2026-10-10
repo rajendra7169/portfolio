@@ -571,6 +571,1392 @@ main {
   }
 }
 
+/* ── Home: HUD (.dn-) ───────────────────────────────────────────────────────
+   Fixed chrome: the name tag (the hero's name docks into it), the chapter rail
+   with the orange "you are here" dot, Play and 0g. GSAP owns transform on
+   .dn-tag, .dn-here and .dn-bar; they're placed with left/top/right/bottom. */
+.dn-tag {
+  position: fixed;
+  left: var(--gutter);
+  bottom: 28px;
+  z-index: 95;
+  display: grid;
+  gap: 3px;
+  padding: 9px 16px 9px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: rgb(237 249 254 / 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px rgb(0 28 85 / 0.1), 0 10px 24px -16px rgb(0 28 85 / 0.45);
+  color: var(--color-navy);
+  text-align: left;
+  cursor: pointer;
+}
+.dn-tag b {
+  font: 800 14px/1.2 var(--font-body);
+  letter-spacing: -0.01em;
+}
+.dn-slate,
+.dn-slate-m {
+  font: 500 10.5px/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.dn-tag:hover b,
+.dn-tag:focus-visible b {
+  color: #2f7fc1;
+}
+.motion-ok .dn-tag,
+.motion-ok .dn-bar {
+  opacity: 0;
+  visibility: hidden;
+}
+.dn-bar {
+  display: none;
+}
+
+/* Chapter rail */
+.dn-rail {
+  position: fixed;
+  right: 14px;
+  top: calc(50% - 18vh);
+  z-index: 95;
+  width: 46px;
+  height: 36vh;
+}
+.dn-rail-svg {
+  position: absolute;
+  right: 6px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  overflow: visible;
+}
+.dn-track,
+.dn-line {
+  fill: none;
+  stroke-width: 2;
+}
+.dn-track {
+  stroke: rgb(0 28 85 / 0.14);
+}
+.dn-line {
+  stroke: var(--color-navy);
+}
+.dn-ticks {
+  position: absolute;
+  inset: -10px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dn-tick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 46px;
+  height: 20px;
+  padding: 0 18px 0 0;
+  border: 0;
+  background: none;
+  color: var(--color-muted);
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+/* a notch on the line */
+.dn-tick::after {
+  content: "";
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  width: 8px;
+  height: 2px;
+  margin-top: -1px;
+  background: rgb(0 28 85 / 0.3);
+}
+.dn-tick[aria-current] {
+  color: var(--color-navy);
+  font-weight: 700;
+}
+.dn-tick-label {
+  position: absolute;
+  right: calc(100% + 4px);
+  top: 50%;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 500 11px/1.4 var(--font-mono);
+  white-space: nowrap;
+  opacity: 0;
+  translate: 8px -50%;
+  pointer-events: none;
+  transition: opacity 0.3s, translate 0.4s var(--ease);
+}
+.dn-tick:hover .dn-tick-label,
+.dn-tick:focus-visible .dn-tick-label {
+  opacity: 1;
+  translate: 0 -50%;
+}
+.dn-here {
+  position: absolute;
+  right: 3px;
+  top: -10px;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: var(--color-bolt);
+  box-shadow: 0 0 0 4px rgb(242 107 56 / 0.2);
+  pointer-events: none;
+}
+
+/* Play + 0g, stacked above the back-to-top button */
+.dn-tools {
+  position: fixed;
+  right: calc(clamp(16px, 3vw, 32px) + 9px);
+  bottom: calc(clamp(16px, 3vw, 32px) + 70px);
+  z-index: 90;
+  display: grid;
+  gap: 10px;
+}
+.dn-play,
+.dn-zero {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.75);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 1.5px rgb(0 28 85 / 0.18), var(--shadow);
+  color: var(--color-navy);
+  font: 700 12px var(--font-mono);
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.dn-play:hover,
+.dn-zero:hover,
+.dn-zero[aria-pressed="true"],
+.dn-play[data-state="pause"] {
+  background: var(--color-navy);
+  color: #fff;
+}
+.dn-play-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+.dn-zero[aria-pressed="true"] {
+  box-shadow: 0 0 0 4px rgb(242 107 56 / 0.25), var(--shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dn-tag,
+  .dn-bar,
+  .dn-tools,
+  .dn-here {
+    display: none;
+  }
+}
+@media (max-width: 899px) {
+  .dn-tag,
+  .dn-rail,
+  .dn-zero {
+    display: none;
+  }
+  .dn-bar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    z-index: 95;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 24px;
+    padding: 0 var(--gutter);
+    background: rgb(237 249 254 / 0.85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 1px 0 rgb(0 28 85 / 0.08);
+  }
+  .dn-bar b {
+    font: 800 11px var(--font-body);
+  }
+  .dn-slate-m {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* ── Home: hero (.dh-) ─────────────────────────────────────────────────────
+   His face is the dust (right half, on the fixed canvas). Copy left. Reuses the
+   shared .hx-eyebrow / .hx-name / .hx-line / .hx-stats styles. GSAP owns
+   transform on the copy children, .dh-name, .dh-line and .dh-reel-track. */
+.dh.dm-section {
+  padding-bottom: 56px;
+}
+.motion-ok .dh-copy,
+.motion-ok .dh-cue-in {
+  opacity: 0;
+}
+.dh-copy {
+  max-width: 40rem;
+}
+.dh-live {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2f7fc1;
+}
+.dh-live::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid #2f7fc1;
+  animation: dh-ping 2.2s var(--ease) infinite;
+}
+@keyframes dh-ping {
+  0% { opacity: 0.9; scale: 0.6; }
+  100% { opacity: 0; scale: 1.8; }
+}
+.dh-name.hx-name {
+  margin-top: 18px;
+  font-size: clamp(44px, min(7.4vw, 12.5vh), 132px);
+}
+.dh-build {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45em;
+  margin-top: 18px;
+  font-size: clamp(16px, min(1.55vw, 2.7vh), 24px);
+  font-weight: 500;
+}
+.dh-build-label {
+  flex: none;
+  color: var(--color-muted);
+}
+.dh-reel {
+  position: relative;
+  display: block;
+  min-width: 0;
+  height: 1.5em;
+  overflow: clip;
+}
+.dh-reel-track {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.dh-reel-item {
+  display: block;
+  height: 1.5em;
+  line-height: 1.5em;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--color-navy);
+  white-space: nowrap;
+  background: linear-gradient(transparent 62%, rgb(166 223 247 / 0.85) 62%);
+}
+.dh-intro {
+  max-width: 34rem;
+  margin-top: 14px;
+  font-size: clamp(15px, min(1.2vw, 2.2vh), 18px);
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+.dh-ctas {
+  margin-top: clamp(18px, 3vh, 26px);
+}
+.dh-socials .socials {
+  margin: clamp(16px, 2.6vh, 24px) 0 0;
+}
+.dh-stats.hx-stats {
+  margin-top: clamp(18px, 3vh, 30px);
+  padding-top: clamp(12px, 2vh, 20px);
+}
+.dh-stats .hx-stat dd {
+  font-size: clamp(28px, min(2.8vw, 5vh), 44px);
+}
+/* The portrait's hit area (GSAP sets left/top/width/height from the layout). */
+.dh-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dh-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 42% 42% 6% 6%;
+  background: transparent;
+  cursor: crosshair;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.dh-hit:focus-visible {
+  outline: 2px dashed var(--color-bolt);
+  outline-offset: 6px;
+}
+.dh-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  translate: -50% 0;
+  pointer-events: none;
+}
+.dh-cue-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font: 500 11px var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dh-stage {
+    position: static;
+    grid-column: 2;
+    align-self: end;
+    justify-self: center;
+    width: min(100%, calc(80svh * 0.883));
+    pointer-events: auto;
+  }
+  .dh-cue {
+    display: none;
+  }
+}
+@media (max-width: 899px) {
+  .dh.dm-section > .dh-stage {
+    display: block;
+  }
+  .dh-cue {
+    display: none;
+  }
+  .dh-name.hx-name {
+    font-size: clamp(48px, 15vw, 84px);
+  }
+  .dh-build {
+    flex-wrap: wrap;
+    gap: 0 0.45em;
+  }
+  .dh-reel {
+    flex: 1 1 100%;
+  }
+  .dh-reel-item {
+    font-size: 15px;
+  }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .dh.dm-section {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+  .dh.dm-section > .dh-stage {
+    order: -1;
+    grid-column: 1;
+    width: min(72%, calc(38svh * 0.883));
+  }
+}
+
+/* ── Home: Made in Kathmandu (.dk-) ────────────────────────────────────────
+   Nepal is the dust; a 160vh section with a sticky 100vh stage keeps the DOM
+   overlays aligned with it during the dwell. The connector is canvas-drawn. */
+.dk {
+  position: relative;
+  z-index: 1;
+  height: 160vh;
+}
+.dk-stage.dm-section {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 0;
+}
+.dk-copy {
+  max-width: 36rem;
+}
+.dk-anchor {
+  display: inline;
+}
+.dk-coords {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--color-navy);
+}
+.dk-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-bolt);
+  animation: dk-pulse 2s ease-out infinite;
+}
+@keyframes dk-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(242 107 56 / 0.45); }
+  100% { box-shadow: 0 0 0 12px rgb(242 107 56 / 0); }
+}
+.dk-label {
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+.dk-links {
+  margin-top: 26px;
+}
+.dk-pin-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: help;
+}
+.dk-pin-hit:focus-visible {
+  outline: 2px dashed var(--color-bolt);
+  outline-offset: 2px;
+}
+.dk-tip {
+  position: absolute;
+  bottom: calc(100% + 2px);
+  left: 50%;
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 500 12px/1.4 var(--font-mono);
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 6px;
+  pointer-events: none;
+  transition: opacity 0.3s, translate 0.4s var(--ease);
+}
+.dk-pin-hit:hover .dk-tip,
+.dk-pin-hit:focus-visible .dk-tip {
+  opacity: 1;
+  translate: -50% 0;
+}
+.dk-stage > .dm-still {
+  width: min(100%, 720px);
+}
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .dk {
+    height: auto;
+  }
+  .dk-stage.dm-section {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+  }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .dk-stage.dm-section {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+  .dk-stage > .dm-still {
+    order: -1;
+  }
+}
+
+/* ── Home: Blazify (.db-) ──────────────────────────────────────────────────
+   The dust is a phone (then a desktop window) with a live equalizer. The two
+   sub-states' copy share one grid cell on desktop; GSAP crossfades them.
+   GSAP owns transform on .db-state, .db-word, .db-knob, .db-note, the pills,
+   chips and links; visuals that move on hover live on inner children. */
+.db-copy {
+  max-width: 38rem;
+}
+.db-h2.dm-h2 {
+  font-size: clamp(48px, min(6vw, 11vh), 100px);
+}
+.db-h2-text {
+  display: inline-block;
+}
+.db-states {
+  display: grid;
+}
+.db-sub {
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #2f7fc1;
+}
+.db-desc {
+  max-width: 34rem;
+  margin-top: 14px;
+  font-size: clamp(16px, min(1.3vw, 2.4vh), 20px);
+  line-height: 1.6;
+  color: var(--color-navy);
+}
+.db-word {
+  display: inline-block;
+}
+/* the synced-lyric playhead */
+.db-track {
+  position: relative;
+  max-width: 26rem;
+  height: 10px;
+  margin-top: 16px;
+}
+.db-track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--color-card);
+}
+.db-knob {
+  position: absolute;
+  left: 0;
+  top: -6px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+.db-knob:disabled {
+  cursor: default;
+}
+.db-knob-in {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-bolt);
+  box-shadow: 0 0 0 4px rgb(242 107 56 / 0.18);
+  transition: scale 0.3s var(--ease);
+}
+.db-knob:not(:disabled):hover .db-knob-in,
+.db-knob:focus-visible .db-knob-in {
+  scale: 1.35;
+}
+.db-knob:focus-visible {
+  outline: 2px dashed var(--color-bolt);
+  outline-offset: 2px;
+}
+.db-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+  list-style: none;
+}
+.db-pill {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgb(166 223 247 / 0.45);
+  color: var(--color-navy);
+  font: 500 12px/1.4 var(--font-mono);
+}
+.db-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.db-chip {
+  padding: 8px 15px;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 0.6);
+  box-shadow: inset 0 0 0 1.5px rgb(0 28 85 / 0.15);
+  color: var(--color-muted);
+  font: 600 13px var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.db-chip:hover {
+  color: var(--color-navy);
+  box-shadow: inset 0 0 0 1.5px var(--color-navy);
+}
+.db-chip[aria-current] {
+  background: var(--color-navy);
+  color: #fff;
+  box-shadow: none;
+}
+.db-stat {
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+.db-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.db-play-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.db-play[aria-pressed="true"] {
+  background: var(--color-bolt);
+}
+.db-notes {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.db-note {
+  position: absolute;
+  left: -0.3em;
+  top: -0.6em;
+  font-size: 20px;
+  font-style: normal;
+  line-height: 1;
+  color: var(--color-navy);
+  opacity: 0;
+  visibility: hidden;
+}
+.db-note:nth-child(3n) {
+  color: #2f7fc1;
+}
+.db-note:nth-child(7n) {
+  color: var(--color-bolt);
+}
+.db > .dm-still {
+  grid-column: 2;
+  justify-self: center;
+  width: min(100%, 38svh);
+}
+
+/* Desktop with motion: the two sub-states stack; B waits hidden. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .db-state {
+    grid-area: 1 / 1;
+  }
+  .motion-ok .db-state--b {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+/* Short desktops: the pills give way so the links still fit. */
+@media (min-width: 900px) and (max-height: 760px) {
+  .db-pills {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .db-state--b {
+    margin-top: 22px;
+  }
+  .db-track {
+    display: none;
+  }
+}
+@media (max-width: 899px) {
+  .db-state--b {
+    margin-top: 34svh;
+  }
+  .db-note:nth-child(n + 13) {
+    display: none;
+  }
+  .db > .dm-still {
+    grid-column: 1;
+    order: -1;
+    width: min(60%, 32svh);
+  }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .db.dm-section {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+  .db-state--b {
+    margin-top: 22px;
+  }
+}
+
+/* ── Home: Listen Together (.dg-) ───────────────────────────────────────────
+   The globe is dust on the fixed canvas; only the copy and one hit button are
+   DOM. GSAP owns transform on .dg-h2 .char, .dg-lead, .dg-coords, .dg-tag,
+   .dg-ic and .dg-points li — the hover lift goes on the icon's svg (translate). */
+.dg-copy {
+  max-width: 40rem;
+}
+.dg-coords {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.dg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-bolt);
+  box-shadow: 0 0 0 4px rgb(242 107 56 / 0.18);
+}
+.dg-tag {
+  max-width: 32rem;
+  margin-top: 22px;
+  font-size: clamp(15px, min(1.15vw, 2.2vh), 18px);
+  line-height: 1.55;
+  color: #2f4f80;
+}
+.dg-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 18px 0 20px;
+  list-style: none;
+}
+.dg-ic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: clamp(22px, min(1.9vw, 3.6vh), 30px);
+  line-height: 1;
+}
+.dg-ic svg {
+  transition: translate 0.35s var(--ease);
+}
+.dg-ic:hover svg,
+.dg-ic:focus-visible svg {
+  translate: 0 -5px;
+}
+.dg-ic:hover .tech-tip,
+.dg-ic:focus-visible .tech-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.dg-points {
+  gap: 9px;
+  max-width: 34rem;
+  font-size: clamp(14px, min(1.05vw, 2vh), 16px);
+  line-height: 1.5;
+}
+/* Transparent disc over the globe rect; GSAP sets left/top/width/height from the layout. */
+.dg-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+.dg-hit.is-grabbing {
+  cursor: grabbing;
+}
+.dg-hit:focus-visible {
+  outline: 2px dashed var(--color-bolt);
+  outline-offset: 6px;
+}
+/* Short desktop screens: the summary line goes so the points still fit. */
+@media (min-width: 900px) and (max-height: 820px) {
+  .dg-tag {
+    display: none;
+  }
+  .dg-h2 {
+    font-size: clamp(40px, 8vh, 64px);
+  }
+  .dg-logos {
+    margin: 14px 0 16px;
+  }
+}
+@media (max-width: 899px) {
+  /* The globe sits in the top 42% of the screen; the hit follows it (fixed) only while this section is on screen. */
+  .dg.dm-section > button.dg-hit {
+    display: none;
+    position: fixed;
+  }
+  .dg.dm-section > button.dg-hit.is-on {
+    display: block;
+  }
+  .dg-tag {
+    margin-top: 16px;
+  }
+}
+
+/* ── Home: Four kinds of matter (.dc-) ─────────────────────────────────────
+   The globe divides into four cells. Desktop: the four steps share one grid
+   cell and the rail buttons sit on the dust discs (GSAP sets their box from
+   the layout). GSAP owns transform on .dc-step, .char, .dc-fade, .dc-ic and
+   .dc-rail-fill; the icon hover lift is on the svg. */
+.dc-copy {
+  display: grid;
+  max-width: 38rem;
+}
+.dc-step {
+  min-width: 0;
+}
+.dc-title.dm-h2 {
+  font-size: clamp(40px, min(4.6vw, 8.6vh), 80px);
+}
+.dc-tag.dm-lead {
+  margin-top: 14px;
+  font-size: clamp(15px, min(1.2vw, 2.2vh), 18px);
+}
+.dc-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 18px 0 20px;
+  list-style: none;
+}
+.dc-ic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: clamp(22px, min(1.9vw, 3.6vh), 30px);
+  line-height: 1;
+}
+.dc-ic svg {
+  transition: translate 0.35s var(--ease);
+}
+.dc-ic:hover svg,
+.dc-ic:focus-visible svg {
+  translate: 0 -5px;
+}
+.dc-ic:hover .tech-tip,
+.dc-ic:focus-visible .tech-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.dc-points {
+  gap: 9px;
+  max-width: 34rem;
+  font-size: clamp(14px, min(1.05vw, 2vh), 16px);
+  line-height: 1.5;
+}
+
+/* Rail: buttons over the dust discs, a track joining them */
+.dc-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dc-rail-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 0;
+  background: rgb(0 28 85 / 0.1);
+}
+.dc-rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-navy);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.dc-rail-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.dc-rail-btn::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1.5px dashed rgb(0 28 85 / 0.25);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s, border-color 0.3s;
+}
+.dc-rail-btn:hover::after,
+.dc-rail-btn:focus-visible::after {
+  opacity: 1;
+}
+.dc-rail-btn[aria-current]::after {
+  opacity: 1;
+  border: 2px solid var(--color-bolt);
+  background: rgb(237 249 254 / 0.6);
+}
+.dc-rail-no {
+  position: relative;
+  z-index: 1;
+  font: 700 13px var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--color-navy);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.dc-rail-btn[aria-current] .dc-rail-no {
+  opacity: 1;
+}
+.dc > .dm-still {
+  grid-column: 1 / -1;
+  order: -1;
+}
+
+/* Desktop with motion: the steps stack in one cell; only the live one shows. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .dc-step {
+    grid-area: 1 / 1;
+  }
+  .motion-ok .dc-step:not(:first-child) {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@media (min-width: 900px) and (max-height: 760px) {
+  .dc-tag.dm-lead {
+    display: none;
+  }
+}
+/* Reduced motion: the row of four stills on top, the steps in a 2 × 2 grid. */
+@media (prefers-reduced-motion: reduce) {
+  .dc.dm-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dc-copy {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 56px 48px;
+    max-width: none;
+  }
+}
+@media (max-width: 899px) {
+  .dc-step + .dc-step {
+    margin-top: 40svh;
+  }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .dc.dm-section {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+  .dc-copy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dc-step + .dc-step {
+    margin-top: 0;
+  }
+}
+
+/* ── Home: Shipped (section 6) ──────────────────────────────────────────────
+   Pasted into globals.css after the shared .dm-* block. The dust forms eight
+   tiles on the fixed canvas; the DOM tiles below are laid on them by GSAP
+   (left/top/width/height from layout.tiles()). GSAP owns `transform` on
+   .ds-tile, the copy and the CTA, so the hover lift lives on .ds-tile-in with
+   the standalone `translate` property. */
+
+/* Desktop: a 160vh section with a sticky 100vh stage (no pin spacer). */
+.ds.dm-section {
+  display: block;
+  min-height: 0;
+  height: 160vh;
+  padding: 0;
+}
+.ds-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+  padding: calc(var(--header-h) + 8px) var(--gutter) 24px;
+}
+.ds-copy {
+  max-width: 36rem;
+}
+.ds-count {
+  font-variant-numeric: tabular-nums;
+}
+.ds-ctas {
+  margin-top: 28px;
+}
+/* The right column stays empty (the dust is behind it); it only holds the reduced-motion still. */
+.ds-right {
+  grid-column: 2;
+  min-width: 0;
+}
+
+/* The tile layer spans the whole stage so tile px = viewport px while the stage is stuck.
+   It never catches the pointer itself; the tiles do. */
+.ds-grid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.ds-tile {
+  position: absolute; /* left/top/width/height: GSAP, from layout.tiles() */
+  left: 0;
+  top: 0;
+  pointer-events: auto;
+}
+.ds-tile-in {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 7%;
+  border-radius: 16%;
+  box-shadow: inset 0 0 0 0 rgb(0 28 85 / 0);
+  transition: translate 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+.ds-tile:hover .ds-tile-in,
+.ds-tile:focus-within .ds-tile-in {
+  translate: 0 -6px;
+  box-shadow: inset 0 0 0 1.5px rgb(0 28 85 / 0.28);
+}
+.ds-tile:focus-within .ds-tile-in {
+  box-shadow: inset 0 0 0 2px var(--color-bolt);
+}
+/* Logos: a small sky chip in the top-left corner, on top of the dust. */
+.ds-tile-techs {
+  position: absolute;
+  left: 7%;
+  top: 7%;
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  background: rgb(237 249 254 / 0.88);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 0 rgb(0 28 85 / 0.06);
+}
+.ds-tile-ic {
+  display: inline-grid;
+  place-items: center;
+  font-size: clamp(12px, 1vw, 15px);
+  line-height: 1;
+}
+/* Name + date: a plate along the bottom edge, so the dust shows above it. */
+.ds-tile-label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgb(237 249 254 / 0.9);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 0 rgb(0 28 85 / 0.06);
+}
+.ds-tile-link {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: clamp(11px, 0.9vw, 13px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-navy);
+  text-decoration: none;
+  outline: none;
+}
+/* The repo link covers its whole tile (contained by .ds-tile-in). */
+.ds-tile-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.ds-tile-date {
+  font: 500 10px var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+/* Live: a sibling of .ds-tile-in (never nested in the repo link), top-right. */
+.ds-tile-live {
+  position: absolute;
+  right: 7%;
+  top: 7%;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 500 10px/1.4 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: background-color 0.3s, color 0.3s;
+}
+.ds-tile-live:hover,
+.ds-tile-live:focus-visible {
+  background: var(--color-bolt);
+}
+
+/* ── Flow mode: phones and reduced motion ───────────────────────────────────
+   No sticky stage; the tiles are an in-flow list of rows under the dust / still. */
+@media (max-width: 899px), (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    height: auto;
+    min-height: 100svh;
+  }
+  .ds-stage {
+    position: static;
+    height: auto;
+    padding: 0;
+  }
+  .ds-grid {
+    position: static;
+    width: auto;
+    height: auto;
+    display: grid;
+    gap: 10px;
+    margin-top: 28px;
+    pointer-events: auto;
+  }
+  .ds-tile {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgb(0 28 85 / 0.08);
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.55);
+  }
+  .ds-tile-in {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    min-width: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .ds-tile:hover .ds-tile-in,
+  .ds-tile:focus-within .ds-tile-in {
+    translate: 0 0;
+    box-shadow: none;
+  }
+  .ds-tile:focus-within {
+    border-color: var(--color-bolt);
+  }
+  .ds-tile-label {
+    order: -1;
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .ds-tile-link {
+    font-size: 15px;
+    -webkit-line-clamp: 1;
+  }
+  .ds-tile-date {
+    font-size: 11px;
+  }
+  .ds-tile-techs {
+    position: static;
+    flex: none;
+    padding: 0;
+    gap: 8px;
+    background: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .ds-tile-ic {
+    font-size: 20px;
+  }
+  .ds-tile-live {
+    position: static;
+    flex: none;
+    font-size: 11px;
+  }
+}
+
+/* Reduced motion on desktop: copy left, still right, the list under both. */
+@media (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    padding: calc(var(--header-h) + 8px) var(--gutter) 24px;
+  }
+  .ds-right {
+    grid-row: 1;
+    align-self: center;
+  }
+  .ds-grid {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 40px;
+  }
+}
+
+/* Phones: dust (2 × 4 tiles) in the top 42%, copy from 46svh, the list below. */
+@media (max-width: 899px) {
+  .ds.dm-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+    padding: 46svh var(--gutter) 24px;
+  }
+  /* The shared mobile rule hides every non-copy child of a .dm-section; the stage
+     holds the copy here, so it stays (type selector beats the :not() chain). */
+  .ds.dm-section > div.ds-stage {
+    display: block;
+  }
+  .ds-right {
+    grid-column: auto;
+  }
+  .ds-grid {
+    grid-column: auto;
+    grid-row: auto;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 28px;
+  }
+  .ds-tile {
+    flex-wrap: wrap;
+  }
+  .ds-tile-live {
+    margin-left: auto;
+  }
+}
+/* Phones + reduced motion: no dust in the top 42%, so the still takes the top instead. */
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .ds.dm-section {
+    padding-top: calc(var(--header-h) + 16px);
+  }
+  .ds.dm-section > div.ds-stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-right {
+    order: -1;
+    margin-bottom: 16px;
+  }
+}
+
+/* ── Home: Say hello (section 7) ────────────────────────────────────────────
+   Pasted into globals.css after the shared .dm-* block. The dust (kurta) is on
+   the fixed canvas in the empty right column; GSAP owns `transform` on the
+   copy, the buttons and the social <li>s, so no CSS transforms live here. */
+.dy {
+  /* The last section: room under the foot line before the page footer. */
+  padding-bottom: clamp(40px, 6vh, 72px);
+}
+.dy-copy {
+  max-width: 36rem;
+}
+.dy-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.dy-socials .socials {
+  margin: 26px 0 0;
+}
+.dy-email {
+  display: inline-block;
+  margin-top: 24px;
+  padding-bottom: 2px;
+  border-bottom: 1.5px solid rgb(0 28 85 / 0.25);
+  font: 500 14px var(--font-mono);
+  letter-spacing: 0.03em;
+  color: var(--color-navy);
+  transition: color 0.3s, border-color 0.3s;
+}
+.dy-email:hover,
+.dy-email:focus-visible {
+  color: var(--color-bolt);
+  border-color: var(--color-bolt);
+}
+/* Foot line: the HUD name tag docks into the empty slot at max scroll. */
+.dy-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: clamp(32px, 6vh, 64px);
+}
+.dy-foot-slot {
+  display: inline-block;
+  flex: none;
+  width: 160px;
+  height: 34px;
+}
+.dy-foot-text {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+/* Reduced motion: the still kurta takes the dust column, bottom-anchored like the dust. */
+.dy > .dm-still {
+  grid-column: 2;
+  align-self: end;
+  justify-self: center;
+  width: min(100%, calc(62svh * 0.7226));
+}
+@media (max-width: 899px) {
+  .dy-copy {
+    max-width: none;
+  }
+  .dy-foot {
+    margin-top: 36px;
+  }
+  /* The still sits above the copy, where the dust would be. */
+  .dy > .dm-still {
+    grid-column: 1;
+    order: -1;
+    align-self: start;
+    width: min(72%, calc(38svh * 0.7226));
+  }
+  .dy:has(> .dm-still) {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+}
+
 /* ── Home: hero ─────────────────────────────────────────────────────────────
    GSAP owns `transform` on these elements. Ambient CSS loops below use the
    standalone `translate` / `rotate` properties so the two never collide. */
