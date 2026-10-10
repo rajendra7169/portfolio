@@ -98,7 +98,7 @@ export default function ListenTogetherMotion({ children }: { children: ReactNode
               gsap.fromTo(
                 state,
                 { t: SHAPES.WINDOW },
-                { t: SHAPES.GLOBE, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "top top", scrub: 0.8 } },
+                { t: SHAPES.GLOBE, ease: "none", immediateRender: false, scrollTrigger: { trigger: el, start: "top bottom", end: "top top", scrub: 0.8 } },
               );
             }),
           );

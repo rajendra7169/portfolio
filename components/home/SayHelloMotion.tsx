@@ -31,9 +31,13 @@ export default function SayHelloMotion({ children }: { children: ReactNode }) {
         let dead = false;
 
         // Dust: tiles → kurta on the way in, and the slow breathe while we're here.
+        // One tween at a time (overwrite: "auto" would also kill other sections' scrubbed t tweens).
+        let tw: gsap.core.Tween | undefined, tw2: gsap.core.Tween | undefined;
         const morph = inContext(ctx, (t: number, wander: number) => {
-          gsap.to(state, { t, duration: desktop ? 1.6 : 1.4, ease: "power2.inOut", overwrite: "auto" });
-          gsap.to(state, { wander, duration: 1, ease: "power2.out", overwrite: "auto" });
+          tw?.kill();
+          tw2?.kill();
+          tw = gsap.to(state, { t, duration: desktop ? 1.6 : 1.4, ease: "power2.inOut" });
+          tw2 = gsap.to(state, { wander, duration: 1, ease: "power2.out" });
         });
         const arrive = ScrollTrigger.create({
           trigger: el,

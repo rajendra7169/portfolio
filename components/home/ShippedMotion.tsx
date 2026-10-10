@@ -36,8 +36,11 @@ export default function ShippedMotion({ children }: { children: ReactNode }) {
         const offs: (() => void)[] = [];
 
         /* ── Dust: cells → tiles on the way in, back on the way out ────────── */
+        // One tween at a time (overwrite: "auto" would also kill other sections' scrubbed t tweens).
+        let tw: gsap.core.Tween | undefined;
         const morph = inContext(ctx, (t: number) => {
-          gsap.to(state, { t, duration: desktop ? 1.6 : 1.4, ease: "power2.inOut", overwrite: "auto" });
+          tw?.kill();
+          tw = gsap.to(state, { t, duration: desktop ? 1.6 : 1.4, ease: "power2.inOut" });
         });
         let want = -1;
         // Shapes build lazily; a morph to one that isn't there yet would just hold.
