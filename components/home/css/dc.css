@@ -1,0 +1,164 @@
+/* ── Home: Four kinds of matter (.dc-) ─────────────────────────────────────
+   The globe divides into four cells. Desktop: the four steps share one grid
+   cell and the rail buttons sit on the dust discs (GSAP sets their box from
+   the layout). GSAP owns transform on .dc-step, .char, .dc-fade, .dc-ic and
+   .dc-rail-fill; the icon hover lift is on the svg. */
+.dc-copy {
+  display: grid;
+  max-width: 38rem;
+}
+.dc-step {
+  min-width: 0;
+}
+.dc-title.dm-h2 {
+  font-size: clamp(40px, min(4.6vw, 8.6vh), 80px);
+}
+.dc-tag.dm-lead {
+  margin-top: 14px;
+  font-size: clamp(15px, min(1.2vw, 2.2vh), 18px);
+}
+.dc-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 18px 0 20px;
+  list-style: none;
+}
+.dc-ic {
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: clamp(22px, min(1.9vw, 3.6vh), 30px);
+  line-height: 1;
+}
+.dc-ic svg {
+  transition: translate 0.35s var(--ease);
+}
+.dc-ic:hover svg,
+.dc-ic:focus-visible svg {
+  translate: 0 -5px;
+}
+.dc-ic:hover .tech-tip,
+.dc-ic:focus-visible .tech-tip {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.dc-points {
+  gap: 9px;
+  max-width: 34rem;
+  font-size: clamp(14px, min(1.05vw, 2vh), 16px);
+  line-height: 1.5;
+}
+
+/* Rail: buttons over the dust discs, a track joining them */
+.dc-rail {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dc-rail-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 0;
+  background: rgb(0 28 85 / 0.1);
+}
+.dc-rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-navy);
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.dc-rail-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.dc-rail-btn::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1.5px dashed rgb(0 28 85 / 0.25);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s, border-color 0.3s;
+}
+.dc-rail-btn:hover::after,
+.dc-rail-btn:focus-visible::after {
+  opacity: 1;
+}
+.dc-rail-btn[aria-current]::after {
+  opacity: 1;
+  border: 2px solid var(--color-bolt);
+  background: rgb(237 249 254 / 0.6);
+}
+.dc-rail-no {
+  position: relative;
+  z-index: 1;
+  font: 700 13px var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--color-navy);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.dc-rail-btn[aria-current] .dc-rail-no {
+  opacity: 1;
+}
+.dc > .dm-still {
+  grid-column: 1 / -1;
+  order: -1;
+}
+
+/* Desktop with motion: the steps stack in one cell; only the live one shows. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .dc-step {
+    grid-area: 1 / 1;
+  }
+  .motion-ok .dc-step:not(:first-child) {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@media (min-width: 900px) and (max-height: 760px) {
+  .dc-tag.dm-lead {
+    display: none;
+  }
+}
+/* Reduced motion: the row of four stills on top, the steps in a 2 × 2 grid. */
+@media (prefers-reduced-motion: reduce) {
+  .dc.dm-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dc-copy {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 56px 48px;
+    max-width: none;
+  }
+}
+@media (max-width: 899px) {
+  .dc-step + .dc-step {
+    margin-top: 40svh;
+  }
+}
+@media (max-width: 899px) and (prefers-reduced-motion: reduce) {
+  .dc.dm-section {
+    padding-top: calc(var(--header-h) + 8px);
+  }
+  .dc-copy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dc-step + .dc-step {
+    margin-top: 0;
+  }
+}
