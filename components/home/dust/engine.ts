@@ -553,7 +553,8 @@ export class DustEngine {
     if (t < SHAPES.NEPAL - 0.2 || t > SHAPES.NEPAL + 0.5) return;
     const sx = this.px[this.PIN], sy = this.py[this.PIN];
     const ex = x2, ey = y2 + stageY;
-    const mx = ex + 36, my = sy;
+    // Up from the pin, then left into the headline: never through the copy column.
+    const mx = sx, my = ey;
     const pts = [[sx, sy], [mx, my], [ex, ey]];
     const lens = [Math.hypot(mx - sx, my - sy), Math.hypot(ex - mx, ey - my)];
     const total = lens[0] + lens[1];
@@ -581,16 +582,22 @@ export class DustEngine {
     const { x: cx, y: cy, r: R } = this.layout.globe();
     const px = this.gX[this.PIN], py = this.gY[this.PIN];
     let n = 0;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.2;
+    // Arcs fade out as Kathmandu turns away and back in as it comes round.
+    const pinVis = Math.min(1, Math.max(0, (this.gZ[this.PIN] + 0.35) / 0.55));
+    if (pinVis <= 0.02) {
+      this.arcsDrawn = 0;
+      return;
+    }
     for (let k = 1; k < this.ORANGE.length; k++) {
       const i = this.ORANGE[k];
       const z = this.gZ[i];
-      if (z < 0.05 || this.gZ[this.PIN] < -0.2) continue;
+      if (z < 0.05) continue;
       const lx = this.gX[i], ly = this.gY[i];
       const mx = (lx + px) / 2, my = (ly + py) / 2;
       const dx = mx - cx, dy = my - cy, d = Math.hypot(dx, dy) || 1;
       const qx = mx + (dx / d) * 0.22 * R, qy = my + (dy / d) * 0.22 * R;
-      ctx.strokeStyle = `rgba(47, 127, 193, ${(0.35 * this.state.arcs * Math.min(1, z + 0.3)).toFixed(3)})`;
+      ctx.strokeStyle = `rgba(47, 127, 193, ${(0.55 * pinVis * this.state.arcs * Math.min(1, z + 0.3)).toFixed(3)})`;
       ctx.beginPath();
       ctx.moveTo(lx, ly);
       ctx.quadraticCurveTo(qx, qy, px, py);
