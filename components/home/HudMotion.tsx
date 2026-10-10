@@ -50,8 +50,11 @@ export default function HudMotion({ children }: { children: ReactNode }) {
       let current = 0;
       const onKey = (e: KeyboardEvent) => {
         if (e.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-        if (e.key === "]") go(chapterTop(Math.min(CHAPTERS.length - 1, current + 1)));
-        if (e.key === "[") go(chapterTop(Math.max(0, current - 1)));
+        if (e.key !== "]" && e.key !== "[") return;
+        // The chapter we're in: the last one whose top is at or above the viewport top.
+        let here = 0;
+        CHAPTERS.forEach((_, i) => void (chapterTop(i) <= window.scrollY + 8 && (here = i)));
+        go(chapterTop(e.key === "]" ? Math.min(CHAPTERS.length - 1, here + 1) : Math.max(0, here - 1)));
       };
       window.addEventListener("keydown", onKey);
 
