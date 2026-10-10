@@ -1,12 +1,10 @@
 import Motion from "@/components/Motion";
-import Hero from "@/components/hero/Hero";
-import WhatIDo from "@/components/wid/WhatIDo";
+import Home from "@/components/home/Home";
 
-export default function Home() {
+export default function Page() {
   return (
     <Motion>
-      <Hero />
-      <WhatIDo />
+      <Home />
     </Motion>
   );
 }
