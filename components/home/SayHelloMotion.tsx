@@ -63,6 +63,7 @@ export default function SayHelloMotion({ children }: { children: ReactNode }) {
 
         return () => {
           dead = true;
+          state.wander = 1;
         };
       });
     },

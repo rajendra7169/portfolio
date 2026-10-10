@@ -86,6 +86,27 @@ export default function HudMotion({ children }: { children: ReactNode }) {
           ScrollTrigger.create({ trigger: s, start: "top 55%", end: "bottom 55%", onToggle: (self) => self.isActive && setChapter(i) });
         });
 
+        // The tag docks into the "— made in Kathmandu" line: at max scroll it sits in .dy-foot-slot.
+        if (desktop) {
+          const slot = document.querySelector<HTMLElement>(".dy-foot-slot");
+          if (slot) {
+            const tagBase = () => {
+              const r = tag.getBoundingClientRect();
+              return { left: r.left - (gsap.getProperty(tag, "x") as number), top: r.top - (gsap.getProperty(tag, "y") as number) };
+            };
+            const slotDoc = () => {
+              const r = slot.getBoundingClientRect();
+              return { left: r.left, top: r.top + window.scrollY };
+            };
+            gsap.to(tag, {
+              x: () => slotDoc().left - tagBase().left,
+              y: () => slotDoc().top - ScrollTrigger.maxScroll(window) - tagBase().top,
+              ease: "none",
+              scrollTrigger: { trigger: slot, start: "top bottom", end: "max", scrub: 0.5, invalidateOnRefresh: true },
+            });
+          }
+        }
+
         // Phones: the name bar appears once the hero is left behind.
         if (!desktop) {
           ScrollTrigger.create({ trigger: ".dk", start: "top 80%", onEnter: () => gsap.to(q(".dn-bar"), { autoAlpha: 1, duration: 0.5 }), onLeaveBack: () => gsap.to(q(".dn-bar"), { autoAlpha: 0, duration: 0.3 }) });
