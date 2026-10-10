@@ -569,6 +569,19 @@ main {
   .dm-section > :not(.dm-copy):not(.dm-still) {
     display: none;
   }
+  /* The dust is fixed in the top 42%; copy scrolls up over it as a frosted sheet. */
+  .dm-copy {
+    margin-inline: -14px;
+    padding: 18px 14px;
+    border-radius: 22px;
+    background: rgb(237 249 254 / 0.86);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 -18px 30px -24px rgb(0 28 85 / 0.25);
+  }
+  .dm-copy::before {
+    display: none;
+  }
 }
 
 /* ── Home: HUD (.dn-) ───────────────────────────────────────────────────────
@@ -1758,7 +1771,8 @@ main {
     padding: 12px 14px;
     border: 1px solid rgb(0 28 85 / 0.08);
     border-radius: 12px;
-    background: rgb(255 255 255 / 0.55);
+    background: rgb(255 255 255 / 0.88);
+    backdrop-filter: blur(6px);
   }
   .ds-tile-in {
     position: relative;

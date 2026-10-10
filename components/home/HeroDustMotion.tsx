@@ -149,7 +149,7 @@ export default function HeroDustMotion({ children }: { children: ReactNode }) {
             .to({}, { duration: 0.15 }, 0.85);
         } else {
           // Phones: no pin. The name fades with the copy as the hero leaves; Kathmandu takes the dust.
-          gsap.to(copy, { autoAlpha: 0.15, y: -40, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom 30%", scrub: 0.6 } });
+          gsap.fromTo(copy, { autoAlpha: 1, y: 0 }, { autoAlpha: 0.15, y: -40, ease: "none", immediateRender: false, scrollTrigger: { trigger: el, start: "top top", end: "bottom 30%", scrub: 0.6 } });
         }
 
         return () => {
