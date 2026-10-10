@@ -77,7 +77,11 @@ export default function HeroDustMotion({ children }: { children: ReactNode }) {
             // Only stream in from the scatter when we're actually at the top (a reload
             // mid-page leaves t to the section that owns it).
             if (window.scrollY < 8 && state.t < 0)
-              engine.whenReady(SHAPES.PORTRAIT).then(inContext(ctx, () => !dead && window.scrollY < 8 && gsap.to(state, { t: SHAPES.PORTRAIT, duration: 1.8, ease: "power2.out" })));
+              engine.whenReady(SHAPES.PORTRAIT).then(
+                inContext(ctx, () => {
+                  if (!dead && window.scrollY < 8) gsap.to(state, { t: SHAPES.PORTRAIT, duration: 1.8, ease: "power2.out" });
+                }),
+              );
           }),
         );
 

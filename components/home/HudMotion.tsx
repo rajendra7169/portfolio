@@ -4,7 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { useLenis } from "@/components/SmoothScroll";
 import { useDust } from "./dust/DustProvider";
-import { CHAPTERS } from "./Hud";
+import { CHAPTERS } from "./chapters";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 

@@ -2,16 +2,7 @@
 // chapter rail with the orange "you are here" dot, Play (autoplay) and 0g.
 import { profile } from "@/lib/content";
 import HudMotion from "./HudMotion";
-
-export const CHAPTERS = [
-  { id: "dh", label: "Surface" },
-  { id: "dk", label: "Made in Kathmandu" },
-  { id: "db", label: "Blazify" },
-  { id: "dg", label: "Listen Together" },
-  { id: "dc", label: "Four kinds of matter" },
-  { id: "ds", label: "Shipped" },
-  { id: "dy", label: "Say hello" },
-];
+import { CHAPTERS } from "./chapters";
 
 export default function Hud() {
   return (
