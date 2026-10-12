@@ -138,7 +138,9 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             gsap
               .timeline({
                 defaults: { ease: "none" },
-                scrollTrigger: { trigger: el, start: "top top", end: "+=75%", scrub: 0.6, pin: true, refreshPriority: 1 },
+                // pinSpacing: false lets What I Do slide up over the hero while it comes apart,
+                // instead of an empty hero scrolling away after its content has faded.
+                scrollTrigger: { trigger: el, start: "top top", end: "+=75%", scrub: 0.6, pin: true, pinSpacing: false, refreshPriority: 1 },
               })
               .to(q(".hx-copy"), { y: -140, autoAlpha: 0 }, 0)
               .to(q(".hx-stage"), { scale: 0.72, y: -40 }, 0)

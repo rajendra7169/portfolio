@@ -1271,7 +1271,13 @@ main {
   padding: clamp(72px, 12vh, 140px) var(--gutter) 40px;
   overflow: clip;
 }
+/* Desktop: the hero stays pinned as it comes apart, and this section rises
+   over it like a sheet (HeroMotion pins it without spacing). */
 .wd.is-deck {
+  z-index: 1;
+  background: var(--color-sky);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -28px 60px -30px rgb(0 28 85 / 0.35);
   height: 100svh;
   display: flex;
   flex-direction: column;
