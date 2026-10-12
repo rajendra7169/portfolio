@@ -1,0 +1,1015 @@
+/* ══ Tally's world: the living forest ══════════════════════════════════════
+   Sky colours, tree colours and season grounds are the app's own. The sky
+   variables are set from Kathmandu's clock by TallyMotion; these are noon's.
+   Bricolage Grotesque for the big type, Inter to read. */
+.w-tl {
+  --sky-top: #bfdbfe;
+  --sky-bottom: #fef3c7;
+  --sun-x: 0.5;
+  --sun-y: 0.15;
+  --sun-o: 1;
+  --moon-x: 0.5;
+  --moon-y: 0.5;
+  --moon-o: 0;
+  --ground-a: #a7f3d0;
+  --ground-b: #6ee7b7;
+  --fall: #fcd34d;
+  --ink: #0d2818;
+  --muted: #3f5a4b;
+  --paper: #f1f8f2;
+  --panel: rgb(255 255 255 / 0.72);
+  --panel-line: rgb(13 40 24 / 0.08);
+  --leaf: #15803d;
+  --go: #047857;
+  position: relative;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--tl-body), system-ui, sans-serif;
+  transition: background-color 0.6s, color 0.6s;
+}
+.w-tl[data-tone="dark"] {
+  --ink: #e8f1ff;
+  --muted: #a9bdd3;
+  --paper: #0c182a;
+  --panel: rgb(12 24 42 / 0.66);
+  --panel-line: rgb(232 241 255 / 0.1);
+  --leaf: #86efac;
+}
+.w-tl[data-season="spring"] { --ground-a: #bbf7d0; --ground-b: #86efac; --fall: #f9a8d4; }
+.w-tl[data-season="autumn"] { --ground-a: #fde68a; --ground-b: #fbbf24; --fall: #f97316; }
+.w-tl[data-season="winter"] { --ground-a: #e2e8f0; --ground-b: #cbd5e1; --fall: #ffffff; }
+.w-tl :focus-visible {
+  outline-color: var(--go);
+}
+
+/* ── Hero: the scene ────────────────────────────────────────────────────── */
+.tl-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 24px;
+  min-height: max(100svh, 720px);
+  padding: calc(var(--header-h) + 3vh) var(--gutter) max(30vh, 220px);
+  overflow: hidden;
+  background: linear-gradient(var(--sky-top), var(--sky-bottom) 78%);
+}
+.tl-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.tl-stars {
+  position: absolute;
+  inset: 0 0 45%;
+  opacity: var(--moon-o);
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 42%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 35% 12%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 48% 30%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 58% 8%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 66% 36%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 74% 20%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 84% 46%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 92% 14%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 5% 52%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 41% 58%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 79% 60%, #fff 50%, transparent 51%);
+  animation: tl-twinkle 5s ease-in-out infinite alternate;
+}
+@keyframes tl-twinkle {
+  to { filter: brightness(0.6); }
+}
+.tl-sun,
+.tl-moon {
+  position: absolute;
+  left: calc(var(--x) * 100%);
+  top: calc(var(--y) * 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+/* On desktop the sun and moon cross the open sky right of the title. */
+@media (min-width: 900px) {
+  .tl-hero .tl-sun { --x: calc(0.42 + (var(--sun-x) - 0.1) * 0.66); }
+  .tl-hero .tl-moon { --x: calc(0.42 + (var(--moon-x) - 0.1) * 0.66); }
+}
+.tl-sun {
+  --x: var(--sun-x);
+  --y: var(--sun-y);
+  width: clamp(64px, 8vmin, 110px);
+  opacity: var(--sun-o);
+  background: radial-gradient(circle, #fffbea, #fde047 55%, #fbbf24);
+  box-shadow: 0 0 90px 36px rgb(253 224 71 / 0.45);
+}
+.tl-moon {
+  --x: var(--moon-x);
+  --y: var(--moon-y);
+  width: clamp(44px, 5.5vmin, 76px);
+  opacity: var(--moon-o);
+  background: radial-gradient(circle at 34% 34%, #ffffff, #e2e8f0 58%, #cbd5e1);
+  box-shadow: 0 0 60px 14px rgb(226 232 240 / 0.28);
+}
+.tl-clouds {
+  position: absolute;
+  inset: 0 0 50%;
+  opacity: calc(0.85 - var(--moon-o) * 0.6);
+}
+.tl-cloud {
+  position: absolute;
+  width: clamp(120px, 15vw, 240px);
+  height: clamp(34px, 4vw, 64px);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
+  animation: tl-drift 70s linear infinite;
+}
+.tl-cloud::before,
+.tl-cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 30%;
+  border-radius: 50%;
+  background: inherit;
+}
+.tl-cloud::before { left: 16%; width: 42%; aspect-ratio: 1; }
+.tl-cloud::after { left: 46%; width: 34%; aspect-ratio: 1; }
+.tl-cloud-0 { top: 14%; left: 8%; }
+.tl-cloud-1 { top: 30%; left: 52%; scale: 0.7; animation-duration: 95s; animation-delay: -30s; }
+.tl-cloud-2 { top: 8%; left: 70%; scale: 0.55; animation-duration: 120s; animation-delay: -60s; }
+.tl-cloud-3 { top: 42%; left: 26%; scale: 0.45; animation-duration: 85s; animation-delay: -10s; }
+@keyframes tl-drift {
+  from { translate: -30vw 0; }
+  to { translate: 60vw 0; }
+}
+.tl-range {
+  position: absolute;
+  left: 0;
+  bottom: 22%;
+  width: 100%;
+  height: 34%;
+}
+.tl-range-far {
+  fill: color-mix(in srgb, var(--sky-bottom) 52%, #47658a);
+  stroke: rgb(255 255 255 / calc(0.55 - var(--moon-o) * 0.35));
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.tl-range-near {
+  fill: color-mix(in srgb, var(--sky-bottom) 28%, #2c4f61);
+}
+.tl-grove {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 42%;
+  filter: brightness(calc(1 - var(--moon-o) * 0.5)) saturate(calc(1 - var(--moon-o) * 0.25));
+}
+.tl-ground {
+  fill: var(--ground-b);
+  stroke: var(--ground-a);
+  stroke-width: 6;
+  transition: fill 0.6s, stroke 0.6s;
+}
+.tl-plant {
+  opacity: 0;
+  visibility: hidden;
+}
+.tl-flies circle {
+  animation: tl-glow 1.8s ease-in-out infinite alternate;
+}
+.tl-flies circle:nth-child(2) { animation-delay: -0.6s; }
+.tl-flies circle:nth-child(3) { animation-delay: -1.2s; }
+@keyframes tl-glow {
+  from { opacity: 0.25; }
+}
+.tl-fall {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.w-tl[data-season="summer"] .tl-fall {
+  display: none;
+}
+.tl-fall i {
+  position: absolute;
+  top: -4%;
+  left: var(--x);
+  width: 11px;
+  height: 7px;
+  border-radius: 0 100% 0 100%;
+  background: var(--fall);
+  opacity: 0.85;
+  animation: tl-fall var(--d) linear infinite;
+  animation-delay: var(--w);
+}
+.w-tl[data-season="winter"] .tl-fall i,
+.w-tl[data-season="spring"] .tl-fall i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+@keyframes tl-fall {
+  from { translate: 0 0; rotate: 0deg; }
+  50% { translate: 3vw 55vh; rotate: 260deg; }
+  to { translate: -1vw 110vh; rotate: 540deg; }
+}
+
+/* ── Hero: the copy ─────────────────────────────────────────────────────── */
+.tl-copy {
+  align-self: start;
+  max-width: 44rem;
+}
+.tl-kind {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.tl-title {
+  display: grid;
+  margin-top: 10px;
+  font-family: var(--tl-display), sans-serif;
+}
+.tl-name {
+  font-size: clamp(76px, 10vw, 168px);
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+}
+.tl-tag {
+  margin-top: 14px;
+  font-family: var(--tl-display), sans-serif;
+  font-size: clamp(30px, 3.6vw, 58px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--leaf);
+  text-wrap: balance;
+}
+.tl-lede {
+  max-width: 46ch;
+  margin-top: 22px;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.6;
+  color: var(--muted);
+}
+.tl-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+.tl-link {
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px var(--panel-line);
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+.tl-link.is-primary {
+  background: var(--go);
+  color: #fff;
+}
+.tl-link:hover {
+  background: var(--leaf);
+  color: #fff;
+}
+
+/* The check-in card, the way the app lays it out */
+.tl-card {
+  align-self: start;
+  justify-self: end;
+  width: min(370px, 100%);
+  margin-top: 4vh;
+  padding: 22px;
+  border-radius: 30px;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px var(--panel-line), 0 30px 60px -30px rgb(13 40 24 / 0.45);
+}
+.tl-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tl-card-icon {
+  width: 36px;
+}
+.tl-card-top span {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tl-greet {
+  margin-top: 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.tl-clock {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.tl-check {
+  width: 100%;
+  height: 64px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--go);
+  color: #fff;
+  font-family: var(--tl-display), sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 16px 30px -14px rgb(4 120 87 / 0.8);
+  cursor: pointer;
+  transition: scale 0.25s, background-color 0.3s;
+}
+.tl-check:hover {
+  scale: 1.02;
+}
+.tl-check:active {
+  scale: 0.97;
+}
+.tl-check:disabled {
+  background: #6b8f7d;
+  cursor: default;
+  scale: 1;
+}
+.tl-geo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.tl-geo i {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+}
+.tl-geo i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+  opacity: 0;
+}
+.tl-geo.is-ping i::after {
+  animation: tl-ping 1.2s ease-out 2;
+}
+@keyframes tl-ping {
+  from { opacity: 0.9; scale: 1; }
+  to { opacity: 0; scale: 4.5; }
+}
+.tl-log {
+  min-height: 2.8em;
+  margin-top: 6px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Drag the day */
+.tl-dial {
+  grid-column: 1 / -1;
+  align-self: end;
+  display: grid;
+  grid-template-columns: auto minmax(160px, 380px) auto;
+  align-items: center;
+  gap: 18px;
+  justify-self: start;
+  padding: 12px 14px 12px 22px;
+  border-radius: 999px;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: inset 0 0 0 1px var(--panel-line);
+}
+.tl-dial label {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  column-gap: 10px;
+}
+.tl-dial label span:first-child {
+  grid-column: 1 / -1;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.tl-dial-time {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.tl-dial-phase {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--leaf);
+}
+.tl-range-input {
+  width: 100%;
+  accent-color: var(--go);
+  cursor: grab;
+}
+.tl-now {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--go);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Shared section chrome ──────────────────────────────────────────────── */
+.tl-month,
+.tl-real,
+.tl-roots,
+.tl-feats,
+.tl-next {
+  position: relative;
+  padding: clamp(80px, 12vh, 140px) var(--gutter) 40px;
+}
+.tl-head {
+  max-width: 54rem;
+  margin-bottom: clamp(24px, 4vh, 44px);
+}
+.tl-h2 {
+  font-family: var(--tl-display), sans-serif;
+  font-size: clamp(44px, 6vw, 100px);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+}
+.tl-sub {
+  max-width: 54ch;
+  margin-top: 14px;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ── A month, in trees ──────────────────────────────────────────────────── */
+.tl-month-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px 32px;
+}
+.tl-cal {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(28, minmax(0, 1fr));
+  gap: 4px;
+  list-style: none;
+}
+.tl-cal li {
+  --k: #16a34a;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 7px 0;
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--panel-line);
+  transition: background-color 0.3s, color 0.3s, scale 0.3s;
+}
+.tl-cal li[data-kind="late"] { --k: #84cc16; }
+.tl-cal li[data-kind="overtime"] { --k: #15803d; }
+.tl-cal li[data-kind="early"] { --k: #65a30d; }
+.tl-cal li[data-kind="absent"] { --k: #b45309; }
+.tl-cal span {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.7;
+}
+.tl-cal b {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+.tl-month:not(.is-live) .tl-cal li:not([data-kind="off"]),
+.tl-cal li.is-past:not([data-kind="off"]) {
+  background: var(--k);
+  color: #fff;
+}
+.tl-cal li[data-kind="off"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--panel-line);
+  opacity: 0.7;
+}
+.tl-cal li.is-today {
+  scale: 1.12;
+  box-shadow: 0 0 0 2px var(--ink);
+}
+.tl-month-scene {
+  grid-column: 1 / -1;
+  position: relative;
+  min-height: 260px;
+  overflow: hidden;
+  border-radius: 30px;
+  background: linear-gradient(var(--sky-top), var(--sky-bottom));
+}
+.tl-month-clouds {
+  inset: 0 0 40%;
+  opacity: 0.35;
+  transition: opacity 0.8s, filter 0.8s;
+}
+.tl-month-scene[data-weather="cloudy"] .tl-month-clouds {
+  opacity: 1;
+  filter: brightness(0.82);
+}
+.tl-month-scene[data-weather="rainy"] .tl-month-clouds,
+.tl-month-scene[data-weather="stormy"] .tl-month-clouds {
+  opacity: 1;
+  filter: brightness(0.6);
+}
+.tl-rain {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: repeating-linear-gradient(104deg, transparent 0 14px, rgb(255 255 255 / 0.45) 14px 15px);
+  transition: opacity 0.8s;
+  animation: tl-rain 0.6s linear infinite;
+}
+.tl-month-scene[data-weather="rainy"] .tl-rain,
+.tl-month-scene[data-weather="stormy"] .tl-rain {
+  opacity: 1;
+}
+@keyframes tl-rain {
+  to { background-position: -8px 40px; }
+}
+.tl-month-forest {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  filter: brightness(calc(1 - var(--moon-o) * 0.45));
+}
+.tl-health {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 18px 48px;
+}
+.tl-health dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.tl-health dd {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+.tl-health b {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.tl-label,
+.tl-weather {
+  color: var(--leaf);
+}
+.tl-health .tl-why {
+  font-family: var(--tl-body), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.tl-key {
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  list-style: none;
+  font-size: 14px;
+}
+.tl-key li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tl-key svg {
+  width: 20px;
+  height: 30px;
+}
+/* Desktop, pinned: the month fills the screen while it grows. */
+@media (min-width: 900px) {
+  .tl-month.is-live {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100svh;
+    padding-top: calc(var(--header-h) + 8px);
+    padding-bottom: 28px;
+  }
+  .tl-month.is-live .tl-head {
+    margin-bottom: 18px;
+  }
+  .tl-month.is-live .tl-h2 {
+    font-size: clamp(40px, 4.4vw, 76px);
+  }
+  .tl-month.is-live .tl-month-stage {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: 0;
+  }
+  .tl-month.is-live .tl-month-scene {
+    min-height: 0;
+  }
+}
+
+/* ── Inside the app ─────────────────────────────────────────────────────── */
+.tl-tour {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "laptop phone" "caps caps";
+  align-items: end;
+  gap: 22px 0;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.tl-dev {
+  margin: 0;
+}
+.tl-dev-laptop {
+  grid-area: laptop;
+  width: min(100%, calc((100svh - 330px) * 1.5));
+  justify-self: end;
+}
+.tl-dev-phone {
+  grid-area: phone;
+  width: clamp(130px, calc((100svh - 330px) / 2.4), 270px);
+  margin-left: -7%;
+  margin-bottom: -2%;
+  z-index: 1;
+}
+.tl-dev-phone .dv-phone {
+  width: 100%;
+}
+.dv-win-body > .tl-tshot,
+.dv-phone-view > .tl-tshot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: opacity 0.45s;
+}
+.tl-tshot:not(.is-on) {
+  opacity: 0;
+}
+.tl-tour-caps {
+  grid-area: caps;
+  display: grid;
+  max-width: 64ch;
+  justify-self: center;
+  list-style: none;
+  text-align: center;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.tl-tour-caps li {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.tl-tour-caps li.is-on {
+  opacity: 1;
+}
+.tl-tour-caps b {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 20px;
+  color: var(--ink);
+}
+.tl-tour-dots {
+  position: absolute;
+  left: 50%;
+  bottom: -26px;
+  display: flex;
+  gap: 7px;
+  translate: -50% 0;
+}
+.tl-tour-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--panel-line);
+  box-shadow: inset 0 0 0 1px var(--muted);
+  transition: background-color 0.3s, scale 0.3s;
+}
+.tl-tour-dots i.is-on {
+  background: var(--go);
+  box-shadow: none;
+  scale: 1.3;
+}
+/* Pinned: the tour holds one screen while the screens turn. */
+.tl-real.is-pinned {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 8px);
+  padding-bottom: 48px;
+}
+.tl-real.is-pinned .tl-head {
+  margin-bottom: 14px;
+}
+.tl-real.is-pinned .tl-h2 {
+  font-size: clamp(36px, min(4.4vw, 7vh), 76px);
+}
+.tl-real.is-pinned .tl-tour {
+  align-self: center;
+}
+
+/* ── The roots ──────────────────────────────────────────────────────────── */
+.tl-roots-stage {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.tl-roots-svg {
+  display: block;
+  filter: brightness(calc(1 - var(--moon-o) * 0.35));
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.tl-soil-a { stop-color: color-mix(in srgb, var(--ground-b) 40%, #7c4a1e); stop-opacity: 0.55; }
+.tl-soil-b { stop-color: color-mix(in srgb, var(--ground-b) 20%, #7c4a1e); stop-opacity: 0; }
+.tl-root {
+  fill: none;
+  stroke: #8a4a1c;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+.tl-root-thin {
+  stroke-width: 3.5;
+  opacity: 0.7;
+}
+.tl-nodes {
+  list-style: none;
+}
+.tl-nodes li {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  width: 210px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--panel-line), 0 18px 40px -26px rgb(13 40 24 / 0.5);
+  translate: -50% 0;
+  text-align: center;
+}
+.tl-nodes li:nth-child(1) { left: 15%; top: 66%; }
+.tl-nodes li:nth-child(2) { left: 38.3%; top: 86%; }
+.tl-nodes li:nth-child(3) { left: 61.7%; top: 86%; }
+.tl-nodes li:nth-child(4) { left: 85%; top: 66%; }
+.tl-nodes b {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+}
+.tl-nodes span {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* ── What grows here ────────────────────────────────────────────────────── */
+.tl-feat-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  list-style: none;
+}
+.tl-feat-list li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 16px;
+  padding: 24px;
+  border-radius: 24px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--panel-line);
+}
+.tl-feat-list svg {
+  grid-row: span 2;
+  width: 44px;
+  height: 64px;
+}
+.tl-feat-list b {
+  font-family: var(--tl-display), sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+}
+.tl-feat-list p {
+  margin-top: 6px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* ── Next ───────────────────────────────────────────────────────────────── */
+.tl-next {
+  padding-bottom: clamp(90px, 14vh, 150px);
+}
+.tl-next-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 22px;
+  max-width: 760px;
+  margin-top: 16px;
+  padding: 22px;
+  border-radius: 28px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--panel-line);
+  transition: box-shadow 0.3s;
+}
+.tl-next-link:hover {
+  box-shadow: inset 0 0 0 2px var(--go);
+}
+.tl-next-tile {
+  grid-row: span 2;
+  width: 72px;
+}
+.tl-next-link b {
+  font-family: var(--tl-display), sans-serif;
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.tl-next-link span {
+  color: var(--muted);
+}
+
+@media (max-width: 899px) {
+  .tl-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    min-height: 0;
+    padding-bottom: 46vh;
+  }
+  /* The sun and moon keep to the open band of sky above the range. */
+  .tl-sun,
+  .tl-moon {
+    top: auto;
+    bottom: calc(18vh + (0.5 - var(--y)) * 60vh);
+    translate: -50% 50%;
+  }
+  .tl-card {
+    justify-self: stretch;
+    width: auto;
+    margin-top: 0;
+  }
+  .tl-dial {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-self: stretch;
+    border-radius: 24px;
+  }
+  .tl-range-input {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .tl-range {
+    bottom: 14vh;
+    height: 22vh;
+  }
+  .tl-grove {
+    height: 24vh;
+  }
+  .tl-month-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tl-cal {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+  .tl-month-scene {
+    min-height: 0;
+    aspect-ratio: 1200 / 250;
+  }
+  /* Pinned on phones: the month fills the screen and the forest pans by. */
+  .tl-month.is-live {
+    display: grid;
+    align-content: center;
+    height: 100svh;
+    padding-top: calc(var(--header-h) + 4px);
+    padding-bottom: 20px;
+  }
+  .tl-month.is-live .tl-head {
+    margin-bottom: 12px;
+  }
+  .tl-month.is-live .tl-h2 {
+    font-size: 34px;
+  }
+  .tl-month.is-live .tl-sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+  }
+  .tl-month.is-live .tl-month-stage {
+    gap: 12px;
+  }
+  .tl-month.is-live .tl-cal li {
+    padding: 4px 0;
+  }
+  .tl-month.is-live .tl-cal b {
+    font-size: 13px;
+  }
+  .tl-month.is-live .tl-month-scene {
+    aspect-ratio: auto;
+    height: min(30svh, 230px);
+  }
+  .tl-month.is-live .tl-month-forest {
+    width: auto;
+    height: 100%;
+  }
+  .tl-month.is-live .tl-health b {
+    font-size: 30px;
+  }
+  .tl-month.is-live .tl-health .tl-why,
+  .tl-month.is-live .tl-key {
+    display: none;
+  }
+  .tl-health {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .tl-health b {
+    font-size: 38px;
+  }
+  .tl-health dd {
+    font-size: 18px;
+  }
+  .tl-feat-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tl-real.is-pinned .tl-sub {
+    font-size: 14px;
+  }
+  .tl-dev-laptop {
+    width: 100%;
+  }
+  .tl-dev-phone {
+    width: 31vw;
+    margin-left: -24vw;
+  }
+  .tl-tour-caps {
+    font-size: 14px;
+  }
+  .tl-tour-caps b {
+    font-size: 17px;
+  }
+  .tl-roots-svg {
+    display: none;
+  }
+  .tl-nodes {
+    display: grid;
+    gap: 26px;
+  }
+  .tl-nodes li {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: auto;
+    translate: none;
+    text-align: left;
+  }
+  .tl-nodes li + li::before {
+    content: "";
+    position: absolute;
+    left: 28px;
+    bottom: 100%;
+    width: 5px;
+    height: 26px;
+    border-radius: 3px;
+    background: #78350f;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-stars,
+  .tl-cloud,
+  .tl-fall i,
+  .tl-flies circle,
+  .tl-rain {
+    animation: none;
+  }
+  .tl-fall {
+    display: none;
+  }
+}
