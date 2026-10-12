@@ -1,4 +1,5 @@
 // SHOT_URL=http://localhost:3000 npm run shot
+// SHOT_ONLY=/projects npm run shot   checks only the pages whose path starts with that
 // Screenshots every page at desktop and mobile widths into shots/, and asserts
 // the layout and animations hold up. Exits non-zero if any check fails.
 import { chromium } from "playwright";
@@ -6,13 +7,14 @@ import { mkdir } from "node:fs/promises";
 
 const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const OUT = "shots";
-const PAGES = [
+const ALL_PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
   { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 6, ".eh-arena-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".xg-branch": 2, ".xg-commit": 12 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
   { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".ch-row": 3, ".ch-blip": 7, ".cm-topic": 6 } },
 ];
+const PAGES = ALL_PAGES.filter((p) => !process.env.SHOT_ONLY || p.path.startsWith(process.env.SHOT_ONLY));
 const VIEWPORTS = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "laptop", width: 1280, height: 720 },
@@ -67,7 +69,7 @@ for (const vp of VIEWPORTS) {
     const res = await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
     check(scope, res?.ok(), `loads (${res?.status()})`);
     await page.evaluate(() => document.fonts.ready);
-    await wait(2600); // intro curtain + first entrance animations
+    await wait(2600); // first entrance animations
 
     check(scope, await curtainClear(page), "intro curtain has lifted");
     const top = await page.evaluate(() => {
@@ -84,7 +86,7 @@ for (const vp of VIEWPORTS) {
     check(scope, early <= 0, `no horizontal overflow on load (${early}px)`);
 
     if (pg.name === "home") {
-      await wait(2200); // the hero intro runs ~3s after the curtain
+      await wait(2200); // the hero intro
       const hxState = () =>
         page.evaluate(() => {
           const r = (s) => document.querySelector(s).getBoundingClientRect();
@@ -497,7 +499,7 @@ for (const vp of VIEWPORTS) {
       await page.screenshot({ path: `${OUT}/${vp.name}-contact-flight.png` });
       check(scope, mid.flying && mid.plane > 0.5, "the message flies as a paper plane");
       check(scope, mid.onScreen, "the plane is on screen mid-flight");
-      await wait(2600);
+      await wait(3400); // on a phone it scrolls up to the inbox first
       const done = await page.evaluate(() => ({
         landed: getComputedStyle(document.querySelector(".cm-check")).opacity === "1",
         overlayGone: getComputedStyle(document.querySelector(".cm-flight")).visibility === "hidden",
@@ -505,7 +507,7 @@ for (const vp of VIEWPORTS) {
       }));
       await page.screenshot({ path: `${OUT}/${vp.name}-contact-landed.png` });
       const decoded = decodeURIComponent(done.mailto);
-      check(scope, done.landed && done.overlayGone, "it lands on the envelope with a check");
+      check(scope, done.landed && done.overlayGone, "it lands in the phone's inbox, delivered");
       check(
         scope,
         decoded.startsWith("mailto:rajendrapandey199971@gmail.com?subject=Portfolio message · React — from Test Visitor") && decoded.includes("can we talk about a React project?"),
@@ -514,6 +516,66 @@ for (const vp of VIEWPORTS) {
       // Following the mailto: link leaves headless Chrome on an error page; come back.
       await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
       await wait(2600);
+    }
+
+
+    if (pg.name === "projects") {
+      await wait(2200); // the launcher intro
+      const pl = () =>
+        page.evaluate(() => {
+          const shown = (sel) => [...document.querySelectorAll(sel)].filter((e) => e.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && parseFloat(getComputedStyle(e).opacity) > 0.99);
+          return {
+            title: document.querySelector(".pl-title-text").textContent,
+            inner: getComputedStyle(document.querySelector(".pl-inner")).opacity,
+            os: document.querySelector(".dv-laptop").dataset.os,
+            desk: shown(".pl-icons .pl-app").map((a) => a.dataset.slug),
+            phone: shown(".pl-grid .pl-app").length,
+            peeks: shown(".pl-peek").map((a) => a.dataset.slug),
+          };
+        });
+      const a = await pl();
+      check(scope, a.inner === "1" && a.title === "Projects", `launcher decodes its title ("${a.title}")`);
+      check(scope, a.os === "windows" && a.desk.join() === "blazify,nexterm,tally,r-ai,vocabu", `the laptop starts on Windows with its apps (${a.desk.join(", ")})`);
+      check(scope, a.phone === 5, `5 apps on the Android phone (${a.phone})`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-projects-launcher.png` });
+      if (!vp.isMobile) {
+        await page.hover('.pl-icons .pl-app[data-slug="blazify"]');
+        await wait(700);
+        check(scope, (await pl()).peeks.join() === "blazify", "hovering an app peeks at its window");
+        const twin = await page.evaluate(() => ({ n: document.querySelectorAll(".pl-app.is-twin").length, text: document.querySelector(".pl-twin-text").textContent }));
+        check(scope, twin.n === 4 && twin.text.endsWith("lit on 3 devices"), `the same app lights up on every device ("${twin.text}")`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-projects-peek.png` });
+        await page.mouse.move(10, 10);
+      }
+      await page.click('.pl-os-btn[data-os="linux"]');
+      await wait(2000);
+      const b = await pl();
+      check(scope, b.os === "linux" && b.desk.join() === "blazify,jarvis,tally,r-ai", `switching to Linux swaps the apps (${b.desk.join(", ")})`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-projects-linux.png` });
+      // Open an app: it grows out of its icon on that device, then the page follows.
+      // Phones open Fitevo on the Galaxy; bigger screens open Blazify from the iPhone's lock screen.
+      const [dev, slug, sel] = vp.isMobile ? [".pl-dev--android", "fitevo", '.pl-grid .pl-app[data-slug="fitevo"]'] : [".pl-dev--iphone", "blazify", ".pl-media"];
+      await page.click(sel);
+      await wait(400);
+      const mid = await page.evaluate(([dev, slug]) => parseFloat(getComputedStyle(document.querySelector(`${dev} .pl-open[data-slug="${slug}"]`)).opacity), [dev, slug]);
+      check(scope, mid > 0.2, `${slug} opens out of its icon on the ${dev.slice(8)} (opacity ${mid.toFixed(2)})`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-projects-launch.png` });
+      await page.waitForURL(`**/projects/${slug}`, { timeout: 6000 }).catch(() => {});
+      check(scope, page.url().endsWith(`/projects/${slug}`), `then lands on its page (${page.url()})`);
+      await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
+      await wait(2600);
+
+    if (pg.world) {
+      await wait(2400); // the world's intro
+      const w = await page.evaluate((pg) => ({
+        root: !!document.querySelector(`[data-world="${pg.world}"]`),
+        h1: document.querySelector("h1")?.textContent ?? "",
+        next: !!document.querySelector(`a[href="/projects/${pg.next}"]`),
+      }), pg);
+      check(scope, w.root && w.h1.includes(pg.h1), `${pg.h1} opens in its own world (h1 "${w.h1.trim().slice(0, 40)}")`);
+      check(scope, w.next, `its last link leads on to ${pg.next}`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-hero.png` });
+
     }
 
     await scrollThrough(page);
@@ -574,7 +636,7 @@ for (const vp of VIEWPORTS) {
     await page.close();
   }
 
-  // Client-side navigation through the curtain transition.
+  // Client-side navigation through the page transition.
   {
     const scope = `${vp.name} navigation`;
     console.log(`\n${scope}`);
@@ -606,12 +668,13 @@ for (const vp of VIEWPORTS) {
     check(scope, state.h1 === "Projects" && state.h1Visible, "new page heading animates in");
     check(scope, state.scrollY === 0, `starts at the top (${state.scrollY})`);
     check(scope, state.active === "Projects", `nav marks Projects active (${state.active})`);
+
     await page.close();
   }
   await context.close();
 }
 
-// Reduced motion: no curtain, everything readable immediately.
+// Reduced motion: no transition, everything readable immediately.
 {
   const scope = "reduced motion";
   console.log(`\n${scope}`);
@@ -620,10 +683,10 @@ for (const vp of VIEWPORTS) {
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
   const r = await page.evaluate(() => ({
     motion: document.documentElement.classList.contains("motion-ok"),
-    curtain: getComputedStyle(document.querySelector(".curtain")).display,
+    overlay: Boolean(document.querySelector(".curtain")),
     hidden: [...document.querySelectorAll("[data-anim]")].filter((el) => parseFloat(getComputedStyle(el).opacity) < 1).length,
   }));
-  check(scope, !r.motion && r.curtain === "none", "no curtain");
+  check(scope, !r.motion && !r.overlay, "no motion, no overlay");
   check(scope, r.hidden === 0, `all content visible without scrolling (${r.hidden} hidden)`);
   await page.screenshot({ path: `${OUT}/reduced-home.png` });
   await context.close();
