@@ -197,9 +197,9 @@ main {
   color: var(--color-navy);
   white-space: nowrap;
 }
+/* As on the original site: plain angle brackets around an Agustina signature, set bold. */
 .logo-bracket {
-  font-size: 24px;
-  font-weight: 300;
+  font: 400 28px/1 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   transition: transform 0.5s var(--ease);
 }
 .logo:hover .logo-bracket:first-child {
@@ -212,8 +212,9 @@ main {
   font-family: var(--font-sig);
   font-size: 40px;
   line-height: 1;
-  padding: 0 4px;
-  transform: translateY(4px);
+  word-spacing: -0.12em;
+  padding: 0 8px;
+  transform: translateY(3px);
 }
 .nav {
   position: relative;
@@ -246,6 +247,37 @@ main {
 }
 .menu-btn {
   display: none;
+}
+/* The light copy of the bar: only the part a page clips in with --ink shows. */
+.header-ink {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  clip-path: var(--ink, inset(0 0 100% 0));
+}
+.header-ink * {
+  color: #fff !important;
+}
+.header-ink .menu-btn span {
+  background: #fff;
+}
+.header-ink .nav-list span {
+  display: block;
+  padding: 10px 16px;
+  font-size: 15px;
+}
+.header-ink .nav-list .is-current {
+  font-weight: 700;
+}
+/* Once the bar frosts over, the strap behind it no longer shows through. */
+.header.is-scrolled .header-ink {
+  display: none;
+}
+@media (max-width: 899px) {
+  .header-ink .nav {
+    display: none;
+  }
 }
 
 /* ── Page transition curtain ────────────────────────────────────────────── */

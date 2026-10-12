@@ -89,6 +89,32 @@ export default function Header() {
           <span className="nav-indicator" aria-hidden="true" />
         </nav>
       </div>
+
+      {/* A light copy of the bar, hidden unless a page clips it into view with --ink
+          (the Experience lanyard passes behind the menu). */}
+      <div className="header-ink" aria-hidden="true">
+        <div className="header-inner">
+          <span className="logo">
+            <span className="logo-bracket">&lt;</span>
+            <span className="logo-sig">{profile.name}</span>
+            <span className="logo-bracket">/&gt;</span>
+          </span>
+          <span className="menu-btn">
+            <span />
+            <span />
+            <span />
+          </span>
+          <div className="nav">
+            <ul className="nav-list">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <span className={isActive(item.href) && !item.external ? "is-current" : undefined}>{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }
