@@ -1,0 +1,676 @@
+/* ══ NexTerm's world ═══════════════════════════════════════════════════════
+   The terminal and the desktop it runs on. Every colour comes from the theme
+   variables, so `nexterm theme` repaints all of it. Defaults: Tokyo Night. */
+.w-nx {
+  --nx-bg: #1a1b26;
+  --nx-fg: #c0caf5;
+  --nx-dim: #565f89;
+  --nx-acc: #7aa2f7;
+  --nx-ok: #9ece6a;
+  --nx-err: #f7768e;
+  --nx-warn: #e0af68;
+  --nx-mag: #bb9af7;
+  --nx-cyan: #7dcfff;
+  --nx-surface: color-mix(in srgb, var(--nx-bg) 88%, var(--nx-fg) 12%);
+  --nx-line: color-mix(in srgb, var(--nx-bg) 78%, var(--nx-fg) 22%);
+  --nx-win: color-mix(in srgb, var(--nx-bg) 94%, #fff 6%);
+  position: relative;
+  overflow-x: clip;
+  padding-bottom: 60px;
+  background:
+    radial-gradient(60% 40% at 80% 10%, color-mix(in srgb, var(--nx-acc) 14%, transparent), transparent 70%),
+    var(--nx-bg);
+  color: var(--nx-fg);
+  font: 15px/1.65 var(--nx-font), ui-monospace, monospace;
+  transition: background-color 0.5s, color 0.5s;
+}
+.w-nx :focus-visible {
+  outline-color: var(--nx-acc);
+}
+.w-nx a {
+  color: inherit;
+}
+.nt-dim { color: var(--nx-dim); }
+.nt-ok { color: var(--nx-ok); }
+.nt-err { color: var(--nx-err); }
+.nt-warn { color: var(--nx-warn); }
+.nt-mag { color: var(--nx-mag); }
+.nt-cyan { color: var(--nx-cyan); }
+.nt-ps { color: var(--nx-acc); font-weight: 700; }
+.nt-path { color: var(--nx-cyan); }
+.nt-gt { color: var(--nx-acc); }
+.nt-cmd {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.nt-out {
+  margin: 6px 0 14px;
+}
+
+/* A NexTerm window */
+.nt-win {
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--nx-win);
+  box-shadow: 0 0 0 1px var(--nx-line), 0 40px 90px -40px rgb(0 0 0 / 0.8);
+  transition: background-color 0.5s;
+}
+.nt-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding-left: 16px;
+  background: var(--nx-surface);
+  border-bottom: 1px solid var(--nx-line);
+  font-size: 12.5px;
+}
+.nt-wordmark {
+  margin-right: 12px;
+  background: linear-gradient(90deg, var(--nx-cyan), var(--nx-acc), var(--nx-mag), var(--nx-err), var(--nx-warn), var(--nx-cyan));
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  animation: shimmer 6s linear infinite;
+}
+.nt-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-end;
+  height: 33px;
+  padding: 0 14px;
+  border-radius: 8px 8px 0 0;
+  color: var(--nx-dim);
+  white-space: nowrap;
+}
+.nt-tab.is-on {
+  background: var(--nx-win);
+  color: var(--nx-fg);
+}
+.nt-tab i {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--nx-acc);
+}
+.nt-caps {
+  display: flex;
+  gap: 18px;
+  margin-left: auto;
+  padding: 0 16px;
+}
+.nt-caps i {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--nx-dim);
+  border-radius: 2px;
+}
+.nt-body {
+  padding: 18px clamp(16px, 2.2vw, 32px) 22px;
+}
+
+/* ── Hero: about, and NexTerm on its laptop ─────────────────────────────── */
+.nt-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 72px);
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 12px) var(--gutter) 60px;
+}
+.nt-title {
+  margin: 8px 0 4px;
+  font-weight: 400;
+  overflow: hidden;
+}
+.nt-title pre {
+  margin: 0;
+  background: linear-gradient(180deg, var(--nx-cyan), var(--nx-acc) 55%, var(--nx-mag));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font: inherit;
+  font-size: clamp(6px, 0.92vw, 17px);
+  line-height: 1.05;
+  white-space: pre;
+}
+.nt-tagline {
+  max-width: 34ch;
+  margin-top: 14px;
+  font-size: clamp(19px, 1.7vw, 28px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+.nt-summary {
+  max-width: 64ch;
+  margin-top: 12px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--nx-fg) 76%, var(--nx-bg));
+}
+.nt-info {
+  display: grid;
+  gap: 2px;
+  margin-top: 16px;
+  font-size: 13.5px;
+}
+.nt-info > div {
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  column-gap: 12px;
+}
+.nt-info dt {
+  color: var(--nx-warn);
+  font-weight: 700;
+}
+.nt-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 16px;
+}
+.nt-a {
+  color: var(--nx-cyan) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--nx-cyan) 45%, transparent);
+}
+.nt-a:hover,
+.nt-a.is-primary {
+  color: var(--nx-ok) !important;
+}
+.nt-hero-dev,
+.nt-tour-dev {
+  margin: 0;
+}
+.nt-laptop {
+  width: 100%;
+}
+/* The screenshot fills the desktop, as the maximised app does. */
+.nt-screen {
+  position: absolute;
+  inset: 0;
+}
+.nt-sshot,
+.nt-tshot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.nt-tshot:not(.is-on) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────── */
+.nt-sec {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: clamp(48px, 9vh, 110px) var(--gutter) 0;
+}
+.nt-h2 {
+  font-size: clamp(26px, min(2.8vw, 5vh), 46px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.nt-lede {
+  max-width: 70ch;
+  margin: 10px 0 22px;
+  color: color-mix(in srgb, var(--nx-fg) 76%, var(--nx-bg));
+}
+
+/* Themes */
+.nt-themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 4px 14px;
+  margin-top: 10px;
+}
+.nt-theme {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--nx-fg);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.nt-theme::before {
+  content: "○";
+  color: var(--nx-dim);
+}
+.nt-theme[aria-checked="true"]::before {
+  content: "●";
+  color: var(--nx-ok);
+}
+.nt-theme:hover,
+.nt-theme[aria-checked="true"] {
+  background: var(--nx-surface);
+}
+.nt-theme-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* ── The tour ───────────────────────────────────────────────────────────── */
+.nt-tour {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(20px, 3.5vw, 60px);
+  padding: clamp(48px, 9vh, 110px) var(--gutter) 0;
+}
+.nt-tour-steps {
+  display: grid;
+  gap: 16px;
+  margin-top: 18px;
+  list-style: none;
+}
+.nt-tour-note {
+  max-width: 52ch;
+  margin-top: 4px;
+  font-size: 14px;
+  color: color-mix(in srgb, var(--nx-fg) 76%, var(--nx-bg));
+}
+.nt-tour-note b {
+  color: var(--nx-fg);
+}
+.nt-tour-cmd {
+  color: var(--nx-fg);
+}
+.nt-tour-count {
+  margin-top: 18px;
+  font-size: 13px;
+}
+.nt-tour-count {
+  display: none;
+}
+/* Pinned: a terminal history that grows, one screen at a time. */
+.nt-tour.is-pinned {
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 8px);
+  padding-bottom: 54px;
+}
+.nt-tour.is-pinned .nt-tour-term {
+  align-self: center;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: var(--nx-win);
+  box-shadow: 0 0 0 1px var(--nx-line);
+}
+.nt-tour.is-pinned .nt-tour-steps {
+  gap: 8px;
+}
+.nt-tour.is-pinned .nt-tour-steps li:not(.is-on):not(.is-past) {
+  display: none;
+}
+.nt-tour.is-pinned .nt-tour-steps li.is-past {
+  opacity: 0.45;
+}
+.nt-tour.is-pinned .nt-tour-steps li.is-past .nt-tour-note {
+  display: none;
+}
+.nt-tour.is-pinned .nt-tour-steps li.is-on .nt-tour-cmd::after {
+  content: "";
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: -0.2em;
+  background: var(--nx-fg);
+  animation: blink 1s steps(1) infinite;
+}
+.nt-tour.is-pinned .nt-tour-count {
+  display: block;
+}
+.nt-tour.is-pinned .nt-laptop {
+  width: min(100%, calc((100svh - 230px) * 1.55));
+  margin: 0 auto;
+}
+.nt-tour:not(.is-pinned) .nt-tshot:not(.is-on) {
+  display: none;
+}
+
+/* ── The live session ───────────────────────────────────────────────────── */
+.nt-live-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  min-height: 360px;
+  margin: -18px calc(-1 * clamp(16px, 2.2vw, 32px)) -22px;
+}
+.nt-live-term {
+  padding: 18px clamp(16px, 2.2vw, 32px);
+}
+.nt-l {
+  min-height: 1.65em;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.nt-ghost {
+  color: inherit;
+  transition: opacity 0.2s;
+}
+.nt-tabkey {
+  display: none;
+  margin-left: 10px;
+  padding: 0 6px;
+  border: 1px solid var(--nx-line);
+  border-radius: 4px;
+  font-size: 11px;
+  vertical-align: 2px;
+}
+.nt-live.is-live .nt-ghost {
+  opacity: 0;
+}
+.nt-live.is-ghost .nt-ghost {
+  opacity: 0.4;
+}
+.nt-live.is-ghost .nt-tabkey {
+  display: inline;
+}
+.nt-live.is-took .nt-ghost {
+  opacity: 1;
+}
+.nt-ai {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border-left: 1px solid var(--nx-line);
+  background: color-mix(in srgb, var(--nx-acc) 6%, var(--nx-win));
+  font-size: 13.5px;
+  line-height: 1.55;
+  transition: background-color 0.4s, box-shadow 0.4s;
+}
+.nt-live.is-asking .nt-ai {
+  box-shadow: inset 2px 0 0 var(--nx-acc);
+}
+.nt-ai-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--nx-acc);
+}
+.nt-ai-q {
+  align-self: flex-end;
+  max-width: 90%;
+  padding: 8px 12px;
+  border-radius: 12px 12px 2px 12px;
+  background: color-mix(in srgb, var(--nx-acc) 24%, transparent);
+}
+.nt-ai-code {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--nx-bg) 70%, #000);
+  font: inherit;
+  overflow-x: auto;
+}
+.nt-ai-btns {
+  display: flex;
+  gap: 8px;
+}
+.nt-ai-btns span {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--nx-surface);
+}
+.nt-ai-btns .nt-run {
+  background: var(--nx-ok);
+  color: var(--nx-bg);
+  font-weight: 700;
+}
+.nt-live.is-fixed .nt-run {
+  outline: 2px solid var(--nx-ok);
+  outline-offset: 2px;
+}
+
+/* Format-Table */
+.nt-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.nt-table th,
+.nt-table td {
+  padding: 3px 28px 3px 0;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+.nt-table th {
+  color: var(--nx-ok);
+}
+.nt-rule td {
+  color: var(--nx-ok);
+  padding-top: 0;
+}
+.nt-table td:first-child {
+  white-space: nowrap;
+  color: var(--nx-warn);
+}
+
+/* git log, trace, deps */
+.nt-trio {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  align-items: start;
+  gap: 18px;
+}
+.nt-log,
+.nt-tree {
+  list-style: none;
+}
+.nt-log-line {
+  position: relative;
+  padding: 3px 0 3px 22px;
+}
+.nt-graph {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--nx-ok);
+  opacity: 0.5;
+}
+.nt-graph::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 0.62em;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--nx-ok);
+}
+.nt-log-line:first-child .nt-graph {
+  top: 0.7em;
+}
+.nt-log-line:last-child .nt-graph {
+  bottom: auto;
+  height: 0.8em;
+}
+.nt-refs {
+  color: var(--nx-mag);
+}
+.nt-msg {
+  display: block;
+}
+.nt-trace {
+  display: grid;
+  gap: 18px;
+  margin-top: 12px;
+  list-style: none;
+}
+.nt-trace li {
+  position: relative;
+  display: grid;
+  padding: 10px 14px;
+  border: 1px solid var(--nx-line);
+  border-radius: 8px;
+}
+.nt-trace li + li::before {
+  content: "│";
+  position: absolute;
+  left: 22px;
+  top: -20px;
+  color: var(--nx-acc);
+}
+.nt-trace b {
+  color: var(--nx-ok);
+}
+.nt-trace span {
+  font-size: 13px;
+}
+
+/* cd ..\next */
+.nt-next-link {
+  color: var(--nx-fg) !important;
+  font-weight: 700;
+}
+.nt-next-link:hover {
+  color: var(--nx-ok) !important;
+}
+.nt-next-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 720px;
+  margin-top: 14px;
+  padding: 14px 18px;
+  border: 1px dashed var(--nx-line);
+  border-radius: 10px;
+  font-weight: 400;
+  white-space: normal;
+}
+.nt-next-card b {
+  font-size: 22px;
+}
+.nt-next-tile {
+  width: 52px;
+  flex: none;
+}
+.nt-last {
+  margin-top: 18px;
+}
+.nt-cursor {
+  display: inline-block;
+  width: 0.62em;
+  height: 1.15em;
+  vertical-align: -0.2em;
+  background: var(--nx-fg);
+  animation: blink 1s steps(1) infinite;
+}
+
+/* The status bar */
+.nt-status {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  gap: 22px;
+  padding: 7px var(--gutter);
+  background: var(--nx-surface);
+  border-top: 1px solid var(--nx-line);
+  font-size: 12.5px;
+  color: color-mix(in srgb, var(--nx-fg) 70%, var(--nx-bg));
+  transition: background-color 0.5s;
+}
+.nt-status-cwd {
+  color: var(--nx-cyan);
+}
+.nt-status-r {
+  display: inline-flex;
+  gap: 14px;
+  margin-left: auto;
+  padding-right: 64px;
+}
+:root:has(.w-nx) .to-top {
+  bottom: 52px;
+}
+
+@media (max-width: 1099px) {
+  .nt-trio {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .nt-log-win {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 899px) {
+  .w-nx {
+    font-size: 13.5px;
+  }
+  .nt-hero,
+  .nt-tour,
+  .nt-trio,
+  .nt-live-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .nt-hero {
+    min-height: 0;
+    padding-bottom: 20px;
+  }
+  .nt-title pre {
+    font-size: clamp(5px, 1.55vw, 10px);
+  }
+  /* The tour on phones: the laptop on top, the history under it. */
+  .nt-tour.is-pinned {
+    align-content: center;
+    gap: 16px;
+    padding-bottom: 48px;
+  }
+  .nt-tour.is-pinned .nt-tour-dev {
+    order: -1;
+  }
+  .nt-tour.is-pinned .nt-tour-term {
+    padding: 12px 14px;
+  }
+  .nt-tour.is-pinned .nt-h2 {
+    font-size: 20px;
+  }
+  .nt-tour.is-pinned .nt-tour-note {
+    font-size: 12.5px;
+  }
+  .nt-ai {
+    border-left: 0;
+    border-top: 1px solid var(--nx-line);
+  }
+  .nt-table,
+  .nt-table tbody,
+  .nt-table tr,
+  .nt-table td {
+    display: block;
+  }
+  .nt-table thead {
+    display: none;
+  }
+  .nt-table tr {
+    padding: 8px 0;
+    border-top: 1px solid var(--nx-line);
+  }
+  .nt-table td {
+    padding: 0;
+  }
+  .nt-status-r {
+    display: none;
+  }
+  .nt-titlebar .nt-tab--add {
+    display: none;
+  }
+}
