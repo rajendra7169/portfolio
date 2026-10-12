@@ -1,0 +1,473 @@
+/* ══ Résumé ═══════════════════════════════════════════════════════════════
+   Two A4 sheets (210 × 297 mm) in the site's navy and sky. One family, the
+   site's Figtree; sentence-case headings; the only ornament is the rail that
+   ties each employer's roles together. The same markup prints to the PDF. */
+.rs {
+  --rs-ink: #001c55;
+  --rs-text: #27334d;
+  --rs-muted: #5d6a84;
+  --rs-sky: #2f7fc1;
+  --rs-wash: #eef6fc;
+  --rs-line: #d6e5f1;
+  padding: calc(var(--header-h) + 24px) var(--gutter) 72px;
+}
+.rs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px 32px;
+  width: min(100%, 210mm);
+  margin: 0 auto 28px;
+}
+.rs-h1 {
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-navy);
+}
+.rs-sub {
+  margin-top: 10px;
+  max-width: 46ch;
+  font-size: 16px;
+  color: var(--color-muted);
+}
+.rs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* The sheets */
+.rs-doc {
+  display: grid;
+  justify-content: center;
+  gap: 28px;
+}
+.rs-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 210mm;
+  height: 297mm;
+  padding: 13mm 14mm 12mm;
+  overflow: hidden;
+  background: #fff;
+  color: var(--rs-text);
+  font-size: 12px;
+  line-height: 1.5;
+  /* Unhinted glyphs at their true widths: small text otherwise snaps each
+     advance to a whole pixel and words open up gaps ("Kathm andu"). */
+  text-rendering: geometricPrecision;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgb(0 28 85 / 0.04), 0 30px 60px -30px rgb(0 28 85 / 0.35);
+}
+.rs-page a {
+  color: inherit;
+  text-decoration: none;
+}
+.rs-page a:hover {
+  color: var(--rs-sky);
+}
+
+/* Header: the photo, the name, how to reach him */
+.rs-head {
+  display: grid;
+  grid-template-columns: 31mm minmax(0, 1fr);
+  align-items: center;
+  gap: 7mm;
+  padding-bottom: 7mm;
+  border-bottom: 1px solid var(--rs-line);
+}
+.rs-photo {
+  width: 31mm;
+  height: 31mm;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  background: var(--rs-wash);
+  box-shadow: 0 0 0 1.2mm var(--rs-wash), 0 0 0 1.5mm var(--rs-line);
+}
+.rs-name {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--rs-ink);
+}
+.rs-title {
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--rs-sky);
+}
+.rs-contact {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 5px 18px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--rs-text);
+}
+.rs-contact a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.rs-ico {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: var(--rs-sky);
+  color: var(--rs-sky);
+}
+
+/* Two columns: the work on the left, a quiet sky band of facts on the right */
+.rs-cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52mm;
+  gap: 8mm;
+  min-height: 0;
+}
+.rs-page:first-child .rs-cols {
+  margin-top: 7mm;
+}
+.rs-side {
+  margin: -7mm -14mm -12mm 0;
+  padding: 7mm 14mm 12mm 7mm;
+  background: var(--rs-wash);
+}
+.rs-page:last-child .rs-side {
+  margin-top: -13mm;
+  padding-top: 13mm;
+}
+.rs-sec + .rs-sec {
+  margin-top: 6mm;
+}
+.rs-h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3mm;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: var(--rs-ink);
+}
+.rs-h3::before {
+  content: "";
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rs-sky);
+}
+.rs-summary {
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+/* Experience: one rail per employer, a dot per role */
+.rs-jobs {
+  list-style: none;
+  display: grid;
+  gap: 5mm;
+}
+.rs-job {
+  position: relative;
+  padding-left: 16px;
+}
+.rs-job::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 2px;
+  width: 1.5px;
+  background: var(--rs-line);
+}
+.rs-org {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin-bottom: 1.5mm;
+}
+.rs-org b {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--rs-ink);
+}
+.rs-org span {
+  font-size: 11px;
+  color: var(--rs-muted);
+}
+.rs-role {
+  position: relative;
+}
+.rs-role + .rs-role {
+  margin-top: 2.5mm;
+}
+.rs-role::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--rs-sky);
+}
+.rs-role:first-of-type::before {
+  background: var(--rs-sky);
+}
+.rs-role-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.rs-role-head b {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--rs-ink);
+}
+.rs-role-head time,
+.rs-edu time {
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--rs-sky);
+}
+.rs-points {
+  margin-top: 1mm;
+  padding-left: 13px;
+}
+.rs-points li {
+  padding-left: 2px;
+}
+.rs-points li + li {
+  margin-top: 0.8mm;
+}
+.rs-points li::marker {
+  color: var(--rs-sky);
+}
+
+/* The sidebar's facts */
+.rs-skills {
+  display: grid;
+  gap: 2.6mm;
+}
+.rs-skills dt {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--rs-ink);
+}
+.rs-skills dd,
+.rs-plain {
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.rs-pub {
+  display: block;
+  margin-bottom: 1mm;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--rs-ink);
+}
+.rs-certs a {
+  display: grid;
+}
+
+/* Projects */
+.rs-projects {
+  list-style: none;
+  display: grid;
+  gap: 5mm;
+}
+.rs-project-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+}
+.rs-project-head b {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--rs-ink);
+}
+.rs-project-head span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--rs-sky);
+}
+.rs-project-text {
+  margin-top: 1mm;
+}
+.rs-stack {
+  margin-top: 1mm;
+  font-size: 10.5px;
+  font-style: italic;
+  color: var(--rs-muted);
+}
+
+/* Education and certifications */
+.rs-edu,
+.rs-certs {
+  list-style: none;
+  display: grid;
+  gap: 3.4mm;
+}
+.rs-edu li,
+.rs-certs li {
+  display: grid;
+}
+.rs-edu b,
+.rs-certs b {
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--rs-ink);
+}
+.rs-edu span,
+.rs-certs span {
+  font-size: 11.5px;
+}
+.rs-side .rs-role-head {
+  flex-direction: column;
+  gap: 1px;
+}
+.rs-edu small {
+  margin-top: 0.5mm;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--rs-muted);
+}
+.rs-foot {
+  position: absolute;
+  left: 14mm;
+  bottom: 7mm;
+  font-size: 10px;
+  color: var(--rs-muted);
+}
+
+/* Wide screens: the sheets read at a comfortable size (print is unaffected). */
+@media screen and (min-width: 1100px) {
+  .rs-doc {
+    zoom: 1.2;
+  }
+  .rs-bar {
+    width: min(100%, calc(210mm * 1.2));
+  }
+}
+
+/* ── Phones and narrow windows: the sheets become plain, readable columns ── */
+@media screen and (max-width: 860px) {
+  .rs-doc {
+    justify-content: stretch;
+  }
+  .rs-page {
+    width: auto;
+    height: auto;
+    padding: 22px 18px;
+    font-size: 14px;
+    border-radius: 18px;
+  }
+  .rs-head {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+    gap: 14px;
+    padding-bottom: 20px;
+  }
+  .rs-photo {
+    width: 112px;
+    height: 112px;
+  }
+  .rs-contact {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    font-size: 13px;
+  }
+  .rs-contact a {
+    white-space: normal;
+    word-break: break-word;
+  }
+  .rs-cols {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .rs-page:first-child .rs-cols {
+    margin-top: 20px;
+  }
+  .rs-side,
+  .rs-page:last-child .rs-side {
+    margin: 0 -18px -22px;
+    padding: 22px 18px;
+    border-radius: 0 0 18px 18px;
+  }
+  .rs-summary,
+  .rs-skills dd,
+  .rs-plain,
+  .rs-edu span,
+  .rs-certs span {
+    font-size: 14px;
+  }
+  .rs-role-head {
+    flex-direction: column;
+    gap: 0;
+  }
+  .rs-foot {
+    display: none;
+  }
+  .rs-sec + .rs-sec {
+    margin-top: 22px;
+  }
+}
+
+/* ── Print and the PDF: just the two sheets, edge to edge on A4 ─────────── */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .header,
+  .footer,
+  .progress,
+  .to-top,
+  .cursor,
+  .curtain,
+  .portal,
+  .skip,
+  .rs-bar {
+    display: none !important;
+  }
+  .rs {
+    padding: 0;
+  }
+  .rs-doc {
+    display: block;
+  }
+  .rs-page {
+    width: 210mm;
+    height: 297mm;
+    border-radius: 0;
+    box-shadow: none;
+    break-after: page;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .rs-page:last-child {
+    break-after: auto;
+  }
+}

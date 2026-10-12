@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "images": "node scripts/images.mjs",
-    "shot": "node scripts/shot.mjs"
+    "shot": "node scripts/shot.mjs",
+    "resume": "node scripts/resume.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

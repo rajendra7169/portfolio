@@ -464,6 +464,18 @@ for (const vp of VIEWPORTS) {
       await wait(800);
     }
 
+    if (pg.name === "resume") {
+      const rs = await page.evaluate(async () => {
+        const a = document.querySelector(".rs-actions a[download]");
+        const res = await fetch(a.href, { method: "HEAD" });
+        // On a desktop each sheet is exactly A4 and nothing spills out of it.
+        const fits = [...document.querySelectorAll(".rs-page")].every((p) => p.scrollHeight <= p.clientHeight + 1);
+        return { type: res.headers.get("content-type"), ok: res.ok, fits };
+      });
+      check(scope, rs.ok && rs.type === "application/pdf", `the résumé downloads as a PDF (${rs.type})`);
+      if (!vp.isMobile) check(scope, rs.fits, "both résumé sheets hold their content");
+      await page.screenshot({ path: `${OUT}/${vp.name}-resume.png` });
+    }
     if (pg.name === "contact") {
       await wait(1600);
       const chState = await page.evaluate(async () => {

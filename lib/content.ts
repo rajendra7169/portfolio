@@ -254,6 +254,119 @@ export const experience = {
   ],
 };
 
+// His work history, newest first: the Experience page's positions (as git
+// branches) and the résumé (lib/resume.ts) both read it. Dates are ISO; a
+// position with no `end` is current. `points` are the résumé's bullets.
+export type Position = {
+  branch: string;
+  status: "head" | "active" | "merged" | "done";
+  title: string;
+  org: string;
+  website?: string;
+  where: string;
+  start: string;
+  end?: string;
+  summary: string;
+  points: string[];
+  stack: Tech[];
+  // The current job, in the areas he covers.
+  areas?: { name: string; text: string; stack: Tech[] }[];
+  // What a merged branch became.
+  merged?: string;
+};
+const T = {
+  flutter: { name: "Flutter", icon: "simple-icons:flutter", color: "#02569b" },
+  android: { name: "Android", icon: "logos:android-icon" },
+  ios: { name: "iOS", icon: "simple-icons:apple", color: "#000000" },
+  firebase: { name: "Firebase", icon: "logos:firebase-icon" },
+  dotnet: { name: ".NET", icon: "logos:dotnet" },
+  csharp: { name: "C#", icon: "simple-icons:csharp", color: "#68217a" },
+  sqlserver: { name: "SQL Server", icon: "simple-icons:microsoftsqlserver", color: "#cc2927" },
+  react: { name: "React", icon: "logos:react" },
+  cloudflare: { name: "Cloudflare", icon: "logos:cloudflare-icon" },
+  supabase: { name: "Supabase", icon: "logos:supabase-icon" },
+  linux: { name: "Linux", icon: "logos:linux-tux" },
+  kotlin: { name: "Kotlin", icon: "logos:kotlin-icon" },
+  compose: { name: "Jetpack Compose", icon: "simple-icons:jetpackcompose", color: "#4285f4" },
+  swift: { name: "Swift", icon: "logos:swift" },
+  go: { name: "Go", icon: "simple-icons:go", color: "#00add8" },
+  docker: { name: "Docker", icon: "logos:docker-icon" },
+  unity: { name: "Unity", icon: "simple-icons:unity", color: "#000000" },
+  cpp: { name: "C++", icon: "simple-icons:cplusplus", color: "#00599c" },
+  blender: { name: "Blender", icon: "simple-icons:blender", color: "#e87d0d" },
+} satisfies Record<string, Tech>;
+
+export const work: Position[] = [
+  {
+    branch: "matrika/software-engineer",
+    status: "head",
+    title: "Software Engineer",
+    org: "Matrika Technology Pvt. Ltd.",
+    website: "https://matrikatec.com.np",
+    where: "Kathmandu, Nepal",
+    start: "2025-05-18",
+    summary:
+      "Matrika makes J-Jewellery, IRD-certified billing and management software for Nepali jewellers. I work on it end to end: the phone app, the server behind it, the web apps, and the machines they run on.",
+    points: [
+      "Develop J-Jewellery's mobile app for Android and iOS in Flutter, with Firebase for sign-in, push notifications, Crashlytics, Remote Config and App Check.",
+      "Build the C# and ASP.NET Core back end: REST APIs on Entity Framework Core and SQL Server, JWT authentication, scheduled jobs and Windows services.",
+      "Build React web apps, and a serverless admin panel on Cloudflare Workers and Pages that sends push notifications to the app's users.",
+      "Work on a Flutter and Supabase marketplace app, and deploy and run services on Linux servers, Supabase, Cloudflare and Firebase.",
+    ],
+    areas: [
+      { name: "Mobile", text: "The Android and iOS app in Flutter, with Firebase sign-in, push notifications, Crashlytics, Remote Config and App Check.", stack: [T.flutter, T.android, T.ios, T.firebase] },
+      { name: "Back end", text: "C# and ASP.NET Core APIs on Entity Framework Core and SQL Server, with JWT sign-in, scheduled jobs and Windows services.", stack: [T.dotnet, T.csharp, T.sqlserver] },
+      { name: "Web", text: "React web apps, and a serverless admin panel on Cloudflare Workers and Pages that sends push notifications to the app.", stack: [T.react, T.cloudflare] },
+      { name: "Cloud and servers", text: "Services deployed and run on Linux servers, Supabase, Cloudflare and Firebase, including a Flutter and Supabase marketplace app.", stack: [T.linux, T.supabase, T.cloudflare, T.firebase] },
+    ],
+    stack: [T.flutter, T.firebase, T.dotnet, T.sqlserver, T.react, T.cloudflare, T.supabase, T.linux],
+  },
+  {
+    branch: "blazify",
+    status: "active",
+    title: "Creator and Maintainer",
+    org: "Blazify",
+    website: "https://rajendra7169.github.io/blazify/",
+    where: "Open source",
+    start: "2026-07-15",
+    summary: "A free, open-source music player, native on Android, iPhone, Windows and Linux.",
+    points: ["Build and release a free music player for Android, iPhone, Linux and Windows, and run its Listen Together server in Go."],
+    stack: [T.kotlin, T.compose, T.swift, T.go, T.docker],
+  },
+  {
+    branch: "matrika/intern",
+    status: "merged",
+    title: "Software Engineering Intern",
+    org: "Matrika Technology Pvt. Ltd.",
+    website: "https://matrikatec.com.np",
+    where: "Kathmandu, Nepal",
+    start: "2025-02-16",
+    end: "2025-05-18",
+    summary: "Three months across the whole product, with the team I then joined.",
+    points: ["Contributed features and fixes across the J-Jewellery mobile app, web app and .NET back end, and was taken on as a software engineer after the internship."],
+    stack: [T.flutter, T.react, T.dotnet],
+    merged: "Merged into matrika/software-engineer on May 18, 2025",
+  },
+  {
+    branch: "yarsa/game-dev-intern",
+    status: "done",
+    title: "Game Developer Intern",
+    org: "Yarsa Games",
+    where: "Nepal",
+    start: "2024-05-01",
+    end: "2024-08-31",
+    summary: "A summer of making small games.",
+    points: ["Built small game projects in Unity and C++, and learned the basics of 3D modelling in Blender for game assets."],
+    stack: [T.unity, T.cpp, T.blender],
+  },
+];
+
+const MONTH = new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+/** "2025-05-18" → "May 2025". */
+export const monthYear = (iso: string) => MONTH.format(new Date(`${iso}T00:00:00Z`));
+/** "May 2025 – Present", "Feb 2025 – May 2025". */
+export const span = (p: Position) => `${monthYear(p.start)} – ${p.end ? monthYear(p.end) : "Present"}`;
+
 // Experience page: his work as a git log, oldest first. Dates are repo creation
 // dates from GitHub (and the paper date from his site); "now" is the present.
 export type Commit = {
@@ -391,7 +504,8 @@ export const publications = [
 export const contact = {
   blurb:
     "I am available on almost every social media. You can message me, I will reply within 24 hours. I can help you with ML, AI, React, Android, Cloud and Opensource Development.",
-  resume: "https://drive.google.com/file/d/1ccK09uY0vuos3whh8vuI50918UVYH0_i/view?usp=sharing",
+  // The résumé page; its PDF and where that's served from are in lib/resume.ts.
+  resume: "/resume",
   address: "Mulpani, Kathmandu, Bagmati, Nepal 44600",
   email: "rajendrapandey199971@gmail.com",
   phone: "+977 9813566214",
