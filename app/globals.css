@@ -4901,6 +4901,513 @@ main {
   }
 }
 
+/* ── Devices ────────────────────────────────────────────────────────────── */
+/* Sizes are in cqw: a device scales as one piece with the width it is given. */
+.dv-phone,
+.dv-laptop {
+  container-type: inline-size;
+  width: 100%;
+  user-select: none;
+}
+/* Galaxy S24: flat aluminium frame, thin even bezels, centred punch-hole, keys on the right. */
+.dv-phone-body {
+  position: relative;
+  padding: 1.7cqw;
+  border-radius: 11.4cqw;
+  background: linear-gradient(150deg, #5f6572 0%, #24272e 22%, #15171c 50%, #2c3038 78%, #505662 100%);
+  box-shadow:
+    inset 0 0 0 0.35cqw rgb(255 255 255 / 0.16),
+    0 5cqw 12cqw -4cqw rgb(0 28 85 / 0.55),
+    0 1.5cqw 3cqw -1cqw rgb(0 28 85 / 0.35);
+}
+/* iPhone 15 Pro: natural titanium, rounder corners, the Dynamic Island. */
+.dv-phone--iphone .dv-phone-body {
+  padding: 1.9cqw;
+  border-radius: 15.6cqw;
+  background: linear-gradient(150deg, #e6e1d9 0%, #a19b92 20%, #d3cdc4 46%, #8d887f 74%, #ddd7ce 100%);
+  box-shadow:
+    inset 0 0 0 0.35cqw rgb(255 255 255 / 0.55),
+    0 5cqw 12cqw -4cqw rgb(0 28 85 / 0.55),
+    0 1.5cqw 3cqw -1cqw rgb(0 28 85 / 0.35);
+}
+.dv-key {
+  position: absolute;
+  width: 0.85cqw;
+  border-radius: 0 0.8cqw 0.8cqw 0;
+  background: linear-gradient(90deg, #2c3038, #5f6572);
+}
+.dv-key--vol,
+.dv-key--power,
+.dv-key--side {
+  right: -0.7cqw;
+}
+.dv-key--vol { top: 21%; height: 11%; }
+.dv-key--power { top: 35%; height: 6.5%; }
+.dv-phone--iphone .dv-key {
+  background: linear-gradient(90deg, #8d887f, #ddd7ce);
+}
+.dv-key--action,
+.dv-key--up,
+.dv-key--down {
+  left: -0.7cqw;
+  border-radius: 0.8cqw 0 0 0.8cqw;
+}
+.dv-key--action { top: 16%; height: 4%; }
+.dv-key--up { top: 24%; height: 7%; }
+.dv-key--down { top: 33%; height: 7%; }
+.dv-key--side { top: 26%; height: 11%; }
+.dv-phone-screen {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1080 / 2340;
+  overflow: hidden;
+  border-radius: 9.8cqw;
+  background: var(--top, #000);
+  box-shadow: 0 0 0 0.9cqw #050608;
+  transition: background-color 0.6s;
+}
+.dv-phone--iphone .dv-phone-screen {
+  aspect-ratio: 1290 / 2796;
+  border-radius: 13.6cqw;
+  box-shadow: 0 0 0 1.1cqw #050505;
+}
+/* Apps run full screen; the status bar floats over them. */
+.dv-phone-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.dv-status {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 7.2cqw;
+  padding: 0 6.6cqw 0 7.6cqw;
+  color: #fff;
+  font: 600 3.2cqw/1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 0.8cqw rgb(0 0 0 / 0.35);
+  transition: color 0.4s;
+}
+.dv-phone--iphone .dv-status {
+  height: 12.6cqw;
+  padding: 0 8.6cqw 0 11.6cqw;
+  font: 650 4.3cqw/1 var(--font-body);
+}
+.dv-status--dark {
+  color: #111;
+  text-shadow: none;
+}
+.dv-status svg {
+  height: 2.5cqw;
+  width: auto;
+  fill: currentColor;
+}
+.dv-phone--iphone .dv-status svg {
+  height: 3.1cqw;
+}
+.dv-status-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.3cqw;
+}
+.dv-punch {
+  position: absolute;
+  left: 50%;
+  top: 2.1cqw;
+  width: 3.2cqw;
+  height: 3.2cqw;
+  margin-left: -1.6cqw;
+  border-radius: 50%;
+  background: #04060b;
+  box-shadow: inset 0 0 0 0.6cqw #1a2233, 0 0 0 0.3cqw rgb(255 255 255 / 0.06);
+}
+.dv-island {
+  position: absolute;
+  left: 50%;
+  top: 2.7cqw;
+  width: 29cqw;
+  height: 8.4cqw;
+  margin-left: -14.5cqw;
+  border-radius: 5cqw;
+  background: #000;
+}
+.dv-home-pill {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 1.6cqw;
+  width: 30cqw;
+  height: 1.1cqw;
+  margin-left: -15cqw;
+  border-radius: 1cqw;
+  background: rgb(255 255 255 / 0.75);
+}
+.dv-phone--iphone .dv-home-pill {
+  bottom: 2.3cqw;
+  width: 34cqw;
+  height: 1.3cqw;
+  margin-left: -17cqw;
+  background: rgb(255 255 255 / 0.85);
+}
+.dv-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  border-radius: inherit;
+  background: linear-gradient(118deg, rgb(255 255 255 / 0.13), transparent 30%);
+  pointer-events: none;
+}
+
+/* Screens stacked in a device: only the current one shows. */
+.dv-phone-view > img,
+.pl-open-shot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.dv-lid {
+  position: relative;
+  margin: 0 6.5cqw;
+  padding: 1.7cqw 1.7cqw 2.1cqw;
+  border-radius: 2.6cqw 2.6cqw 0.8cqw 0.8cqw;
+  background: linear-gradient(#273042, #0b111d);
+  box-shadow: inset 0 0 0 0.25cqw rgb(255 255 255 / 0.1), 0 3cqw 7cqw -3cqw rgb(0 28 85 / 0.5);
+}
+.dv-cam {
+  position: absolute;
+  top: 0.55cqw;
+  left: 50%;
+  width: 0.7cqw;
+  height: 0.7cqw;
+  margin-left: -0.35cqw;
+  border-radius: 50%;
+  background: #3b465b;
+}
+.dv-display {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 0.5cqw;
+  background: #000;
+}
+.dv-base {
+  position: relative;
+  height: 2.4cqw;
+  border-radius: 0 0 2.6cqw 2.6cqw / 0 0 1.9cqw 1.9cqw;
+  background: linear-gradient(#d7deea, #96a3b8 55%, #5f6c83);
+  box-shadow: 0 2.6cqw 4cqw -1.6cqw rgb(0 28 85 / 0.5);
+}
+.dv-base-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 14cqw;
+  height: 0.9cqw;
+  margin-left: -7cqw;
+  border-radius: 0 0 1cqw 1cqw;
+  background: #8794ab;
+}
+
+/* App icon on its tile */
+.dv-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 23%;
+  background: var(--tile);
+  box-shadow: 0 0.35em 0.8em -0.35em rgb(0 0 0 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+.dv-tile img {
+  width: calc(100% - 2 * var(--pad));
+  height: calc(100% - 2 * var(--pad));
+  object-fit: contain;
+}
+.dv-glyph {
+  width: 78%;
+  height: 78%;
+}
+
+/* The desktop inside the laptop: Windows 11 or GNOME, by data-os */
+.dv-desk {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: "top top" auto "dock area" minmax(0, 1fr) "task task" auto / auto minmax(0, 1fr);
+  overflow: hidden;
+  color: #fff;
+  font-family: var(--font-body);
+}
+.dv-wall {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.4s;
+}
+[data-os="windows"] .dv-wall {
+  background:
+    radial-gradient(70% 90% at 62% 62%, rgb(124 200 240 / 0.9), transparent 62%),
+    radial-gradient(60% 70% at 30% 110%, #2f7fc1, transparent 70%),
+    linear-gradient(155deg, #001c55, #0c3a78 55%, #2f7fc1);
+}
+[data-os="linux"] .dv-wall {
+  background:
+    radial-gradient(80% 90% at 85% 105%, rgb(242 107 56 / 0.95), transparent 58%),
+    radial-gradient(70% 80% at 5% 0%, #5b2f8f, transparent 62%),
+    linear-gradient(140deg, #1b0f30, #3a1d5b 52%, #5c2a4d);
+}
+.dv-topbar,
+.dv-taskbar {
+  position: relative;
+  z-index: 2;
+  display: none;
+}
+[data-os="linux"] .dv-topbar {
+  grid-area: top;
+  display: grid;
+  grid-template-columns: 1fr auto auto 1fr;
+  align-items: center;
+  gap: 0.7cqw;
+  height: 2.9cqw;
+  padding: 0 1.6cqw;
+  background: rgb(0 0 0 / 0.82);
+  font: 600 1.4cqw/1 var(--font-body);
+}
+.dv-topbar-r {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+}
+.dv-topbar svg,
+.dv-taskbar svg {
+  height: 1.3cqw;
+  width: auto;
+  fill: currentColor;
+}
+.dv-desk-area {
+  grid-area: area;
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+}
+[data-os="windows"] .dv-taskbar {
+  grid-area: task;
+  display: flex;
+  align-items: center;
+  height: 3.9cqw;
+  padding: 0 1.3cqw;
+  background: rgb(16 24 44 / 0.8);
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(1cqw);
+  font: 500 1.2cqw/1.25 var(--font-body);
+}
+.dv-taskbar-mid {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1cqw;
+}
+.dv-task {
+  width: 2.5cqw;
+}
+.dv-task--start svg {
+  width: 100%;
+  height: auto;
+}
+.dv-task-search {
+  padding: 0.55cqw 3cqw 0.55cqw 1.3cqw;
+  border-radius: 2cqw;
+  background: rgb(255 255 255 / 0.12);
+  color: rgb(255 255 255 / 0.72);
+}
+.dv-taskbar-r {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+}
+.dv-taskbar-clock {
+  display: grid;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A maximised app window */
+.dv-win {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #0b0f19;
+}
+.dv-win-bar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.6cqw;
+  padding-left: 1.1cqw;
+  color: #e8edf6;
+  font: 500 1.2cqw/1 var(--font-body);
+}
+[data-os="windows"] .dv-win-bar {
+  background: #1d2230;
+}
+[data-os="linux"] .dv-win-bar {
+  justify-content: center;
+  padding: 0;
+  background: #2d2d2d;
+  font-weight: 700;
+}
+.dv-win-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7cqw;
+}
+.dv-win-icon {
+  width: 1.5cqw;
+}
+[data-os="linux"] .dv-win-icon {
+  display: none;
+}
+.dv-win-ctrl {
+  display: flex;
+  height: 100%;
+}
+.dv-win-ctrl i {
+  position: relative;
+  display: block;
+}
+[data-os="windows"] .dv-win-ctrl i {
+  width: 4cqw;
+  height: 100%;
+}
+[data-os="windows"] .dv-win-ctrl i::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+[data-os="windows"] .dv-win-min::before {
+  width: 1cqw;
+  height: 1px;
+  background: currentColor;
+}
+[data-os="windows"] .dv-win-max::before {
+  width: 0.9cqw;
+  height: 0.9cqw;
+  border: 1px solid currentColor;
+  border-radius: 0.15cqw;
+}
+[data-os="windows"] .dv-win-ctrl .dv-win-close::before {
+  content: "✕";
+  font-size: 1.2cqw;
+  line-height: 1;
+}
+[data-os="linux"] .dv-win-ctrl {
+  position: absolute;
+  right: 0.9cqw;
+  top: 50%;
+  translate: 0 -50%;
+  height: auto;
+  gap: 0.75cqw;
+}
+[data-os="linux"] .dv-win-ctrl i {
+  width: 1.45cqw;
+  height: 1.45cqw;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.14);
+}
+[data-os="linux"] .dv-win-ctrl .dv-win-close {
+  background: #e95420;
+}
+.dv-win-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #000;
+}
+.dv-win-body > img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.pl-app .dv-tile {
+  transition: translate 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.pl-app:hover .dv-tile,
+.pl-app:focus-visible .dv-tile {
+  translate: 0 -7%;
+  box-shadow: 0 0.6em 1.1em -0.4em rgb(0 0 0 / 0.65), inset 0 0 0 1px rgb(255 255 255 / 0.2);
+}
+.pl-icons .dv-tile {
+  width: 4.5cqw;
+}
+/* Point at an app: it lights up on every device it runs on. */
+.pl-app.is-twin .dv-tile {
+  box-shadow: 0 0 0 0.16em #fff, 0 0 0 0.32em #2f7fc1, 0 0 1.2em 0.3em rgb(124 200 240 / 0.9);
+  animation: pl-twin 1.4s ease-in-out infinite;
+}
+/* On a real lock screen the big clock replaces the status-bar one. */
+.pl:not(.is-launching) .pl-iphone .dv-status-time {
+  opacity: 0;
+}
+.pl-media .dv-tile {
+  flex: none;
+  width: 14cqw;
+}
+.pl-peek .dv-win {
+  position: relative;
+  inset: auto;
+}
+.pl-peek .dv-win-body {
+  flex: none;
+  aspect-ratio: 16 / 9;
+}
+.pl-peek.is-max .dv-win {
+  position: absolute;
+  inset: 0;
+}
+.pl-peek.is-max .dv-win-body {
+  flex: 1;
+  aspect-ratio: auto;
+}
+.dv-phone .pl-splash {
+  gap: 3cqw;
+  padding: 10cqw;
+}
+.dv-phone .pl-splash-tile {
+  width: 28cqw;
+}
+.dv-phone .pl-splash b {
+  font-size: 8cqw;
+}
+.dv-phone .pl-splash small {
+  max-width: 70cqw;
+  font-size: 3.8cqw;
+}
+.pl-np .dv-tile {
+  flex: none;
+  width: 14cqw;
+}
 /* ── Shared by the worlds: Blazify's equalizer ─────────────────────────── */
 
 .bz-eq {
@@ -5369,6 +5876,25 @@ main {
   color: rgb(147 160 176);
 }
 
+@media (max-width: 599px) {
+  .pl-icons {
+    width: 13cqw;
+  }
+  .pl-icons .dv-tile {
+    width: 6.4cqw;
+  }
+  .pl-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bz-eq-band input {
+    width: 22px;
+  }
+  .bz-eq-db,
+  .bz-eq-hz {
+    font-size: 10px;
+  }
+}
 :root:has([data-tone="dark"]) .logo {
   color: var(--w-fg);
 }
