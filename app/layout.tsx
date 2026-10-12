@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Google_Sans_Code, Mrs_Saint_Delafield } from "next/font/google";
+import { Figtree, Google_Sans_Code } from "next/font/google";
+import localFont from "next/font/local";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -9,11 +10,11 @@ import ScrollUI from "@/components/ScrollUI";
 import Cursor from "@/components/Cursor";
 import { Footer } from "@/components/Bits";
 
-// Display: a signature script for the logo, standing in for the original's Agustina.
-const display = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-mrs", display: "swap" });
 // Body: Figtree is the closest open match to the original's Google Sans.
 const body = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
 const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", display: "swap" });
+// Logo: Agustina, the signature font of the original rajendrapandey.info.np logo.
+const logo = localFont({ src: "./fonts/Agustina.woff", weight: "400", variable: "--font-agustina", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Rajendra's Portfolio", template: "%s · Rajendra Pandey" },
@@ -30,7 +31,7 @@ const motionFlag = `if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${body.variable} ${mono.variable} ${logo.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionFlag }} />
       </head>

@@ -209,8 +209,9 @@ main {
   transform: translateX(6px);
 }
 .logo-sig {
-  font-family: var(--font-sig);
-  font-size: 40px;
+  font-family: var(--font-logo);
+  font-size: 28px;
+  font-weight: 700;
   line-height: 1;
   word-spacing: -0.12em;
   padding: 0 8px;
@@ -4556,7 +4557,11 @@ main {
     --header-h: 72px;
   }
   .logo-sig {
-    font-size: 32px;
+    font-size: 24px;
+    padding: 0 6px;
+  }
+  .logo-bracket {
+    font-size: 22px;
   }
   .logo {
     position: relative;
@@ -5362,4 +5367,8 @@ main {
 .jv-gate-fine {
   font-size: 12px;
   color: rgb(147 160 176);
+}
+
+:root:has([data-tone="dark"]) .logo {
+  color: var(--w-fg);
 }
