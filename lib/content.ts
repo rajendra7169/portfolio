@@ -1,4 +1,5 @@
-// Every word on the site lives here. Edit this file to update the portfolio.
+// Every word on the site lives here, except the project pages (lib/projects.ts).
+// Edit these two files to update the portfolio.
 
 export const profile = {
   name: "Rajendra Pandey",
@@ -378,85 +379,7 @@ export const careerLog: Commit[] = [
   },
 ];
 
-export type Project = {
-  name: string;
-  description: string;
-  date: string;
-  url: string;
-  live?: string;
-  techs: Tech[];
-  wide?: boolean;
-};
-
-export const projectsIntro =
-  "My projects range from native Android and iPhone apps to desktop software, servers and web apps. The biggest is Blazify, a free and open-source music player used by thousands of people.";
-
-export const projects: Project[] = [
-  {
-    name: "Blazify (Android)",
-    description: "A free, open-source music player for Android: millions of songs, offline downloads, word-by-word synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
-    date: "Jul 15, 2026",
-    url: "https://github.com/rajendra7169/blazify",
-    live: "https://rajendra7169.github.io/blazify/",
-    techs: [{ name: "Kotlin", icon: "logos:kotlin-icon" }, { name: "Jetpack Compose", icon: "simple-icons:jetpackcompose", color: "#4285f4" }, { name: "Android", icon: "logos:android-icon" }],
-  },
-  {
-    name: "Blazify for iPhone",
-    description: "A free, open-source music player in SwiftUI: streaming, local music, synced lyrics, equalizer. No ads, no tracking.",
-    date: "Jul 27, 2026",
-    url: "https://github.com/rajendra7169/blazify-ios",
-    live: "https://rajendra7169.github.io/blazify/",
-    techs: [{ name: "Swift", icon: "logos:swift" }, { name: "Apple", icon: "logos:apple" }],
-  },
-  {
-    name: "Blazify for Desktop",
-    description: "A free, open-source music player for Linux and Windows: streaming, offline downloads, synced lyrics and a 10-band equalizer. No ads, no tracking, no account needed.",
-    date: "Aug 01, 2026",
-    url: "https://github.com/rajendra7169/blazify-desktop",
-    live: "https://rajendra7169.github.io/blazify/",
-    techs: [{ name: "Kotlin", icon: "logos:kotlin-icon" }, { name: "Linux", icon: "logos:linux-tux" }, { name: "Windows", icon: "logos:microsoft-windows-icon" }],
-  },
-  {
-    name: "NexTerm",
-    description: "A modern, feature-rich terminal for Windows — free and built from scratch. SSH, SFTP, port forwarding, jump-hosts, recording, snippets, workspaces, and more.",
-    date: "May 04, 2026",
-    url: "https://github.com/rajendra7169/NexTerm",
-    techs: [{ name: "JavaScript", icon: "logos:javascript" }, { name: "HTML5", icon: "logos:html-5" }, { name: "CSS3", icon: "logos:css-3" }],
-  },
-  {
-    name: "Tally",
-    description: "A modern, gamified attendance manager with a living forest visualization. Multi-tenant SaaS for small teams.",
-    date: "May 29, 2026",
-    url: "https://github.com/rajendra7169/attendance-system",
-    live: "https://tally.rajendrapandey.info.np",
-    techs: [{ name: "JavaScript", icon: "logos:javascript" }, { name: "CSS3", icon: "logos:css-3" }, { name: "HTML5", icon: "logos:html-5" }],
-  },
-  {
-    name: "Fitevo",
-    description: "Local-first AI fitness, nutrition & workout tracker. One-sentence food logging, AI-built routines, no shaming. Flutter + Firebase + Groq.",
-    date: "Jun 17, 2026",
-    url: "https://github.com/rajendra7169/fitevo",
-    techs: [{ name: "Dart", icon: "logos:dart" }, { name: "Flutter", icon: "simple-icons:flutter", color: "#02569b" }, { name: "Firebase", icon: "logos:firebase-icon" }],
-  },
-  {
-    name: "R-AI",
-    description: "Air-gapped, zero-dependency local AI environment.",
-    date: "Jun 03, 2026",
-    url: "https://github.com/rajendra7169/R-AI",
-    techs: [{ name: "HTML5", icon: "logos:html-5" }, { name: "Python", icon: "logos:python" }, { name: "JavaScript", icon: "logos:javascript" }],
-    wide: true,
-  },
-  {
-    name: "Laundry Recommendation App",
-    description: "A MERN Stack Laundry Management App developed for the Final Year Project at Sunway College Kathmandu.",
-    date: "Sep 20, 2024",
-    url: "https://github.com/rajendra7169/laundry_recommendation_app",
-    live: "https://laundry-frontend-pearl.vercel.app",
-    techs: [{ name: "MongoDB", icon: "logos:mongodb-icon" }, { name: "React", icon: "logos:react" }, { name: "Node.js", icon: "logos:nodejs-icon" }],
-    wide: true,
-  },
-];
-
+// The apps on the Projects page and their pages live in lib/projects.ts.
 export const publications = [
   {
     title: "Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB",

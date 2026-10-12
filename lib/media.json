@@ -1,0 +1,488 @@
+{
+ "blazify/designs": {
+  "src": "/projects/blazify/designs.webp",
+  "w": 1600,
+  "h": 627,
+  "top": "#1b3130"
+ },
+ "blazify/desk-feel": {
+  "src": "/projects/blazify/desk-feel.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#252017"
+ },
+ "blazify/desk-home": {
+  "src": "/projects/blazify/desk-home.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#182124"
+ },
+ "blazify/desk-kept": {
+  "src": "/projects/blazify/desk-kept.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#1e1314"
+ },
+ "blazify/desk-looks": {
+  "src": "/projects/blazify/desk-looks.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#0c1315"
+ },
+ "blazify/desk-podcasts": {
+  "src": "/projects/blazify/desk-podcasts.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#221b15"
+ },
+ "blazify/icon": {
+  "src": "/projects/blazify/icon.webp",
+  "w": 256,
+  "h": 222,
+  "top": "#9c4f14"
+ },
+ "blazify/iphone-cassette": {
+  "src": "/projects/blazify/iphone-cassette.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#352d26"
+ },
+ "blazify/iphone-explore": {
+  "src": "/projects/blazify/iphone-explore.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#2c241f"
+ },
+ "blazify/iphone-home": {
+  "src": "/projects/blazify/iphone-home.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#493f2e"
+ },
+ "blazify/iphone-look": {
+  "src": "/projects/blazify/iphone-look.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#d4cfcd"
+ },
+ "blazify/iphone-theme": {
+  "src": "/projects/blazify/iphone-theme.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#1c1a19"
+ },
+ "blazify/iphone-videoart": {
+  "src": "/projects/blazify/iphone-videoart.webp",
+  "w": 720,
+  "h": 1561,
+  "top": "#1e1615"
+ },
+ "blazify/logo-white": {
+  "src": "/projects/blazify/logo-white.webp",
+  "w": 256,
+  "h": 256,
+  "top": "#414141"
+ },
+ "blazify/phone-eq": {
+  "src": "/projects/blazify/phone-eq.webp",
+  "w": 480,
+  "h": 1040,
+  "top": "#10191c"
+ },
+ "blazify/phone-home": {
+  "src": "/projects/blazify/phone-home.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#1e261d"
+ },
+ "blazify/phone-library": {
+  "src": "/projects/blazify/phone-library.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#473835"
+ },
+ "blazify/phone-look": {
+  "src": "/projects/blazify/phone-look.webp",
+  "w": 480,
+  "h": 1040,
+  "top": "#0c2127"
+ },
+ "blazify/phone-player-cassette": {
+  "src": "/projects/blazify/phone-player-cassette.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#354f4a"
+ },
+ "blazify/phone-player-classic": {
+  "src": "/projects/blazify/phone-player-classic.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#204646"
+ },
+ "blazify/phone-player-full_art": {
+  "src": "/projects/blazify/phone-player-full_art.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#324d4e"
+ },
+ "blazify/phone-player-record": {
+  "src": "/projects/blazify/phone-player-record.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#103232"
+ },
+ "blazify/phone-player-ring": {
+  "src": "/projects/blazify/phone-player-ring.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#173e3e"
+ },
+ "blazify/phone-player-video": {
+  "src": "/projects/blazify/phone-player-video.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#292c24"
+ },
+ "blazify/phone-player": {
+  "src": "/projects/blazify/phone-player.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#2b4242"
+ },
+ "blazify/phone-search": {
+  "src": "/projects/blazify/phone-search.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#0e1213"
+ },
+ "blazify/phone-settings": {
+  "src": "/projects/blazify/phone-settings.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#131818"
+ },
+ "blazify/phone-together": {
+  "src": "/projects/blazify/phone-together.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#1d2524"
+ },
+ "blazify/phone-yours": {
+  "src": "/projects/blazify/phone-yours.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#252c2e"
+ },
+ "fitevo/icon": {
+  "src": "/projects/fitevo/icon.webp",
+  "w": 256,
+  "h": 294,
+  "top": "#703a2e"
+ },
+ "fitevo/phone-about": {
+  "src": "/projects/fitevo/phone-about.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#291e16"
+ },
+ "fitevo/phone-coach": {
+  "src": "/projects/fitevo/phone-coach.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#1f1a15"
+ },
+ "fitevo/phone-d-meals": {
+  "src": "/projects/fitevo/phone-d-meals.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#241d16"
+ },
+ "fitevo/phone-d-musclemap": {
+  "src": "/projects/fitevo/phone-d-musclemap.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#221d18"
+ },
+ "fitevo/phone-d-progress": {
+  "src": "/projects/fitevo/phone-d-progress.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#1e1a16"
+ },
+ "fitevo/phone-d-prs": {
+  "src": "/projects/fitevo/phone-d-prs.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#1f1d1a"
+ },
+ "fitevo/phone-d-report": {
+  "src": "/projects/fitevo/phone-d-report.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#282018"
+ },
+ "fitevo/phone-d-routine": {
+  "src": "/projects/fitevo/phone-d-routine.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#2c241c"
+ },
+ "fitevo/phone-d-today": {
+  "src": "/projects/fitevo/phone-d-today.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#24201b"
+ },
+ "fitevo/phone-d-workout": {
+  "src": "/projects/fitevo/phone-d-workout.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#4d2c23"
+ },
+ "fitevo/phone-home": {
+  "src": "/projects/fitevo/phone-home.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#1d1a17"
+ },
+ "fitevo/phone-intro": {
+  "src": "/projects/fitevo/phone-intro.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#241b15"
+ },
+ "fitevo/phone-login": {
+  "src": "/projects/fitevo/phone-login.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#241b15"
+ },
+ "fitevo/phone-progress": {
+  "src": "/projects/fitevo/phone-progress.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#1d1a15"
+ },
+ "fitevo/phone-workout": {
+  "src": "/projects/fitevo/phone-workout.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#2d2119"
+ },
+ "jarvis/desk-idle": {
+  "src": "/projects/jarvis/desk-idle.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#0c0d0d"
+ },
+ "jarvis/desk-ion": {
+  "src": "/projects/jarvis/desk-ion.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#061419"
+ },
+ "jarvis/desk-speaking": {
+  "src": "/projects/jarvis/desk-speaking.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#0d0f10"
+ },
+ "jarvis/portrait": {
+  "src": "/projects/jarvis/portrait.webp",
+  "w": 1200,
+  "h": 1920,
+  "top": "#0c0e10"
+ },
+ "jarvis/wall": {
+  "src": "/projects/jarvis/wall.webp",
+  "w": 1600,
+  "h": 610,
+  "top": "#04090d"
+ },
+ "nexterm/desk-font": {
+  "src": "/projects/nexterm/desk-font.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#11141d"
+ },
+ "nexterm/desk-main": {
+  "src": "/projects/nexterm/desk-main.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#121318"
+ },
+ "nexterm/desk-profiles": {
+  "src": "/projects/nexterm/desk-profiles.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#15161d"
+ },
+ "nexterm/desk-shells": {
+  "src": "/projects/nexterm/desk-shells.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#0f1015"
+ },
+ "nexterm/desk-splits": {
+  "src": "/projects/nexterm/desk-splits.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#14161b"
+ },
+ "nexterm/desk-themes": {
+  "src": "/projects/nexterm/desk-themes.webp",
+  "w": 1600,
+  "h": 900,
+  "top": "#1d2028"
+ },
+ "nexterm/icon": {
+  "src": "/projects/nexterm/icon.webp",
+  "w": 256,
+  "h": 192,
+  "top": "#131527"
+ },
+ "r-ai/desk-chat": {
+  "src": "/projects/r-ai/desk-chat.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#232323"
+ },
+ "r-ai/desk-image": {
+  "src": "/projects/r-ai/desk-image.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#1e1e1f"
+ },
+ "r-ai/icon": {
+  "src": "/projects/r-ai/icon.webp",
+  "w": 256,
+  "h": 247,
+  "top": "#3b5060"
+ },
+ "r-ai/phone-chat": {
+  "src": "/projects/r-ai/phone-chat.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#2a2a2a"
+ },
+ "tally/desk-admin-approvals": {
+  "src": "/projects/tally/desk-admin-approvals.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#f4f4f4"
+ },
+ "tally/desk-admin-dashboard": {
+  "src": "/projects/tally/desk-admin-dashboard.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#f9f9fa"
+ },
+ "tally/desk-calendar": {
+  "src": "/projects/tally/desk-calendar.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#f6f9f8"
+ },
+ "tally/desk-forest-3d": {
+  "src": "/projects/tally/desk-forest-3d.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#a8b07b"
+ },
+ "tally/desk-forest-fullscreen": {
+  "src": "/projects/tally/desk-forest-fullscreen.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#d3ddb7"
+ },
+ "tally/desk-staff-dashboard": {
+  "src": "/projects/tally/desk-staff-dashboard.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#f3f4f4"
+ },
+ "tally/desk-team-forest": {
+  "src": "/projects/tally/desk-team-forest.webp",
+  "w": 1600,
+  "h": 1000,
+  "top": "#e2e7d2"
+ },
+ "tally/desk-web": {
+  "src": "/projects/tally/desk-web.webp",
+  "w": 1440,
+  "h": 900,
+  "top": "#8b8997"
+ },
+ "tally/icon": {
+  "src": "/projects/tally/icon.webp",
+  "w": 221,
+  "h": 200,
+  "top": "#2173a6"
+ },
+ "tally/phone-admin-dashboard": {
+  "src": "/projects/tally/phone-admin-dashboard.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#f4f4f6"
+ },
+ "tally/phone-approvals": {
+  "src": "/projects/tally/phone-approvals.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#f1f0f2"
+ },
+ "tally/phone-calendar": {
+  "src": "/projects/tally/phone-calendar.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#f5f8f7"
+ },
+ "tally/phone-forest": {
+  "src": "/projects/tally/phone-forest.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#eff1e6"
+ },
+ "tally/phone-home": {
+  "src": "/projects/tally/phone-home.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#edf0ef"
+ },
+ "tally/phone-login": {
+  "src": "/projects/tally/phone-login.webp",
+  "w": 720,
+  "h": 1560,
+  "top": "#111112"
+ },
+ "tally/phone-wrapped": {
+  "src": "/projects/tally/phone-wrapped.webp",
+  "w": 720,
+  "h": 1599,
+  "top": "#c86728"
+ },
+ "vocabu/phone-home-dark": {
+  "src": "/projects/vocabu/phone-home-dark.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#1e212a"
+ },
+ "vocabu/phone-home": {
+  "src": "/projects/vocabu/phone-home.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#c9dbd6"
+ },
+ "vocabu/phone-saved-dark": {
+  "src": "/projects/vocabu/phone-saved-dark.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#22242c"
+ },
+ "vocabu/phone-saved": {
+  "src": "/projects/vocabu/phone-saved.webp",
+  "w": 720,
+  "h": 1600,
+  "top": "#d3e0dc"
+ }
+}
