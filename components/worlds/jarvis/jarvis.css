@@ -1,0 +1,1025 @@
+/* ══ Jarvis's world: the HUD ══════════════════════════════════════════════
+   The HUD's MARK theme. Colour is a contract here, as in the HUD itself:
+   orange acts, violet is the network, yellow asks, red stops, green is ok.
+   Rajdhani for structure, Share Tech Mono for anything measured, Inter to read.
+   GSAP owns transform on rings, layers, tags and the frame corners; the CSS
+   loops spin inner elements with `rotate`. */
+.w-jv {
+  --jv-bg: #040507;
+  --jv-panel: #0a0c10;
+  --jv-act: #ff8a1a;
+  --jv-act-soft: #ffd09a;
+  --jv-net: #7c6bff;
+  --jv-ask: #ffcd3c;
+  --jv-stop: #ff2a3a;
+  --jv-ok: #40e28c;
+  --jv-chrome: #d6e2ee;
+  --jv-text: #edf3fa;
+  --jv-dim: #93a0b0;
+  --jv-line: rgb(214 226 238 / 0.12);
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background:
+    radial-gradient(60% 50% at 50% 30%, rgb(255 138 26 / 0.08), transparent 70%),
+    var(--jv-bg);
+  color: var(--jv-text);
+  font-family: var(--jv-body), system-ui, sans-serif;
+}
+/* A faint scan grid over everything */
+.w-jv::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(214 226 238 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(214 226 238 / 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.w-jv :focus-visible {
+  outline-color: var(--jv-act);
+}
+
+/* ── The frame: corner brackets and readouts around the screen ──────────── */
+.jv-frame {
+  position: fixed;
+  inset: calc(var(--header-h) - 4px) 14px 14px;
+  z-index: 30;
+  pointer-events: none;
+  font: 400 11px var(--jv-mono), monospace;
+  letter-spacing: 0.14em;
+  color: var(--jv-dim);
+}
+.jv-frame i {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--jv-act);
+  opacity: 0.8;
+}
+.jv-frame i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.jv-frame i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+.jv-frame i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+.jv-frame i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+.jv-frame span {
+  position: absolute;
+  padding: 3px 6px;
+  background: rgb(4 5 7 / 0.78);
+}
+.jv-frame-tl { left: 46px; top: 10px; color: var(--jv-act); }
+.jv-frame-tr { right: 46px; top: 10px; }
+.jv-frame-bl { left: 46px; bottom: 10px; }
+.jv-frame-br { right: 46px; bottom: 10px; }
+.jv-frame-state {
+  margin-left: 8px;
+  color: var(--jv-ok);
+  font-weight: 400;
+}
+
+/* ── Boot ───────────────────────────────────────────────────────────────── */
+.jv-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 56px);
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 40px) calc(var(--gutter) + 24px) 60px;
+}
+.jv-boot,
+.jv-tele {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  font: 400 12.5px var(--jv-mono), monospace;
+  letter-spacing: 0.06em;
+  color: var(--jv-dim);
+}
+.jv-boot-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px 22px;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+}
+.jv-boot-line i {
+  height: 3px;
+  background: var(--jv-line);
+}
+.jv-boot-line b {
+  display: block;
+  height: 100%;
+  background: var(--jv-act);
+}
+.jv-boot-line em {
+  font-style: normal;
+  color: var(--jv-ok);
+}
+.jv-tele > div {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  border-left: 2px solid var(--jv-act);
+  background: linear-gradient(90deg, rgb(255 138 26 / 0.08), transparent);
+}
+.jv-tele dt {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.jv-tele dd {
+  font-size: 20px;
+  color: var(--jv-text);
+}
+.jv-core-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.jv-reactor {
+  position: relative;
+  width: min(54vh, 34vw, 520px);
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.jv-arc {
+  position: absolute;
+  border-radius: 50%;
+}
+.jv-arc-spin {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.jv-arc-0 { inset: 0; }
+.jv-arc-1 { inset: 7%; }
+.jv-arc-2 { inset: 15%; }
+.jv-arc-3 { inset: 23%; }
+.jv-arc-4 { inset: 31%; }
+.jv-arc-5 { inset: 38%; }
+.jv-arc-0 .jv-arc-spin {
+  border: 1.5px dashed rgb(255 138 26 / 0.45);
+  animation: jv-spin 60s linear infinite;
+}
+.jv-arc-1 .jv-arc-spin {
+  background: repeating-conic-gradient(var(--jv-act) 0 2deg, transparent 2deg 9deg);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  opacity: 0.6;
+  animation: jv-spin 40s linear infinite reverse;
+}
+.jv-arc-2 .jv-arc-spin {
+  border: 3px solid transparent;
+  border-top-color: var(--jv-act);
+  border-right-color: rgb(255 138 26 / 0.4);
+  animation: jv-spin 9s linear infinite;
+}
+.jv-arc-3 .jv-arc-spin {
+  background: conic-gradient(from 0deg, var(--jv-net) 0 18%, transparent 18% 34%, var(--jv-act) 34% 46%, transparent 46% 70%, var(--jv-ok) 70% 76%, transparent 76%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  animation: jv-spin 14s linear infinite reverse;
+}
+.jv-arc-4 .jv-arc-spin {
+  border: 1.5px solid rgb(214 226 238 / 0.3);
+  box-shadow: inset 0 0 30px rgb(255 138 26 / 0.25);
+}
+.jv-arc-5 .jv-arc-spin {
+  border: 6px solid rgb(255 138 26 / 0.35);
+  border-left-color: var(--jv-act);
+  animation: jv-spin 4s linear infinite;
+}
+@keyframes jv-spin {
+  to { rotate: 360deg; }
+}
+.jv-reactor:hover .jv-arc-spin,
+.jv-reactor.is-awake .jv-arc-spin {
+  animation-duration: 1.6s;
+}
+.jv-heart {
+  position: absolute;
+  inset: 42%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff3e0, var(--jv-act-soft) 30%, var(--jv-act) 62%, rgb(255 138 26 / 0) 72%);
+  box-shadow: 0 0 60px 10px rgb(255 138 26 / 0.45);
+  animation: jv-pulse 2.6s ease-in-out infinite;
+}
+@keyframes jv-pulse {
+  50% { scale: 1.08; opacity: 0.85; }
+}
+.jv-voice {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 6px);
+  translate: -50% 0;
+  min-height: 1.4em;
+  white-space: nowrap;
+  font: 400 15px var(--jv-mono), monospace;
+  color: var(--jv-act-soft);
+}
+.jv-word {
+  margin-top: 26px;
+  font-family: var(--jv-head), sans-serif;
+  font-size: clamp(56px, 7vw, 120px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0.32em;
+  margin-right: -0.32em;
+  color: var(--jv-chrome);
+}
+.jv-tag {
+  max-width: 32ch;
+  font-family: var(--jv-head), sans-serif;
+  font-size: clamp(20px, 1.8vw, 28px);
+  font-weight: 600;
+  color: var(--jv-act-soft);
+}
+.jv-intro {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 0 var(--gutter) clamp(60px, 10vh, 120px);
+  text-align: center;
+}
+.jv-lede {
+  max-width: 64ch;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.7;
+  color: var(--jv-dim);
+}
+.jv-private {
+  font: 400 13px var(--jv-mono), monospace;
+  letter-spacing: 0.1em;
+  color: var(--jv-ask);
+}
+
+/* ── Shared section chrome ──────────────────────────────────────────────── */
+.jv-explode,
+.jv-run,
+.jv-screens,
+.jv-skills,
+.jv-gate-world,
+.jv-laws,
+.jv-next {
+  position: relative;
+  padding: clamp(80px, 12vh, 140px) calc(var(--gutter) + 24px) 40px;
+}
+.jv-head {
+  max-width: 60rem;
+  margin-bottom: clamp(28px, 5vh, 48px);
+}
+.jv-h2 {
+  font-family: var(--jv-head), sans-serif;
+  font-size: clamp(44px, 5.6vw, 96px);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--jv-chrome);
+}
+.jv-sub {
+  max-width: 52ch;
+  margin-top: 14px;
+  font-size: clamp(16px, 1.25vw, 19px);
+  line-height: 1.6;
+  color: var(--jv-dim);
+}
+
+/* ── Reactor, explode ───────────────────────────────────────────────────── */
+/* Without 3D (phones, reduced motion): the stages as a wired list. */
+.jv-stack {
+  display: none;
+}
+.jv-legend {
+  display: grid;
+  gap: 22px;
+  max-width: 560px;
+  list-style: none;
+}
+.jv-legend li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 12px;
+  padding-left: 46px;
+}
+.jv-legend li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  aspect-ratio: 1;
+  border: 2px dashed var(--jv-act);
+  border-radius: 50%;
+}
+.jv-legend li + li::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  bottom: calc(100% - 2px);
+  width: 1px;
+  height: 22px;
+  background: rgb(255 138 26 / 0.4);
+}
+.jv-legend b {
+  font-family: var(--jv-head), sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--jv-chrome);
+  transition: color 0.4s, text-shadow 0.4s;
+}
+.jv-legend em {
+  font: 400 12px var(--jv-mono), monospace;
+  font-style: normal;
+  color: var(--jv-act);
+}
+.jv-legend span {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  color: var(--jv-dim);
+}
+
+/* Desktop: the rings stack into the reactor and fly apart in 3D. */
+.jv-explode.is-3d {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 16px);
+  padding-bottom: 40px;
+}
+.jv-explode.is-3d .jv-head {
+  margin-bottom: 0;
+}
+.jv-explode.is-3d .jv-stack-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+.jv-explode.is-3d .jv-stack {
+  position: relative;
+  display: block;
+  width: min(40vh, 28vw);
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+}
+.jv-explode.is-3d .jv-layer {
+  --s: calc(100% - var(--i) * (62% / var(--n)));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--s);
+  aspect-ratio: 1;
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+}
+.jv-layer-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.jv-layer-spin {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgb(255 138 26 / 0.35);
+  background: radial-gradient(farthest-side, transparent calc(100% - 14px), rgb(255 138 26 / 0.08) calc(100% - 13px));
+  box-shadow: 0 0 24px -6px rgb(255 138 26 / 0.5);
+  animation: jv-spin 18s linear infinite;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+.jv-layer:nth-child(odd) .jv-layer-spin {
+  border-style: dashed;
+  animation-direction: reverse;
+}
+.jv-layer.is-on .jv-layer-spin {
+  border-color: var(--jv-act);
+  box-shadow: 0 0 40px 2px rgb(255 138 26 / 0.7), inset 0 0 30px rgb(255 138 26 / 0.4);
+}
+.jv-explode.is-3d .jv-legend {
+  position: absolute;
+  inset: 0;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+.jv-explode.is-3d .jv-legend li {
+  position: absolute;
+  width: 300px;
+  padding-left: 0;
+  translate: 0 -11px;
+}
+.jv-explode.is-3d .jv-legend li::before {
+  left: -22px;
+  top: 11px;
+  width: 16px;
+  height: 1px;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: var(--jv-act);
+}
+.jv-explode.is-3d .jv-legend li::after {
+  display: none;
+}
+.jv-explode.is-3d .jv-legend b {
+  font-size: 19px;
+  color: var(--jv-dim);
+}
+.jv-explode.is-3d .jv-legend span {
+  font-size: 13px;
+}
+.jv-explode.is-3d .jv-legend li.is-on b {
+  color: var(--jv-text);
+  text-shadow: 0 0 18px rgb(255 138 26 / 0.8);
+}
+
+/* ── One command, live ──────────────────────────────────────────────────── */
+.w-jv .jv-demo {
+  background: radial-gradient(80% 80% at 30% 40%, #10131a, var(--jv-bg) 70%);
+  box-shadow: inset 0 0 0 1px var(--jv-line), 0 30px 70px -40px rgb(255 138 26 / 0.3);
+}
+
+/* ── The HUD, for real: the main screen up close, then the wall ────────── */
+.jv-wall {
+  display: grid;
+  gap: 14px;
+}
+.jv-wall-stage {
+  position: relative;
+  width: min(100%, calc((100svh - 300px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+  margin: 0 auto;
+  perspective: 1400px;
+}
+.jv-mon {
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+  box-shadow: 0 0 0 1px rgb(214 226 238 / 0.14), 0 30px 60px -20px #000, 0 0 70px -30px rgb(255 138 26 / 0.45);
+}
+.jv-mon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.jv-mon--main {
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  container-type: size;
+}
+.jv-mon--main::before,
+.jv-mon--main::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--jv-act);
+  pointer-events: none;
+}
+.jv-mon--main::before {
+  left: -10px;
+  top: -10px;
+  border-right: 0;
+  border-bottom: 0;
+}
+.jv-mon--main::after {
+  right: -10px;
+  bottom: -10px;
+  border-left: 0;
+  border-top: 0;
+}
+.jv-mshot {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+.jv-mshot.is-on {
+  opacity: 1;
+}
+/* The side monitors, where they stand once the camera steps back. */
+.jv-mon--left {
+  left: 0.5%;
+  top: 41.5%;
+  width: 26%;
+  aspect-ratio: 16 / 9;
+  transform-origin: right center;
+}
+.jv-mon--portrait {
+  left: 73.5%;
+  top: 29.5%;
+  height: 50%;
+  aspect-ratio: 1200 / 1920;
+  transform-origin: left center;
+}
+.jv-wall:not(.is-live) .jv-mon--side {
+  display: none;
+}
+
+/* Callouts: a dot on the screenshot, a leader, and what that part does. */
+.jv-call {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s, visibility 0.35s;
+}
+.jv-wall:not(.is-live) .jv-call[data-screen="0"],
+.jv-call.is-on,
+.jv-call.is-past {
+  opacity: 1;
+  visibility: visible;
+}
+.jv-call.is-past {
+  opacity: 0.4;
+}
+.jv-call i {
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--jv-act);
+  box-shadow: 0 0 0 4px rgb(255 138 26 / 0.25), 0 0 16px 4px rgb(255 138 26 / 0.6);
+}
+.jv-call.is-on i {
+  animation: jv-ping 1.6s ease-out infinite;
+}
+@keyframes jv-ping {
+  50% { box-shadow: 0 0 0 12px rgb(255 138 26 / 0), 0 0 22px 6px rgb(255 138 26 / 0.7); }
+}
+.jv-call b {
+  position: absolute;
+  left: 10px;
+  top: -24px;
+  font: 400 11px var(--jv-mono), monospace;
+  color: var(--jv-act-soft);
+}
+.jv-call::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: calc(var(--len) * 1cqw);
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--jv-act), rgb(255 138 26 / 0.4));
+}
+.jv-call--r::before {
+  left: 7px;
+}
+.jv-call--l::before {
+  right: 7px;
+  scale: -1 1;
+}
+.jv-call > span {
+  position: absolute;
+  top: 0;
+  width: max-content;
+  max-width: min(24cqw, 300px);
+  padding: 8px 12px;
+  border-left: 2px solid var(--jv-act);
+  background: rgb(4 5 7 / 0.88);
+  backdrop-filter: blur(4px);
+  font: 500 clamp(11px, 1.15cqw, 15px) / 1.4 var(--jv-body), sans-serif;
+  color: var(--jv-text);
+  translate: 0 -50%;
+}
+.jv-call--r > span {
+  left: calc(var(--len) * 1cqw + 7px);
+}
+.jv-call--l > span {
+  right: calc(var(--len) * 1cqw + 7px);
+  border-left: 0;
+  border-right: 2px solid var(--jv-act);
+}
+.jv-wall-steps {
+  display: grid;
+  max-width: 70ch;
+  margin: 6px auto 0;
+  list-style: none;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--jv-dim);
+}
+.jv-wall-steps li {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.jv-wall-steps li.is-on {
+  opacity: 1;
+}
+.jv-wall-steps b {
+  font-family: var(--jv-head), sans-serif;
+  font-size: 18px;
+  color: var(--jv-chrome);
+}
+.jv-readout {
+  display: none;
+}
+/* Pinned: the whole scene holds one screen while it plays. */
+.jv-screens.is-pinned {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 6px);
+  padding-bottom: 26px;
+}
+.jv-screens.is-pinned .jv-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  max-width: none;
+  margin-bottom: 18px;
+}
+.jv-screens.is-pinned .jv-h2 {
+  flex: none;
+  font-size: clamp(36px, min(4.4vw, 7vh), 72px);
+}
+.jv-screens.is-pinned .jv-sub {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ── Skill registry ─────────────────────────────────────────────────────── */
+.jv-skills-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: clamp(24px, 4vw, 64px);
+}
+.jv-fams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 32px;
+  list-style: none;
+  font: 400 13px var(--jv-mono), monospace;
+}
+.jv-fams li {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 12px;
+}
+.jv-fams span {
+  color: var(--jv-dim);
+}
+.jv-fams i {
+  height: 8px;
+  background: var(--jv-line);
+}
+.jv-fams b {
+  display: block;
+  width: calc(var(--n) / 34 * 100%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--jv-act), var(--jv-ask));
+}
+.jv-fams em {
+  font-style: normal;
+  text-align: right;
+  color: var(--jv-text);
+}
+.jv-bus {
+  height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--jv-line);
+  background: var(--jv-panel);
+  mask: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  -webkit-mask: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+}
+.jv-bus-head {
+  padding: 14px 16px;
+  font: 400 11px var(--jv-mono), monospace;
+  letter-spacing: 0.16em;
+  color: var(--jv-act);
+}
+.jv-bus-list {
+  list-style: none;
+  font: 400 13px/2 var(--jv-mono), monospace;
+  color: var(--jv-dim);
+  padding: 0 16px;
+  animation: jv-bus 30s linear infinite;
+}
+.jv-bus-list code {
+  color: var(--jv-net);
+}
+@keyframes jv-bus {
+  to { translate: 0 -50%; }
+}
+
+/* ── Gate, principles, next ─────────────────────────────────────────────── */
+.w-jv .jv-gate {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  background: radial-gradient(70% 90% at 80% 50%, rgb(255 138 26 / 0.07), transparent 70%), #07080b;
+}
+.jv-gate-ctrl {
+  display: grid;
+  gap: 22px;
+}
+.jv-gate-view {
+  --mc: var(--jv-ok);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  text-align: center;
+}
+.jv-gate-view.is-offer { --mc: var(--jv-ask); }
+.jv-gate-view.is-ask { --mc: var(--jv-stop); }
+.jv-gate-view.is-escalate { --mc: var(--jv-net); }
+.jv-gv-core {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(150px, 15vw, 210px);
+  aspect-ratio: 1;
+}
+.jv-gv-core i {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed var(--mc);
+  opacity: 0.75;
+  transition: border-color 0.4s;
+  animation: jv-spin 14s linear infinite;
+}
+.jv-gv-core i:nth-child(1) { inset: 0; }
+.jv-gv-core i:nth-child(2) { inset: 12%; border-style: solid; border-color: transparent; border-top-color: var(--mc); border-left-color: var(--mc); animation-duration: 3s; }
+.jv-gv-core i:nth-child(3) { inset: 26%; animation-direction: reverse; animation-duration: 8s; box-shadow: inset 0 0 30px -6px var(--mc), 0 0 40px -10px var(--mc); }
+.jv-gv-core b {
+  font: 700 clamp(22px, 2vw, 30px) var(--jv-head), sans-serif;
+  letter-spacing: 0.2em;
+  margin-right: -0.2em;
+  text-transform: uppercase;
+  color: var(--mc);
+  text-shadow: 0 0 18px var(--mc);
+  animation: jv-gv-flash 0.5s ease-out;
+}
+@keyframes jv-gv-flash {
+  from { opacity: 0; scale: 1.4; filter: blur(4px); }
+}
+.jv-gv-gauge {
+  width: min(100%, 250px);
+  overflow: visible;
+}
+.jv-gv-z {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: butt;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.jv-gv-z--esc { stroke: #7c6bff; }
+.jv-gv-z--off { stroke: var(--jv-ask); }
+.jv-gv-z--act { stroke: var(--jv-ok); }
+.is-escalate .jv-gv-z--esc,
+.is-offer .jv-gv-z--off,
+.is-act .jv-gv-z--act,
+.is-ask .jv-gv-z--act {
+  opacity: 1;
+}
+.jv-gv-needle {
+  stroke: var(--jv-text);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  transition: transform 0.25s ease-out;
+}
+.jv-gv-hub {
+  fill: var(--jv-text);
+}
+.jv-gv-num {
+  font: 400 15px var(--jv-mono), monospace;
+  text-anchor: middle;
+  fill: var(--jv-dim);
+}
+.jv-gv-path {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 0;
+  list-style: none;
+  font: 400 12px var(--jv-mono), monospace;
+  letter-spacing: 0.06em;
+  color: var(--jv-dim);
+}
+.jv-gv-path li + li::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 1px;
+  margin: 0 8px;
+  vertical-align: middle;
+  background: var(--jv-line);
+}
+.jv-gv-path .is-to {
+  color: var(--mc);
+}
+.jv-gv-path .is-to::before {
+  background: var(--mc);
+}
+.jv-gv-say {
+  max-width: 30ch;
+  min-height: 2.8em;
+  font-size: clamp(17px, 1.4vw, 21px);
+  line-height: 1.4;
+  color: var(--jv-text);
+  animation: jv-gv-say 0.6s steps(18);
+}
+@keyframes jv-gv-say {
+  from { clip-path: inset(0 100% 0 0); }
+}
+.jv-laws {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.jv-law {
+  padding: 26px;
+  border-top: 2px solid var(--jv-act);
+  background: linear-gradient(180deg, rgb(255 138 26 / 0.07), transparent);
+}
+.jv-law b {
+  font-family: var(--jv-head), sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--jv-chrome);
+}
+.jv-law p {
+  margin-top: 10px;
+  line-height: 1.6;
+  color: var(--jv-dim);
+}
+.jv-next {
+  padding-bottom: clamp(90px, 14vh, 150px);
+}
+.jv-next-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 22px;
+  max-width: 820px;
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid var(--jv-line);
+  background: var(--jv-panel);
+  transition: border-color 0.3s;
+}
+.jv-next-link:hover {
+  border-color: var(--jv-act);
+}
+.jv-next-tile {
+  grid-row: span 2;
+  width: 72px;
+}
+.jv-next-link b {
+  font-family: var(--jv-head), sans-serif;
+  font-size: clamp(36px, 4vw, 60px);
+  font-weight: 700;
+  line-height: 1;
+}
+.jv-next-link span {
+  color: var(--jv-dim);
+}
+
+@media (max-width: 899px) {
+  .jv-hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: calc(var(--gutter) + 12px);
+    padding-right: calc(var(--gutter) + 12px);
+  }
+  .jv-core-wrap {
+    order: -1;
+  }
+  .jv-reactor {
+    width: min(76vw, 360px);
+  }
+  .jv-word {
+    letter-spacing: 0.18em;
+    margin-right: -0.18em;
+  }
+  .jv-explode,
+  .jv-run,
+  .jv-screens,
+  .jv-skills,
+  .jv-gate-world,
+  .jv-laws,
+  .jv-next {
+    padding-left: calc(var(--gutter) + 12px);
+    padding-right: calc(var(--gutter) + 12px);
+  }
+  .w-jv .jv-gate {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .jv-explode.is-3d {
+    padding-left: calc(var(--gutter) + 4px);
+    padding-right: calc(var(--gutter) + 4px);
+  }
+  .jv-explode.is-3d .jv-stack-wrap {
+    place-items: center start;
+    padding-left: 11vw;
+  }
+  .jv-explode.is-3d .jv-stack {
+    width: min(40vw, 28vh);
+  }
+  .jv-explode.is-3d .jv-legend li {
+    width: auto;
+    column-gap: 6px;
+    translate: 0 -9px;
+  }
+  .jv-explode.is-3d .jv-legend li::before {
+    left: -18px;
+    top: 9px;
+    width: 12px;
+  }
+  .jv-explode.is-3d .jv-legend b {
+    font-size: 14px;
+  }
+  .jv-explode.is-3d .jv-legend em {
+    display: none;
+  }
+  .jv-explode.is-3d .jv-legend span {
+    font-size: 11px;
+  }
+  .jv-call::before,
+  .jv-call > span {
+    display: none;
+  }
+  .jv-call b {
+    left: -4px;
+    top: -5px;
+    z-index: 1;
+    font-size: 9px;
+    color: #1a0e00;
+  }
+  .jv-call i {
+    left: -9px;
+    top: -9px;
+    width: 18px;
+    height: 18px;
+  }
+  .jv-readout:empty {
+    visibility: hidden;
+  }
+  .jv-readout {
+    display: block;
+    min-height: 3em;
+    padding: 10px 12px;
+    border-left: 2px solid var(--jv-act);
+    background: rgb(255 138 26 / 0.06);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--jv-text);
+  }
+  .jv-wall-stage {
+    width: 100%;
+  }
+  .jv-screens.is-pinned .jv-head {
+    display: block;
+    margin-bottom: 14px;
+  }
+  .jv-screens.is-pinned .jv-sub {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  .jv-wall-steps {
+    font-size: 13px;
+    text-align: left;
+  }
+  .jv-skills-grid,
+  .jv-laws,
+  .jv-fams {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .jv-frame-tl,
+  .jv-frame-br,
+  .jv-frame-tr {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .jv-arc-spin,
+  .jv-heart,
+  .jv-layer-spin,
+  .jv-bus-list {
+    animation: none;
+  }
+}

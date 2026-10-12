@@ -5033,3 +5033,301 @@ main {
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Shared by the worlds: Jarvis's pipeline ring and confidence gate ──── */
+.jv-demo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 48px);
+  padding: clamp(20px, 3vw, 40px);
+  border-radius: 28px;
+  background: radial-gradient(80% 80% at 30% 40%, #13161d, #040507 70%);
+  color: #edf3fa;
+  box-shadow: 0 34px 70px -30px rgb(0 28 85 / 0.8), inset 0 0 0 1px rgb(214 226 238 / 0.08);
+}
+.jv-ring-wrap {
+  position: relative;
+  container-type: inline-size;
+  width: min(100%, 460px);
+  aspect-ratio: 1;
+  justify-self: center;
+}
+.jv-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.jv-ring circle {
+  fill: none;
+}
+.jv-r1 {
+  stroke: rgb(255 138 26 / 0.45);
+  stroke-width: 2;
+  stroke-dasharray: 3 9;
+}
+.jv-spin {
+  transform-origin: 200px 200px;
+  animation: pl-spin 40s linear infinite;
+}
+.jv-r2 {
+  stroke: rgb(214 226 238 / 0.12);
+  stroke-width: 1;
+}
+.jv-r3 {
+  stroke: rgb(255 138 26 / 0.3);
+  stroke-width: 6;
+}
+.jv-stages {
+  position: absolute;
+  inset: 0;
+  list-style: none;
+}
+.jv-stage {
+  position: absolute;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  translate: -50% -50%;
+  font-family: var(--font-mono);
+  text-align: center;
+}
+.jv-stage i {
+  width: 3.4cqw;
+  height: 3.4cqw;
+  border: 2px solid rgb(214 226 238 / 0.35);
+  border-radius: 50%;
+  background: #0a0c10;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.jv-stage b {
+  font-size: clamp(9px, 2.6cqw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgb(214 226 238 / 0.6);
+  transition: color 0.3s;
+}
+.jv-stage small {
+  font-size: clamp(8px, 2.2cqw, 10.5px);
+  color: rgb(147 160 176 / 0.8);
+}
+.jv-stage.is-done i {
+  border-color: #ff8a1a;
+  background: rgb(255 138 26 / 0.35);
+}
+.jv-stage.is-on i {
+  border-color: #ffd09a;
+  background: #ff8a1a;
+  box-shadow: 0 0 0 5px rgb(255 138 26 / 0.25), 0 0 18px #ff8a1a;
+}
+.jv-stage.is-on b,
+.jv-stage.is-done b {
+  color: #ffd09a;
+}
+.jv-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  width: 44%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border: 2px solid rgb(255 138 26 / 0.6);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 138 26 / 0.28), rgb(255 138 26 / 0.04) 60%, transparent 70%), #07080b;
+  color: #ffd09a;
+  cursor: pointer;
+  box-shadow: 0 0 40px -10px #ff8a1a, inset 0 0 30px -10px #ff8a1a;
+  transition: box-shadow 0.4s;
+}
+.jv-core:hover,
+.jv-demo.is-running .jv-core {
+  box-shadow: 0 0 70px -6px #ff8a1a, inset 0 0 40px -8px #ff8a1a;
+}
+.jv-state {
+  font: 700 clamp(14px, 5cqw, 24px) var(--font-mono);
+  letter-spacing: 0.14em;
+}
+.jv-core small {
+  font: 500 clamp(9px, 2.4cqw, 11px) var(--font-mono);
+  color: rgb(214 226 238 / 0.6);
+}
+.jv-console {
+  display: grid;
+  gap: 12px;
+  font-family: var(--font-mono);
+}
+.jv-console-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(214 226 238 / 0.12);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: rgb(147 160 176);
+}
+.jv-say {
+  padding: 8px 14px;
+  border: 1px solid #ff8a1a;
+  border-radius: 999px;
+  background: rgb(255 138 26 / 0.12);
+  color: #ffd09a;
+  font: 600 13px var(--font-mono);
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.jv-say:hover {
+  background: rgb(255 138 26 / 0.3);
+}
+.jv-log {
+  display: grid;
+  gap: 10px;
+}
+.jv-log p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #edf3fa;
+  opacity: 0.18;
+  transition: opacity 0.4s;
+}
+.jv-log p.is-on {
+  opacity: 1;
+}
+.jv-log i {
+  display: inline-block;
+  min-width: 64px;
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #ff8a1a;
+}
+.jv-log code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgb(124 107 255 / 0.2);
+  color: #c9c1ff;
+}
+.jv-log-reply b,
+.jv-log-wake b,
+.jv-reply {
+  color: #ffd09a;
+}
+
+.jv-gate {
+  display: grid;
+  gap: 22px;
+  padding: clamp(20px, 2.6vw, 32px);
+  border-radius: 28px;
+  background: #07080b;
+  color: #edf3fa;
+  font-family: var(--font-mono);
+  box-shadow: 0 30px 60px -30px rgb(0 28 85 / 0.8), inset 0 0 0 1px rgb(214 226 238 / 0.08);
+}
+.jv-gate-row {
+  display: grid;
+  gap: 10px;
+}
+.jv-gate-label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(147 160 176);
+}
+.jv-gate-label b {
+  margin-left: 8px;
+  font-size: 15px;
+  color: #ffd09a;
+}
+.jv-gate-risks {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.jv-gate-risk {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid rgb(214 226 238 / 0.14);
+  border-radius: 14px;
+  background: #0d0f14;
+  color: #edf3fa;
+  text-align: left;
+  font: 500 12px/1.4 var(--font-mono);
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.jv-gate-risk b {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+.jv-gate-risk[data-risk="NONE"] b { color: #40e28c; }
+.jv-gate-risk[data-risk="LOW"] b { color: #9cd3ff; }
+.jv-gate-risk[data-risk="MEDIUM"] b { color: #ffcd3c; }
+.jv-gate-risk[data-risk="HIGH"] b { color: #ff2a3a; }
+.jv-gate-risk[aria-checked="true"] {
+  border-color: #ff8a1a;
+  background: rgb(255 138 26 / 0.12);
+}
+.jv-gate-meter {
+  position: relative;
+  padding-top: 26px;
+}
+.jv-gate-zones {
+  position: absolute;
+  inset: 0 0 auto;
+  display: grid;
+  grid-template-columns: 55fr 30fr 15fr;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.jv-gate-zones i {
+  padding-bottom: 6px;
+  border-bottom: 3px solid;
+  font-style: normal;
+}
+.jv-gate-zones i:nth-child(1) { color: #ff6b75; }
+.jv-gate-zones i:nth-child(2) { color: #ffcd3c; }
+.jv-gate-zones i:nth-child(3) { color: #40e28c; }
+.jv-gate-meter input {
+  width: 100%;
+  margin-top: 10px;
+  accent-color: #ff8a1a;
+  cursor: pointer;
+}
+.jv-gate-out {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border-left: 4px solid;
+  background: #0d0f14;
+}
+.jv-gate-out b {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.jv-gate-out span {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.45;
+}
+.jv-gate-out--act { border-color: #40e28c; }
+.jv-gate-out--act b { color: #40e28c; }
+.jv-gate-out--offer { border-color: #ffcd3c; }
+.jv-gate-out--offer b { color: #ffcd3c; }
+.jv-gate-out--ask { border-color: #ff2a3a; }
+.jv-gate-out--ask b { color: #ff6b75; }
+.jv-gate-out--escalate { border-color: #7c6bff; }
+.jv-gate-out--escalate b { color: #b4a9ff; }
+.jv-gate-fine {
+  font-size: 12px;
+  color: rgb(147 160 176);
+}
