@@ -4863,3 +4863,158 @@ main {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ── Shared by the worlds: Blazify's equalizer ─────────────────────────── */
+
+.bz-eq {
+  --eq-acc: var(--bz-amber, #ffa726);
+  padding: clamp(18px, 2.4vw, 30px);
+  border-radius: 28px;
+  background: linear-gradient(160deg, #1b1b1b, #0c0c0c);
+  color: #f4f4f4;
+  box-shadow: 0 30px 60px -28px rgb(0 28 85 / 0.7), inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+.bz-eq-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bz-eq-head b {
+  font-size: 22px;
+  font-weight: 700;
+}
+.bz-eq-preset {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--eq-acc) 16%, transparent);
+  color: var(--eq-acc);
+  font: 600 12px var(--font-mono);
+}
+.bz-eq-switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 30px;
+  background: #3a3a3a;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.bz-eq-switch[aria-checked="true"] {
+  background: var(--eq-acc);
+}
+.bz-eq-switch i {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  transition: translate 0.35s var(--ease);
+}
+.bz-eq-switch[aria-checked="true"] i {
+  translate: 22px 0;
+}
+.bz-eq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+.bz-eq-chip {
+  padding: 7px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: #262626;
+  color: #ddd;
+  font: 500 13px var(--font-body);
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+.bz-eq-chip:hover:not(:disabled) {
+  background: #333;
+}
+.bz-eq-chip[aria-pressed="true"] {
+  background: var(--eq-acc);
+  color: #1a0e00;
+  font-weight: 700;
+}
+.bz-eq-chip:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.bz-eq-graph {
+  display: block;
+  width: 100%;
+  height: clamp(100px, min(14vw, 17vh), 190px);
+  border-radius: 16px;
+  background: #141414;
+}
+.bz-eq-grid,
+.bz-eq-zero {
+  stroke: rgb(255 255 255 / 0.07);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+.bz-eq-zero {
+  stroke: rgb(255 255 255 / 0.18);
+  stroke-dasharray: 6 6;
+}
+.bz-eq-line {
+  fill: none;
+  stroke: var(--eq-acc);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--eq-acc) 60%, transparent));
+}
+.bz-eq-pt {
+  fill: #fff;
+  stroke: var(--eq-acc);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.bz-eq.is-off .bz-eq-line,
+.bz-eq.is-off .bz-eq-pt {
+  stroke: #555;
+  filter: none;
+}
+.bz-eq-bands {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 16px;
+}
+.bz-eq-band {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.bz-eq-db {
+  font: 600 12px var(--font-mono);
+  color: #bbb;
+  font-variant-numeric: tabular-nums;
+}
+.bz-eq-band input {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 28px;
+  height: clamp(100px, min(13vw, 19vh), 170px);
+  accent-color: var(--eq-acc);
+  cursor: pointer;
+}
+.bz-eq-band input:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+.bz-eq-hz {
+  font: 500 11.5px var(--font-mono);
+  color: #888;
+}
+
+@keyframes bz-play {
+  from { scale: 0 1; }
+  to { scale: 1 1; }
+}

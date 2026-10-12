@@ -1,0 +1,1530 @@
+/* ══ Blazify's world ═══════════════════════════════════════════════════════
+   Blazify's own palette and type (from its website): void, coal and slate,
+   cream text, amber and ember for anything that plays.
+   GSAP owns transform on .bz-disc, .bz-arm, .bz-letter, .bz-word, .bz-mini,
+   .bz-tracks and the shots; CSS loops run on inner elements with `rotate`/`scale`. */
+/* The accent and the darks are registered colours, so "Your colours" in the
+   liner notes can ease the whole page from one to the next. */
+@property --bz-amber { syntax: "<color>"; inherits: true; initial-value: #ffa726; }
+@property --bz-ember { syntax: "<color>"; inherits: true; initial-value: #ff7043; }
+@property --bz-void { syntax: "<color>"; inherits: true; initial-value: #0b0a09; }
+@property --bz-coal { syntax: "<color>"; inherits: true; initial-value: #141110; }
+@property --bz-slate { syntax: "<color>"; inherits: true; initial-value: #1e1917; }
+.w-bz {
+  --bz-bar: 62px; /* the player docked along the bottom */
+  --bz-void: #0b0a09;
+  --bz-coal: #141110;
+  --bz-slate: #1e1917;
+  --bz-cream: #fff4e6;
+  --bz-dim: #a89a8b;
+  --bz-amber: #ffa726;
+  --bz-ember: #ff7043;
+  --bz-flame: linear-gradient(120deg, var(--bz-amber) 0%, color-mix(in oklab, var(--bz-amber), var(--bz-ember)) 45%, var(--bz-ember) 100%);
+  transition: --bz-amber 0.8s ease, --bz-ember 0.8s ease, --bz-void 0.6s ease, --bz-coal 0.6s ease, --bz-slate 0.6s ease;
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background: var(--bz-void);
+  color: var(--bz-cream);
+  font-family: var(--bz-body), system-ui, sans-serif;
+}
+/* Film grain over the whole world. */
+.w-bz::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.w-bz :focus-visible {
+  outline-color: var(--bz-amber);
+}
+
+/* ── The record ─────────────────────────────────────────────────────────── */
+.bz-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 80px);
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 16px) var(--gutter) 120px;
+  overflow: clip;
+}
+.bz-hero-glow {
+  position: absolute;
+  right: -14vw;
+  top: 50%;
+  z-index: -1;
+  width: 78vw;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--bz-amber) 26%, transparent), color-mix(in srgb, var(--bz-ember) 8%, transparent) 40%, transparent 64%);
+}
+.bz-np {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  color: var(--bz-dim);
+}
+.bz-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+}
+.bz-bars i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--bz-amber);
+  transform-origin: bottom;
+  animation: bz-bar 0.9s ease-in-out infinite alternate;
+}
+.bz-bars i:nth-child(2) { animation-delay: -0.3s; }
+.bz-bars i:nth-child(3) { animation-delay: -0.6s; }
+.bz-bars i:nth-child(4) { animation-delay: -0.15s; }
+@keyframes bz-bar {
+  from { scale: 1 0.25; }
+  to { scale: 1 1; }
+}
+.w-bz.is-paused .bz-bars i {
+  animation-play-state: paused;
+}
+.bz-title {
+  margin-top: 18px;
+  font-family: var(--bz-display), Impact, sans-serif;
+  font-size: clamp(92px, 13.6vw, 250px);
+  font-weight: 400;
+  line-height: 0.84;
+  letter-spacing: -0.005em;
+}
+.bz-title-word {
+  display: flex;
+  overflow: clip;
+  padding-bottom: 0.03em;
+}
+.bz-letter {
+  display: inline-block;
+}
+.bz-sing {
+  margin-top: 22px;
+  font-family: var(--bz-serif), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(32px, 3.4vw, 56px);
+  line-height: 1.15;
+}
+/* Karaoke fill: amber sweeps across each word as it's "sung". */
+.bz-word {
+  display: inline-block;
+  margin-right: 0.24em;
+  padding-right: 0.05em;
+  background: linear-gradient(90deg, var(--bz-amber) 0 50%, rgb(255 244 230 / 0.32) 50% 100%);
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.bz-lede {
+  max-width: 34rem;
+  margin-top: 22px;
+  font-size: clamp(16px, 1.15vw, 18px);
+  line-height: 1.7;
+  color: var(--bz-dim);
+}
+.bz-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+.bz-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 50px;
+  padding: 0 24px;
+  border: 1px solid rgb(255 244 230 / 0.24);
+  border-radius: 999px;
+  color: var(--bz-cream);
+  font-weight: 500;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.bz-link:hover {
+  border-color: var(--bz-cream);
+  background: rgb(255 244 230 / 0.05);
+}
+.bz-link.is-primary {
+  border-color: transparent;
+  background: var(--bz-flame);
+  color: #1a0e00;
+  font-weight: 600;
+}
+
+/* The deck: a record, its sheen, and a tonearm that swings over at the start. */
+.bz-deck {
+  position: relative;
+  justify-self: center;
+  width: min(42vw, 74vh, 640px);
+  aspect-ratio: 1;
+}
+.bz-disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+.bz-disc-spin {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 0 31%, rgb(255 255 255 / 0.05) 31.3%, transparent 32%),
+    radial-gradient(circle, transparent 0 46.6%, rgb(255 255 255 / 0.06) 47%, transparent 47.6%),
+    repeating-radial-gradient(circle, #100e0c 0 1.6px, #19150f 1.6px 2.4px, #0d0b0a 2.4px 3.6px),
+    #0b0a09;
+  box-shadow: 0 50px 90px -30px rgb(0 0 0 / 0.95), 0 0 0 1px rgb(255 244 230 / 0.05), inset 0 0 0 6px #0d0b0a;
+}
+.w-bz.is-playing .bz-disc-spin {
+  animation: bz-spin 1.8s linear infinite;
+}
+.w-bz.is-paused .bz-disc-spin {
+  animation-play-state: paused;
+}
+@keyframes bz-spin {
+  to { rotate: 360deg; }
+}
+.bz-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: conic-gradient(from 30deg, transparent 0 6%, rgb(255 244 230 / 0.1) 11%, transparent 17% 50%, rgb(255 244 230 / 0.07) 57%, transparent 63%);
+}
+.bz-label {
+  position: absolute;
+  inset: 33%;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4%;
+  border-radius: 50%;
+  background: var(--bz-flame);
+  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.14), 0 0 0 2px #0d0b0a;
+}
+.bz-label img {
+  width: 44%;
+  height: auto;
+}
+.bz-label small {
+  font: italic 400 clamp(10px, 1vw, 15px) var(--bz-serif), serif;
+  color: #3a1d06;
+}
+.bz-label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #0b0a09;
+}
+.bz-arm {
+  position: absolute;
+  left: 80%;
+  top: -6%;
+  width: 32%;
+  height: 64%;
+  transform-origin: 75% 10%;
+  pointer-events: none;
+}
+.bz-arm-in {
+  position: absolute;
+  inset: 0;
+  transform-origin: 75% 10%;
+  transition: rotate 0.8s var(--ease);
+}
+/* Pause lifts the needle off. */
+.w-bz.is-paused .bz-arm-in {
+  rotate: -16deg;
+}
+.bz-arm-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 14px 18px rgb(0 0 0 / 0.6));
+}
+.bz-deck-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -40px;
+  text-align: center;
+  font: italic 400 18px var(--bz-serif), serif;
+  color: var(--bz-dim);
+}
+
+/* ── Sides ──────────────────────────────────────────────────────────────── */
+.bz-side,
+.bz-mix,
+.bz-players,
+.bz-room,
+.bz-notes {
+  position: relative;
+  padding: clamp(80px, 13vh, 150px) var(--gutter) clamp(40px, 6vh, 72px);
+}
+.bz-side-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 32px;
+}
+.bz-h2 {
+  font-family: var(--bz-display), Impact, sans-serif;
+  font-size: clamp(54px, min(7.6vw, 13vh), 136px);
+  font-weight: 400;
+  line-height: 0.86;
+}
+.bz-side-sub {
+  max-width: 34ch;
+  font-family: var(--bz-serif), Georgia, serif;
+  font-style: italic;
+  font-size: clamp(18px, min(1.7vw, 2.9vh), 27px);
+  line-height: 1.3;
+  color: var(--bz-dim);
+}
+
+/* Side A: a tracklist of phone screens */
+.bz-side-a {
+  overflow: clip;
+}
+.bz-side-a.is-pinned {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 8px);
+  padding-bottom: calc(var(--bz-bar) + 40px);
+}
+.bz-side-a.is-pinned .bz-side-head {
+  align-items: flex-end;
+}
+.bz-tracks-view {
+  margin: 40px calc(-1 * var(--gutter)) 0;
+  padding: 0 var(--gutter) 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 var(--gutter);
+  overscroll-behavior-x: contain;
+}
+.bz-side-a.is-pinned .bz-tracks-view {
+  overflow: visible;
+  margin-top: clamp(16px, 3vh, 32px);
+}
+.bz-tracks {
+  display: flex;
+  gap: clamp(28px, 4vw, 80px);
+  width: max-content;
+  list-style: none;
+}
+.bz-track {
+  display: grid;
+  grid-template-columns: auto minmax(0, 280px);
+  align-items: end;
+  gap: clamp(20px, 2vw, 32px);
+  scroll-snap-align: start;
+  opacity: 0.38;
+  transition: opacity 0.6s;
+}
+.bz-track.is-on {
+  opacity: 1;
+}
+.bz-side-a:not(.is-pinned) .bz-track {
+  opacity: 1;
+}
+.bz-track-phone {
+  width: clamp(140px, min(15vw, calc((100svh - 360px) / 2.2)), 250px);
+}
+.bz-track-no {
+  display: block;
+  font-family: var(--bz-display), Impact, sans-serif;
+  font-size: clamp(64px, 6vw, 110px);
+  line-height: 0.8;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(255 244 230 / 0.35);
+  transition: -webkit-text-stroke-color 0.5s;
+}
+.bz-track.is-on .bz-track-no {
+  -webkit-text-stroke-color: var(--bz-amber);
+}
+.bz-track h3 {
+  margin-top: 14px;
+  font-size: clamp(22px, 1.9vw, 30px);
+  font-weight: 600;
+  line-height: 1.15;
+}
+.bz-track p {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--bz-dim);
+}
+.bz-side-progress {
+  display: none;
+}
+.bz-side-a.is-pinned .bz-side-progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--bz-bar) + 18px);
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: rgb(255 244 230 / 0.12);
+}
+.bz-side-progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--bz-flame);
+}
+
+/* Side B: iPhone and desktop, turning pages together */
+.bz-side-b {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding-top: calc(var(--header-h) + 24px);
+  padding-bottom: calc(var(--bz-bar) + 32px);
+}
+.bz-b-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.45fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 72px);
+  margin-top: 36px;
+}
+.bz-b-dev {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  margin: 0;
+}
+.bz-b-iphone {
+  width: clamp(150px, min(15vw, calc((100svh - 380px) / 2.1)), 250px);
+}
+.bz-b-laptop {
+  width: min(100%, 860px, calc((100svh - 380px) * 1.5));
+}
+.bz-bshot:not(.is-on) {
+  opacity: 0;
+  visibility: hidden;
+}
+.dv-phone-view > .bz-bshot,
+.dv-win-body > .bz-bshot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.bz-b-caps {
+  display: grid;
+  width: min(100%, 520px);
+  text-align: center;
+}
+.bz-cap {
+  grid-area: 1 / 1;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--bz-dim);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.bz-cap.is-on {
+  opacity: 1;
+}
+.bz-cap b {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--bz-serif), serif;
+  font-style: italic;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--bz-cream);
+}
+.bz-os {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border-radius: 999px;
+  background: var(--bz-coal);
+  box-shadow: inset 0 0 0 1px rgb(255 244 230 / 0.08);
+}
+.bz-os-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--bz-dim);
+  font: 500 14px var(--bz-body), sans-serif;
+  cursor: pointer;
+}
+.bz-os-btn[aria-checked="true"] {
+  background: var(--bz-cream);
+  color: var(--bz-void);
+}
+
+/* The mixing desk */
+.bz-mix {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 88px);
+}
+.bz-mix-copy .bz-side-sub {
+  margin-top: 18px;
+}
+.w-bz .bz-eq {
+  background: linear-gradient(160deg, var(--bz-slate), var(--bz-coal));
+  box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.9), inset 0 0 0 1px rgb(255 244 230 / 0.07);
+}
+
+/* Six sleeves */
+
+
+/* The listening room */
+.bz-room-scene {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 240px) minmax(0, 300px);
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(20px, 4vw, 64px);
+  max-width: 1100px;
+  margin: 48px auto 0;
+}
+/* The dashed wire runs behind the phones; what travels on it passes over them,
+   through the server in the middle. */
+.bz-room-scene::before,
+.bz-room-wire {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 50%;
+  height: 2px;
+}
+.bz-room-scene::before {
+  content: "";
+  background: repeating-linear-gradient(90deg, rgb(255 244 230 / 0.25) 0 8px, transparent 8px 16px);
+}
+.bz-room-wire {
+  z-index: 3;
+  pointer-events: none;
+}
+.bz-room-wire i {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bz-amber);
+  box-shadow: 0 0 14px var(--bz-amber);
+  animation: bz-packet 0.7s linear forwards;
+}
+.bz-room-wire i.is-ping {
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  background: rgb(255 244 230 / 0.55);
+  box-shadow: none;
+}
+.bz-room-wire b {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  translate: -50% 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font: 600 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: #170e06;
+  background: var(--bz-amber);
+}
+@keyframes bz-packet {
+  from { left: 0; opacity: 0; }
+  10%, 90% { opacity: 1; }
+  to { left: calc(100% - 12px); opacity: 0; }
+}
+@keyframes bz-row {
+  from { opacity: 0; translate: 0 8px; }
+}
+.bz-room-dev,
+.bz-room-hub {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  border-radius: 26px;
+  background: var(--bz-coal);
+  box-shadow: inset 0 0 0 1px rgb(255 244 230 / 0.07), 0 30px 60px -30px rgb(0 0 0 / 0.9);
+}
+.bz-room-dev:nth-of-type(2) {
+  order: 3;
+}
+.bz-room-hub {
+  order: 2;
+  justify-items: center;
+  text-align: center;
+  background: var(--bz-slate);
+  font-size: 15px;
+}
+.bz-room-hub svg {
+  font-size: 56px;
+}
+.bz-room-hub small,
+.bz-room-dev small {
+  color: var(--bz-dim);
+}
+.bz-room-dev {
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 14px;
+}
+.bz-room-bar {
+  grid-column: 1 / -1;
+}
+.bz-room-art {
+  position: relative;
+  grid-row: span 2;
+  width: 64px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--bz-coal) 0 13%, transparent 14%),
+    repeating-radial-gradient(circle, rgb(0 0 0 / 0.18) 0 2px, transparent 2px 5px),
+    conic-gradient(from calc(var(--h, 200) * 1deg), var(--bz-ember), var(--bz-amber), #c2185b, var(--bz-ember));
+  animation: bz-spin 5s linear infinite paused;
+}
+.bz-room-dev.is-playing .bz-room-art {
+  animation-play-state: running;
+}
+.w-bz.is-paused .bz-room-art {
+  animation-play-state: paused;
+}
+.bz-room-art i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 26%, rgb(255 255 255 / 0.4), transparent 45%);
+}
+@keyframes bz-spin {
+  to { rotate: 1turn; }
+}
+.bz-room-seek {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 20px;
+  margin: 4px 0 -4px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bz-room-seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--bz-amber) var(--p), rgb(255 244 230 / 0.12) var(--p));
+}
+.bz-room-seek::-moz-range-track {
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--bz-amber) var(--p), rgb(255 244 230 / 0.12) var(--p));
+}
+.bz-room-seek::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--bz-cream);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--bz-amber) 30%, transparent);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.bz-room-seek::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bz-cream);
+}
+.bz-room-time {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  font: 500 12px var(--bz-body), sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--bz-dim);
+}
+.bz-room-ctrl {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+.bz-room-ctrl button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgb(255 244 230 / 0.07);
+  transition: background-color 0.3s, scale 0.2s;
+}
+.bz-room-ctrl button:hover {
+  background: rgb(255 244 230 / 0.14);
+}
+.bz-room-ctrl button:active {
+  scale: 0.92;
+}
+.bz-room-ctrl svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--bz-cream);
+}
+.bz-room-ctrl .is-main {
+  width: 54px;
+  height: 54px;
+  background: var(--bz-amber);
+}
+.bz-room-ctrl .is-main:hover {
+  background: var(--bz-amber);
+  filter: brightness(1.1);
+}
+.bz-room-ctrl .is-main svg {
+  width: 24px;
+  height: 24px;
+  fill: #170e06;
+}
+.bz-room-sync {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--bz-amber);
+}
+.bz-room-sync.is-lag {
+  color: var(--bz-dim);
+}
+.bz-room-log {
+  list-style: none;
+  max-width: 700px;
+  min-height: calc(4 * 1.6em + 28px);
+  margin: 26px auto 0;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgb(0 0 0 / 0.42);
+  box-shadow: inset 0 0 0 1px rgb(255 244 230 / 0.06);
+  font: 500 12.5px / 1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--bz-dim);
+}
+.bz-room-log li {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  animation: bz-row 0.35s both;
+}
+.bz-room-log li:first-child {
+  color: var(--bz-cream);
+}
+.bz-room-log .is-hint {
+  white-space: normal;
+  font: italic 400 17px / 1.4 var(--bz-serif), Georgia, serif;
+}
+.bz-room-bar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(255 244 230 / 0.12);
+}
+.bz-room-bar i {
+  display: block;
+  height: 100%;
+  background: var(--bz-flame);
+  transition: width 0.25s linear;
+}
+.bz-room-note {
+  max-width: 44ch;
+  margin: 40px auto 0;
+  text-align: center;
+  font: italic 400 clamp(20px, 1.8vw, 28px) / 1.35 var(--bz-serif), serif;
+  color: var(--bz-dim);
+}
+
+/* Liner notes: the jukebox is in notes/notes.css; the credits run beneath it
+   like the small print on the back of a sleeve. */
+.bz-notes {
+  display: block;
+}
+.bz-credits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr) minmax(0, 2fr) minmax(0, 1.3fr);
+  gap: 22px 36px;
+  margin-top: clamp(32px, 5vh, 56px);
+  padding: 26px 28px;
+  border-radius: 26px;
+  background: var(--bz-coal);
+  box-shadow: inset 0 0 0 1px rgb(255 244 230 / 0.07);
+}
+@media (max-width: 899px) {
+  .bz-credits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .bz-credits > div + div {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 244 230 / 0.08);
+  }
+}
+.bz-credits dt {
+  font: italic 400 19px var(--bz-serif), serif;
+  color: var(--bz-dim);
+}
+.bz-credits dd {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.bz-credits-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+.bz-credits-stack span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+}
+.bz-credits-stack svg {
+  font-size: 18px;
+}
+
+/* Up next */
+.bz-next {
+  padding: clamp(60px, 10vh, 110px) var(--gutter) 150px;
+}
+.bz-next-label {
+  font: italic 400 22px var(--bz-serif), serif;
+  color: var(--bz-dim);
+}
+.bz-next-link {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2vw, 28px);
+  max-width: 820px;
+  margin-top: 16px;
+  padding: 22px 26px;
+  border-radius: 28px;
+  background: var(--bz-coal);
+  box-shadow: inset 0 0 0 1px rgb(255 244 230 / 0.08);
+  transition: background-color 0.4s, box-shadow 0.4s;
+}
+.bz-next-link:hover {
+  background: var(--bz-slate);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bz-amber) 50%, transparent);
+}
+.bz-next-tile {
+  width: clamp(56px, 6vw, 80px);
+  flex: none;
+}
+.bz-next-text {
+  display: grid;
+  gap: 6px;
+}
+.bz-next-text b {
+  font-family: var(--bz-display), Impact, sans-serif;
+  font-size: clamp(40px, 5vw, 76px);
+  font-weight: 400;
+  line-height: 0.9;
+}
+.bz-next-text small {
+  font-size: 16px;
+  color: var(--bz-dim);
+}
+.bz-next-play {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-left: auto;
+  flex: none;
+  border-radius: 50%;
+  background: var(--bz-flame);
+}
+.bz-next-play svg {
+  width: 26px;
+  fill: #1a0e00;
+}
+
+/* The mini player: the page is the song */
+.bz-mini {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "art text seek play";
+  align-items: center;
+  column-gap: 18px;
+  height: var(--bz-bar);
+  padding: 0 var(--gutter);
+  background: rgb(14 12 11 / 0.9);
+  backdrop-filter: blur(18px);
+  box-shadow: inset 0 1px 0 rgb(255 244 230 / 0.08), 0 -20px 40px -20px rgb(0 0 0 / 0.6);
+}
+.bz-mini-art {
+  grid-area: art;
+  width: 42px;
+  height: 42px;
+  padding: 6px;
+  border-radius: 11px;
+  background: var(--bz-void);
+  object-fit: contain;
+}
+.bz-mini-text {
+  grid-area: text;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+.bz-mini-text b {
+  font-weight: 600;
+}
+.bz-mini-text small {
+  color: var(--bz-dim);
+  font-size: 13px;
+}
+.bz-mini-play {
+  grid-area: play;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bz-flame);
+  cursor: pointer;
+}
+.bz-mini-play svg {
+  grid-area: 1 / 1;
+  width: 18px;
+  fill: #1a0e00;
+}
+.bz-ico-play,
+.w-bz.is-paused .bz-ico-pause {
+  display: none;
+}
+.w-bz.is-paused .bz-ico-play {
+  display: block;
+}
+.bz-mini-seek {
+  grid-area: seek;
+  justify-self: stretch;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 12px var(--bz-body), sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: var(--bz-dim);
+}
+.bz-mini-track {
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(255 244 230 / 0.14);
+}
+.bz-mini-track i {
+  display: block;
+  height: 100%;
+  background: var(--bz-flame);
+}
+
+/* ── Phones ─────────────────────────────────────────────────────────────── */
+@media (max-width: 899px) {
+  .bz-hero,
+  .bz-b-stage,
+  .bz-mix,
+  .bz-notes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bz-hero {
+    padding-bottom: 140px;
+  }
+  .bz-deck {
+    width: min(86vw, 420px);
+    margin-top: 12px;
+  }
+  .bz-track {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(76vw, 300px);
+  }
+  .bz-track-phone {
+    width: 100%;
+  }
+  .bz-track-no {
+    display: none;
+  }
+  /* Pinned on phones too: one track a screen, the phone beside its notes. */
+  .bz-side-a.is-pinned .bz-track {
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 84vw;
+    gap: 14px;
+  }
+  .bz-side-a.is-pinned .bz-track-phone {
+    width: min(44vw, calc((100svh - 330px) / 2.2));
+  }
+  .bz-side-a.is-pinned .bz-track-no {
+    display: block;
+    font-size: 46px;
+  }
+  .bz-side-a.is-pinned .bz-track h3 {
+    font-size: 19px;
+  }
+  .bz-side-a.is-pinned .bz-track p {
+    font-size: 14px;
+  }
+  .bz-side-a.is-pinned .bz-tracks {
+    gap: 20px;
+  }
+  /* Side B on phones: the iPhone and the laptop side by side, their notes below. */
+  .bz-side-b {
+    padding-top: calc(var(--header-h) + 4px);
+  }
+  .bz-side-b .bz-side-sub {
+    max-width: none;
+    font-size: 15px;
+  }
+  .bz-side-b .bz-b-stage {
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr);
+    grid-template-areas: "phone laptop" "pcap pcap" "dcap dcap" "os os";
+    align-items: end;
+    gap: 12px 14px;
+    margin-top: 18px;
+  }
+  .bz-b-dev {
+    display: contents;
+  }
+  .bz-b-iphone {
+    grid-area: phone;
+    width: 100%;
+  }
+  .bz-b-laptop {
+    grid-area: laptop;
+    width: 100%;
+  }
+  .bz-b-dev--iphone .bz-b-caps {
+    grid-area: pcap;
+  }
+  .bz-b-dev--desk .bz-b-caps {
+    grid-area: dcap;
+  }
+  .bz-b-caps {
+    width: 100%;
+    text-align: left;
+  }
+  .bz-os {
+    grid-area: os;
+    justify-self: start;
+  }
+  .bz-cap {
+    font-size: 13px;
+  }
+  .bz-cap b {
+    display: inline;
+    margin-right: 6px;
+    font-size: 18px;
+  }
+  .bz-os-btn {
+    min-height: 34px;
+  }
+  .bz-room-scene {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 340px;
+    gap: 30px;
+    margin-top: 28px;
+  }
+  /* On a phone the server is a slim strip, so both phones fit on one screen. */
+  .bz-room-hub {
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    gap: 2px 12px;
+    padding: 10px 16px;
+    text-align: left;
+  }
+  .bz-room-hub svg {
+    grid-row: span 2;
+    font-size: 34px;
+  }
+  .bz-room-hub small {
+    font-size: 12px;
+  }
+  .bz-room-dev {
+    padding: 16px;
+  }
+  .bz-room-art {
+    width: 52px;
+  }
+  .bz-room-dev {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+  .bz-room-scene::before,
+  .bz-room-wire {
+    left: 50%;
+    right: auto;
+    top: 6%;
+    bottom: 6%;
+    width: 2px;
+    height: auto;
+  }
+  .bz-room-scene::before {
+    background: repeating-linear-gradient(180deg, rgb(255 244 230 / 0.25) 0 8px, transparent 8px 16px);
+  }
+  .bz-room-wire i {
+    top: 0;
+    left: -5px;
+    animation-name: bz-packet-v;
+  }
+  .bz-room-wire i.is-ping {
+    left: -3px;
+  }
+  .bz-room-wire b {
+    bottom: auto;
+    top: 50%;
+    left: 22px;
+    translate: 0 -50%;
+  }
+  .bz-room-log {
+    font-size: 11px;
+  }
+  /* On phones the seek bar becomes a hairline along the bar's top edge. */
+  .bz-mini {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "art text play";
+    column-gap: 12px;
+  }
+  .bz-mini-seek {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    max-width: none;
+  }
+  .bz-mini-seek time {
+    display: none;
+  }
+  .bz-mini-track {
+    height: 2px;
+    border-radius: 0;
+  }
+}
+@keyframes bz-packet-v {
+  from { top: 0; opacity: 0; }
+  10%, 90% { opacity: 1; }
+  to { top: calc(100% - 12px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bz-bars i,
+  .bz-room-art {
+    animation: none;
+  }
+  .bz-room-wire i {
+    animation-duration: 0.01ms !important;
+  }
+  .bz-word {
+    background-position: 0 0;
+  }
+}
+
+/* Clear of the docked player: the site's back-to-top button and footer. */
+:root:has(.w-bz) .to-top {
+  bottom: calc(62px + 14px);
+}
+:root:has(.w-bz) .footer {
+  padding-bottom: 76px;
+}
+
+/* ── Pinned sides: the stage takes exactly the height that is left, and the
+   devices size themselves from it (cqh), so nothing runs under the player
+   bar whatever the screen's height or the browser's zoom. ─────────────── */
+.bz-side-a.is-pinned,
+.bz-side-b.is-pinned {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100svh;
+  min-height: 0;
+  padding-top: calc(var(--header-h) + 6px);
+  padding-bottom: calc(var(--bz-bar) + 34px);
+}
+.bz-side-a.is-pinned .bz-side-head,
+.bz-side-b.is-pinned .bz-side-head {
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+.bz-side-a.is-pinned .bz-h2,
+.bz-side-b.is-pinned .bz-h2 {
+  flex: none;
+  font-size: clamp(46px, min(6.4vw, 11vh), 120px);
+}
+.bz-side-a.is-pinned .bz-side-sub,
+.bz-side-b.is-pinned .bz-side-sub {
+  max-width: 46ch;
+  font-size: clamp(15px, min(1.4vw, 2.5vh), 22px);
+}
+.bz-side-a.is-pinned .bz-tracks-view {
+  flex: 1;
+  min-height: 0;
+  margin-top: clamp(12px, 2.4vh, 28px);
+  container-type: size;
+}
+.bz-side-a.is-pinned .bz-tracks {
+  height: 100%;
+  align-items: flex-end;
+}
+.bz-side-a.is-pinned .bz-track-phone {
+  width: min(250px, calc(100cqh / 2.17));
+}
+/* The two devices stand on one baseline; their notes share the row under it. */
+.bz-side-b.is-pinned .bz-b-stage {
+  flex: 1;
+  min-height: 0;
+  container-type: size;
+  grid-template-columns: auto auto;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  grid-template-areas: "phone laptop" "pcap dcap" ". os";
+  justify-content: center;
+  align-items: end;
+  gap: 16px clamp(36px, 6vw, 110px);
+  margin-top: clamp(12px, 2.4vh, 28px);
+}
+.bz-side-b.is-pinned .bz-b-dev {
+  display: contents;
+}
+.bz-side-b.is-pinned .bz-b-iphone {
+  grid-area: phone;
+  justify-self: center;
+  width: min(250px, calc((100cqh - 150px) / 2.17));
+}
+.bz-side-b.is-pinned .bz-b-laptop {
+  grid-area: laptop;
+  justify-self: center;
+  width: min(860px, 54vw, calc((100cqh - 150px) * 1.5));
+}
+.bz-side-b.is-pinned .bz-b-dev--iphone .bz-b-caps {
+  grid-area: pcap;
+  align-self: start;
+  justify-self: center;
+  width: min(32ch, 100%);
+}
+.bz-side-b.is-pinned .bz-b-dev--desk .bz-b-caps {
+  grid-area: dcap;
+  align-self: start;
+  justify-self: center;
+}
+.bz-side-b.is-pinned .bz-os {
+  grid-area: os;
+  justify-self: center;
+}
+@media (max-width: 899px) {
+  .bz-side-a.is-pinned .bz-side-head,
+  .bz-side-b.is-pinned .bz-side-head {
+    flex-wrap: wrap;
+  }
+  .bz-side-a.is-pinned .bz-h2,
+  .bz-side-b.is-pinned .bz-h2 {
+    font-size: 52px;
+  }
+  .bz-side-a.is-pinned .bz-side-sub,
+  .bz-side-b.is-pinned .bz-side-sub {
+    font-size: 15px;
+  }
+  .bz-side-a.is-pinned .bz-track-phone {
+    width: min(44vw, calc(100cqh / 2.17));
+  }
+  .bz-side-b.is-pinned .bz-b-stage {
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr);
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas: "phone laptop" "pcap pcap" "dcap dcap" "os os";
+    justify-content: stretch;
+    align-content: center;
+    gap: 12px 14px;
+  }
+  .bz-side-b.is-pinned .bz-b-dev--iphone .bz-b-caps,
+  .bz-side-b.is-pinned .bz-b-dev--desk .bz-b-caps {
+    justify-self: stretch;
+    width: 100%;
+  }
+  .bz-side-b.is-pinned .bz-os {
+    justify-self: start;
+  }
+  .bz-side-b.is-pinned .bz-b-iphone,
+  .bz-side-b.is-pinned .bz-b-laptop {
+    width: 100%;
+  }
+}
+
+/* ── Six players: a crate of sleeves and a phone that plays the one you pick ── */
+.bz-players-stage {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 96px);
+  margin-top: clamp(16px, 3vh, 36px);
+}
+.bz-players-phone {
+  width: clamp(170px, min(17vw, 30vh), 270px);
+}
+.bz-pshot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  visibility: hidden;
+}
+.bz-pshot.is-on {
+  opacity: 1;
+  visibility: visible;
+}
+.bz-crate-wrap {
+  display: grid;
+  gap: 26px;
+}
+/* The crate: six sleeves leaning back; the one being played lifts out. */
+.bz-crate {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(8px, 1.2vw, 18px);
+  padding: 34px clamp(12px, 2vw, 26px) 22px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #2a1d14, #1a120c);
+  box-shadow: inset 0 2px 0 rgb(255 244 230 / 0.06), inset 0 -10px 20px rgb(0 0 0 / 0.5), 0 30px 60px -30px #000;
+  perspective: 900px;
+}
+.bz-crate::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46%;
+  border-radius: 0 0 18px 18px;
+  background: linear-gradient(180deg, #3b2a1d, #22170f);
+  box-shadow: inset 0 2px 0 rgb(255 244 230 / 0.08);
+  pointer-events: none;
+}
+.bz-sleeve {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--bz-cream);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  rotate: x -16deg;
+  translate: 0 0;
+  transition: rotate 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), translate 0.5s cubic-bezier(0.3, 1.4, 0.5, 1), filter 0.4s;
+  filter: brightness(0.62);
+}
+.bz-sleeve:hover {
+  filter: brightness(0.85);
+}
+.bz-sleeve.is-on {
+  rotate: x 0deg;
+  translate: 0 -26px;
+  filter: none;
+}
+/* The name is printed on the sleeve, top left, like an album title. */
+.bz-sleeve b {
+  position: absolute;
+  left: 9%;
+  top: 7%;
+  z-index: 1;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.6);
+  font-family: var(--bz-display), Impact, sans-serif;
+  font-size: clamp(16px, 1.5vw, 24px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+/* A sleeve: square, printed with a drawing of its player. */
+.bz-sleeve-art {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--sl, #1e1917);
+  box-shadow: 0 16px 30px -14px #000, inset 0 0 0 1px rgb(255 244 230 / 0.1);
+}
+.bz-sleeve.is-on .bz-sleeve-art {
+  box-shadow: 0 24px 44px -16px #000, 0 0 0 2px var(--bz-amber), 0 0 40px -6px color-mix(in srgb, var(--bz-amber) 60%, transparent);
+}
+.bz-sleeve-art i {
+  position: absolute;
+  display: block;
+}
+.bz-art--classic { --sl: linear-gradient(160deg, #1f6f6a, #0f3a3d); }
+.bz-art--classic i:nth-child(1) { inset: 14% 22% 38%; border-radius: 8%; background: linear-gradient(135deg, #ffe0b0, #c97b4a); }
+.bz-art--classic i:nth-child(2) { left: 22%; right: 22%; top: 68%; height: 4%; border-radius: 4px; background: rgb(255 255 255 / 0.7); }
+.bz-art--classic i:nth-child(3) { left: 42%; top: 78%; width: 16%; aspect-ratio: 1; border-radius: 50%; background: #8fd7cf; }
+.bz-art--ring { --sl: radial-gradient(circle at 50% 45%, #2b6e88, #10283a); }
+.bz-art--ring i:nth-child(1) { inset: 16%; border-radius: 50%; border: 5px solid rgb(255 255 255 / 0.25); border-top-color: #8fd7cf; border-right-color: #8fd7cf; }
+.bz-art--ring i:nth-child(2) { inset: 26%; border-radius: 50%; background: linear-gradient(135deg, #f4c7a1, #9a4e6b); }
+.bz-art--ring i:nth-child(3) { display: none; }
+.bz-art--full_art { --sl: linear-gradient(180deg, #d8c3b0, #6a3c36 70%, #2a1414); }
+.bz-art--full_art i:nth-child(1) { left: 10%; right: 10%; top: 36%; font: 700 2.4em/1 Georgia, serif; }
+.bz-art--full_art i:nth-child(1)::before { content: "ART"; color: #b8262b; letter-spacing: 0.08em; font-size: clamp(14px, 1.6vw, 26px); }
+.bz-art--full_art i:nth-child(2) { left: 12%; right: 12%; bottom: 22%; height: 4%; border-radius: 4px; background: rgb(255 255 255 / 0.8); }
+.bz-art--full_art i:nth-child(3) { left: 42%; bottom: 8%; width: 16%; aspect-ratio: 1; border-radius: 50%; background: #fff4e6; }
+.bz-art--record { --sl: linear-gradient(160deg, #2a2421, #0e0c0b); }
+.bz-art--record i:nth-child(1) { inset: 14% 20% 20% 10%; border-radius: 50%; background: repeating-radial-gradient(circle, #111 0 3px, #1d1d1d 3px 5px); box-shadow: 0 6px 16px rgb(0 0 0 / 0.6); }
+.bz-art--record i:nth-child(2) { left: 32%; top: 36%; width: 14%; aspect-ratio: 1; border-radius: 50%; background: var(--bz-flame); }
+.bz-art--record i:nth-child(3) { right: 14%; top: 12%; width: 4%; height: 50%; border-radius: 3px; background: linear-gradient(#d6d6d6, #8a8a8a); rotate: 22deg; transform-origin: top; }
+.bz-art--cassette { --sl: linear-gradient(160deg, #e8e0cf, #b8ad97); }
+.bz-art--cassette i:nth-child(1) { inset: 24% 12%; border-radius: 8px; background: #4a3c33; box-shadow: inset 0 0 0 4px #6b584b; }
+.bz-art--cassette i:nth-child(2),
+.bz-art--cassette i:nth-child(3) { top: 38%; width: 18%; aspect-ratio: 1; border-radius: 50%; background: #f5efe3; box-shadow: inset 0 0 0 4px #4a3c33; animation: bz-reel 3s linear infinite; }
+.bz-art--cassette i:nth-child(2) { left: 27%; }
+.bz-art--cassette i:nth-child(3) { right: 27%; }
+@keyframes bz-reel {
+  to { rotate: 360deg; }
+}
+.bz-art--video { --sl: linear-gradient(160deg, #5b1f2e, #12060a); }
+.bz-art--video i:nth-child(1) { inset: 0; background: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.04) 0 2px, transparent 2px 5px), radial-gradient(circle at 30% 30%, rgb(255 120 90 / 0.5), transparent 60%); }
+.bz-art--video i:nth-child(2) { left: 50%; top: 50%; width: 30%; aspect-ratio: 1; border-radius: 50%; translate: -50% -50%; background: rgb(255 255 255 / 0.18); backdrop-filter: blur(4px); }
+.bz-art--video i:nth-child(3) { left: 50%; top: 50%; translate: -35% -50%; border-left: 16px solid #fff4e6; border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
+.bz-crate-cap {
+  display: grid;
+  max-width: 54ch;
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.55;
+  color: var(--bz-dim);
+}
+.bz-crate-cap span {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.bz-crate-cap span.is-on {
+  opacity: 1;
+}
+.bz-crate-cap b {
+  font-family: var(--bz-serif), serif;
+  font-style: italic;
+  font-size: 1.4em;
+  font-weight: 400;
+  color: var(--bz-cream);
+}
+/* Pinned: the crate plays out on one screen. */
+.bz-players.is-pinned {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 6px);
+  padding-bottom: calc(var(--bz-bar) + 30px);
+}
+.bz-players.is-pinned .bz-side-head {
+  flex-wrap: nowrap;
+  align-items: flex-end;
+}
+.bz-players.is-pinned .bz-h2 {
+  flex: none;
+  font-size: clamp(46px, min(6.4vw, 11vh), 120px);
+}
+.bz-players.is-pinned .bz-side-sub {
+  max-width: 46ch;
+  font-size: clamp(15px, min(1.4vw, 2.5vh), 22px);
+}
+.bz-players.is-pinned .bz-players-stage {
+  flex: 1;
+  min-height: 0;
+  container-type: size;
+}
+.bz-players.is-pinned .bz-players-phone {
+  width: min(280px, calc(100cqh / 2.17));
+}
+@media (max-width: 899px) {
+  .bz-players-stage {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 18px;
+  }
+  .bz-players.is-pinned .bz-side-head {
+    flex-wrap: wrap;
+  }
+  .bz-players.is-pinned .bz-h2 {
+    font-size: 52px;
+  }
+  .bz-players.is-pinned .bz-side-sub {
+    font-size: 14px;
+  }
+  .bz-players.is-pinned .bz-players-stage {
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+  .bz-players.is-pinned .bz-players-phone {
+    width: min(52vw, calc((100cqh - 190px) / 2.17));
+  }
+  .bz-crate {
+    gap: 6px;
+    padding: 22px 10px 14px;
+  }
+  .bz-sleeve b {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .bz-sleeve.is-on {
+    translate: 0 -14px;
+  }
+  .bz-crate-cap {
+    font-size: 13.5px;
+    text-align: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bz-art--cassette i {
+    animation: none;
+  }
+}
