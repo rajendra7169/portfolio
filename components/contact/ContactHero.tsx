@@ -1,10 +1,27 @@
-// Contact hero: copyable contact rows and a live radar. The sweep pings each
-// social channel (a blip) as it passes; blips are real links.
+// Contact hero: copyable contact rows and a clock whose hours are the social
+// channels. Its one thick hand carries the name of the channel it points at, and
+// the whole clock takes that channel's colours. Drag the hand, hover or tab to a
+// channel, or let it tick round by itself; the channels are real links.
 import Icon from "@/components/Icon";
 import HeroField from "@/components/hero/HeroField";
 import KtmClock from "@/components/hero/KtmClock";
-import { contact, radarBlips, socials } from "@/lib/content";
+import { TransitionLink } from "@/components/PageTransition";
+import { contact, socials } from "@/lib/content";
 import ContactHeroMotion from "./ContactHeroMotion";
+
+// Each channel's colours on the clock: the brand colour for the hand and the
+// bezel, and a second one for the glow. Black brands get a soft grey glow.
+const TINT: Record<string, [string, string]> = {
+  GitHub: ["#24292f", "#8c959f"],
+  LinkedIn: ["#0a66c2", "#57a8ff"],
+  YouTube: ["#ff0033", "#ff7a8a"],
+  Email: ["#ea4335", "#fbbc05"],
+  X: ["#0f1419", "#8b98a5"],
+  Facebook: ["#1877f2", "#69a9ff"],
+  Instagram: ["#dd2a7b", "#f58529"],
+};
+const handle = (href: string) => href.replace(/^mailto:/, "").replace(/^https?:\/\/(www\.)?[^/]+\//, "").replace(/\/$/, "");
+const HOUR = 360 / socials.length;
 
 const ROWS = [
   { key: "email", label: "Email", icon: "✉️", value: contact.email, href: `mailto:${contact.email}`, copy: contact.email },
@@ -58,62 +75,60 @@ export default function ContactHero() {
           <p className="sr-only" aria-live="polite" data-copy-status />
 
           <div className="ch-ctas">
-            <a className="btn" href={contact.resume} target="_blank" rel="noreferrer" data-magnetic>
-              See My Resume <span aria-hidden="true">↗</span>
-            </a>
+            <TransitionLink href={contact.resume} className="btn" data-magnetic>
+              See my résumé
+            </TransitionLink>
             <a className="btn btn--ghost" href={contact.maps} target="_blank" rel="noreferrer" data-magnetic>
               Visit on Google Maps <span aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
 
-        <div className="ch-stage">
+        <div className="ch-stage" data-on="0" style={{ "--cc": TINT[socials[0].name][0], "--cc2": TINT[socials[0].name][1] } as React.CSSProperties}>
           <div className="ch-radar-depth" data-depth="0.4">
-            <div className="ch-radar">
-              <svg className="ch-grid" viewBox="0 0 400 400" aria-hidden="true">
-                {[196, 150, 104, 58].map((r) => (
-                  <circle key={r} cx="200" cy="200" r={r} className="ch-ring" />
-                ))}
-                <line x1="200" y1="4" x2="200" y2="396" className="ch-axis" />
-                <line x1="4" y1="200" x2="396" y2="200" className="ch-axis" />
-                {Array.from({ length: 72 }, (_, i) => (
-                  <line
-                    key={i}
-                    x1="200"
-                    y1={i % 6 === 0 ? 4 : 9}
-                    x2="200"
-                    y2="16"
-                    className={`ch-tick${i % 6 === 0 ? " ch-tick--major" : ""}`}
-                    transform={`rotate(${i * 5} 200 200)`}
-                  />
-                ))}
-              </svg>
-              <span className="ch-sweep" aria-hidden="true" />
+            <div className="cc">
+              <span className="cc-bezel" aria-hidden="true" />
+              <div className="cc-face" aria-hidden="true">
+                <span className="cc-wedge" />
+                <svg className="cc-ticks" viewBox="0 0 400 400">
+                  {Array.from({ length: 60 }, (_, i) => (
+                    <line key={i} x1="200" y1={i % 5 === 0 ? 10 : 14} x2="200" y2="22" className={`cc-tick${i % 5 === 0 ? " cc-tick--major" : ""}`} transform={`rotate(${i * 6} 200 200)`} />
+                  ))}
+                </svg>
+                <p className="cc-time">
+                  <KtmClock />
+                  <small>Kathmandu</small>
+                </p>
+              </div>
+              <span className="cc-sec" aria-hidden="true">
+                <i />
+              </span>
+              <div className="cc-hand" aria-hidden="true" data-cursor="Drag">
+                <span className="cc-hand-paint" />
+                <b className="cc-hand-name">{socials[0].name}</b>
+              </div>
 
-              <nav className="ch-blips" aria-label="Social channels">
-                {socials.map((s) => {
-                  const b = radarBlips[s.name];
-                  const rad = (b.angle * Math.PI) / 180;
+              <nav className="cc-marks" aria-label="Social channels">
+                {socials.map((s, i) => {
+                  const rad = (i * HOUR * Math.PI) / 180;
+                  const [c, c2] = TINT[s.name] ?? [s.color ?? "#0e2a52", "#93d3f3"];
                   return (
                     <a
                       key={s.name}
-                      className="ch-blip"
+                      className={`cc-mark${i === 0 ? " is-on" : ""}`}
                       href={s.href}
                       target={s.href.startsWith("http") ? "_blank" : undefined}
                       rel="noreferrer"
-                      data-angle={b.angle}
+                      data-i={i}
+                      data-c={c}
+                      data-c2={c2}
+                      data-name={s.name}
+                      data-handle={handle(s.href)}
                       aria-label={s.name}
-                      style={{
-                        left: `${50 + Math.sin(rad) * b.r * 50}%`,
-                        top: `${50 - Math.cos(rad) * b.r * 50}%`,
-                        "--brand": s.color,
-                      } as React.CSSProperties}
+                      style={{ left: `${50 + Math.sin(rad) * 39.5}%`, top: `${50 - Math.cos(rad) * 39.5}%`, "--brand": c } as React.CSSProperties}
                     >
-                      <span className="ch-blip-in">
+                      <span className="cc-mark-in">
                         <Icon icon={s.icon} />
-                      </span>
-                      <span className="ch-blip-label" aria-hidden="true">
-                        {s.name}
                       </span>
                     </a>
                   );
@@ -121,8 +136,6 @@ export default function ContactHero() {
               </nav>
 
               <div className="ch-avatar">
-                <span className="ch-ping" aria-hidden="true" />
-                <span className="ch-ping ch-ping--2" aria-hidden="true" />
                 <span className="ch-avatar-img">
                   {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
                   <img src="/images/contact-800.webp" alt="Rajendra Pandey" draggable={false} />
@@ -131,6 +144,7 @@ export default function ContactHero() {
                   <i /> On air
                 </span>
               </div>
+              <span className="cc-glass" aria-hidden="true" />
             </div>
           </div>
 
@@ -154,14 +168,17 @@ export default function ContactHero() {
               </span>
             </div>
           </div>
-          <div className="ch-read ch-read--c" aria-hidden="true">
-            <div className="hx-chip ch-chip">
-              <span className="hx-chip-icon">📶</span>
+          <div className="ch-read ch-read--c">
+            <a className="hx-chip ch-chip cc-now" href={socials[0].href} target="_blank" rel="noreferrer">
+              <span className="hx-chip-icon cc-now-dot" aria-hidden="true" />
               <span>
-                <b>{socials.length} channels open</b>
-                <small>Tap a blip to connect</small>
+                <small>The hand points at</small>
+                <b>
+                  <span className="cc-now-name">{socials[0].name}</span> <span aria-hidden="true">↗</span>
+                </b>
+                <small className="cc-now-handle">{handle(socials[0].href)}</small>
               </span>
-            </div>
+            </a>
           </div>
         </div>
       </div>

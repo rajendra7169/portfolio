@@ -396,20 +396,8 @@ export const contact = {
   email: "rajendrapandey199971@gmail.com",
   phone: "+977 9813566214",
   maps: "https://maps.app.goo.gl/HCbA8cW1giG1dKtJ6",
-  // City-level, for the radar readout.
+  // City-level, for the readout beside the contact clock.
   coords: "27.71° N · 85.32° E",
   // Message composer topics: the areas named in the blurb above.
   topics: ["ML", "AI", "React", "Android", "Cloud", "Open source"],
-};
-
-// Radar blips for the social channels: angle clockwise from 12 o'clock, and
-// distance from the centre as a share of the radius.
-export const radarBlips: Record<string, { angle: number; r: number }> = {
-  GitHub: { angle: 18, r: 0.78 },
-  LinkedIn: { angle: 68, r: 0.6 },
-  YouTube: { angle: 118, r: 0.82 },
-  Email: { angle: 165, r: 0.62 },
-  X: { angle: 212, r: 0.8 },
-  Facebook: { angle: 262, r: 0.6 },
-  Instagram: { angle: 316, r: 0.8 },
 };
