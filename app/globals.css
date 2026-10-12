@@ -4401,41 +4401,446 @@ main {
 .cm-art {
   position: relative;
 }
-.cm-art-img {
+/* ── Where the message goes: his phone, in Kathmandu ─────────────────────
+   Sized in cqi of the scene. Motion's reveal moves .cm-art and GSAP pops
+   .cm-check; the CSS loops run on the elements inside them. */
+.ib {
   position: relative;
-  display: block;
+  container-type: inline-size;
   width: 100%;
-  max-width: 620px;
+  aspect-ratio: 1 / 1.02;
+  max-width: 600px;
   margin: 0 auto;
+  overflow: hidden;
+  border-radius: 34px;
+  background: linear-gradient(#b9e2fa, #e6f5fd 58%, #fff);
+  box-shadow: 0 40px 80px -40px rgb(0 28 85 / 0.45), inset 0 0 0 1px rgb(255 255 255 / 0.8);
 }
-/* On the envelope in the illustration (measured from the artwork). */
+.ib--dusk {
+  background: linear-gradient(#f9b98f, #ffe2c8 52%, #fff4ea);
+}
+.ib--night {
+  background: linear-gradient(#0c1a3c, #213668 58%, #3b5590);
+}
+.ib-sky {
+  position: absolute;
+  inset: 0;
+}
+.ib-sun {
+  position: absolute;
+  right: 13%;
+  top: 22%;
+  width: 13cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff6c4, #ffd34f 60%, #ffb92e);
+  box-shadow: 0 0 0 3cqi rgb(255 214 92 / 0.22), 0 0 10cqi rgb(255 200 70 / 0.6);
+  animation: ib-glow 5s ease-in-out infinite alternate;
+}
+.ib--dusk .ib-sun {
+  top: 40%;
+  background: radial-gradient(circle at 40% 38%, #ffe4b8, #ff9b5a 60%, #f4743b);
+  box-shadow: 0 0 0 3cqi rgb(255 150 90 / 0.25), 0 0 12cqi rgb(255 130 70 / 0.6);
+}
+.ib--night .ib-sun {
+  background: #f4f1e6;
+  box-shadow: inset -3cqi -1.4cqi 0 #c8ccd8, 0 0 9cqi rgb(220 230 255 / 0.35);
+}
+@keyframes ib-glow {
+  to { scale: 1.06; }
+}
+.ib-stars i {
+  position: absolute;
+  width: 0.7cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff;
+  animation: ib-twinkle 2.4s ease-in-out infinite alternate;
+}
+@keyframes ib-twinkle {
+  to { opacity: 0.2; }
+}
+.ib-cloud {
+  position: absolute;
+  width: 26cqi;
+  height: 7cqi;
+  border-radius: 99px;
+  background: #fff;
+  opacity: 0.9;
+  animation: ib-drift 46s linear infinite;
+}
+.ib-cloud::before {
+  content: "";
+  position: absolute;
+  left: 22%;
+  bottom: 40%;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: inherit;
+}
+.ib-cloud--a {
+  top: 30%;
+  left: -30%;
+}
+.ib-cloud--b {
+  top: 44%;
+  left: -30%;
+  width: 18cqi;
+  height: 5cqi;
+  opacity: 0.7;
+  animation-duration: 64s;
+  animation-delay: -30s;
+}
+.ib--night .ib-cloud {
+  opacity: 0.12;
+}
+@keyframes ib-drift {
+  to { translate: 160cqi 0; }
+}
+.ib-hills {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 46%;
+}
+.ib-peaks { fill: #a7c6e4; }
+.ib-snow { fill: #fff; }
+.ib-ridge { fill: #7ea6cf; }
+.ib-near { fill: #4f7fb3; }
+.ib--dusk .ib-peaks { fill: #d9a5a0; }
+.ib--dusk .ib-ridge { fill: #b07f8e; }
+.ib--dusk .ib-near { fill: #7d5f7e; }
+.ib--night .ib-peaks { fill: #34497a; }
+.ib--night .ib-snow { fill: #c9d4ec; }
+.ib--night .ib-ridge { fill: #22355f; }
+.ib--night .ib-near { fill: #172647; }
+/* Prayer flags strung across the valley. */
+.ib-flags {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 3%;
+  width: 100%;
+  height: 20%;
+  overflow: visible;
+}
+.ib-flags-line {
+  fill: none;
+  stroke: rgb(0 28 85 / 0.45);
+  stroke-width: 1.5;
+}
+.ib--night .ib-flags-line {
+  stroke: rgb(255 255 255 / 0.4);
+}
+.ib-flag path {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  stroke: rgb(0 0 0 / 0.08);
+  animation: ib-flap 2.4s ease-in-out var(--d) infinite alternate;
+}
+@keyframes ib-flap {
+  from { rotate: -7deg; scale: 1 1; }
+  to { rotate: 7deg; scale: 0.9 1; }
+}
+.ib.is-gust .ib-flag path {
+  animation-duration: 0.28s;
+}
+/* The phone */
+.ib-phone-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: 40cqi;
+  margin-left: -20cqi;
+  animation: ib-float 5s ease-in-out infinite alternate;
+}
+@keyframes ib-float {
+  from { translate: 0 0; }
+  to { translate: 0 -1.6cqi; }
+}
+.ib-phone {
+  padding: 1.5cqi;
+  border-radius: 6.6cqi;
+  background: linear-gradient(145deg, #23365e, #0e1d3c);
+  box-shadow: 0 4cqi 7cqi -3cqi rgb(0 18 55 / 0.6), inset 0 0 0 0.35cqi rgb(255 255 255 / 0.16);
+}
+.ib-phone.is-buzz {
+  animation: ib-buzz 0.55s linear;
+}
+@keyframes ib-buzz {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  15% { rotate: -2.6deg; translate: -0.6cqi 0; }
+  30% { rotate: 2.4deg; translate: 0.6cqi 0; }
+  45% { rotate: -1.8deg; translate: -0.4cqi 0; }
+  60% { rotate: 1.4deg; translate: 0.4cqi 0; }
+  80% { rotate: -0.6deg; translate: 0 0; }
+}
+.ib-screen {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1.6cqi;
+  aspect-ratio: 9 / 18.4;
+  overflow: hidden;
+  padding: 2.4cqi 2.4cqi 0;
+  border-radius: 5.2cqi;
+  background: linear-gradient(#f7fbfe, #edf4fa);
+  color: var(--color-navy);
+}
+.ib-screen::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1.3cqi;
+  width: 9cqi;
+  height: 2.2cqi;
+  margin-left: -4.5cqi;
+  border-radius: 2cqi;
+  background: #0e1d3c;
+}
+.ib-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2cqi;
+  font-size: 2.3cqi;
+  font-variant-numeric: tabular-nums;
+}
+.ib-status span {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4cqi;
+  height: 1.8cqi;
+}
+.ib-status i {
+  width: 0.6cqi;
+  border-radius: 0.3cqi;
+  background: var(--color-navy);
+}
+.ib-status i:nth-child(1) { height: 40%; }
+.ib-status i:nth-child(2) { height: 70%; }
+.ib-status i:nth-child(3) { height: 100%; }
+.ib-notif {
+  position: absolute;
+  top: 4.4cqi;
+  left: 1.4cqi;
+  right: 1.4cqi;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 6cqi minmax(0, 1fr);
+  align-items: center;
+  gap: 1.4cqi;
+  padding: 1.6cqi;
+  border-radius: 3cqi;
+  background: rgb(255 255 255 / 0.96);
+  box-shadow: 0 2cqi 4cqi -1.6cqi rgb(0 28 85 / 0.45);
+  animation: ib-notif 3.2s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+@keyframes ib-notif {
+  0% { translate: 0 -140%; }
+  14%, 82% { translate: 0 0; }
+  100% { translate: 0 -140%; }
+}
+.ib-notif-icon {
+  display: grid;
+  place-items: center;
+  width: 6cqi;
+  aspect-ratio: 1;
+  border-radius: 1.8cqi;
+  background: linear-gradient(135deg, #4aa8e0, #2f7fc1);
+  color: #fff;
+  font-size: 3cqi;
+}
+.ib-notif b,
+.ib-mail b {
+  display: block;
+  overflow: hidden;
+  font-size: 2.4cqi;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ib-notif small {
+  display: block;
+  overflow: hidden;
+  font-size: 2.1cqi;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--color-muted);
+}
+.ib-title {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqi;
+  margin-top: 1.2cqi;
+  padding: 0 0.8cqi;
+  font-size: 4.6cqi;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.ib-badge {
+  display: grid;
+  place-items: center;
+  min-width: 4cqi;
+  height: 4cqi;
+  padding: 0 1cqi;
+  border-radius: 2cqi;
+  background: #e0582a;
+  color: #fff;
+  font-size: 2.3cqi;
+  letter-spacing: 0;
+}
+.ib-mails {
+  list-style: none;
+  display: grid;
+  gap: 1.2cqi;
+}
+.ib-slot {
+  position: relative;
+  height: 0;
+}
 .cm-target {
   position: absolute;
-  left: 47%;
-  top: 62%;
+  left: 50%;
+  top: 4cqi;
   width: 1px;
   height: 1px;
 }
-/* Sits exactly over the green check drawn in the illustration, so on landing
-   that check "lights up". Sized and centred in % of the artwork's width. */
-.cm-check {
-  position: absolute;
-  left: 31.3%;
-  top: 39.7%;
-  z-index: 2;
+.ib-mail {
+  display: grid;
+  grid-template-columns: 6.2cqi minmax(0, 1fr);
+  align-items: start;
+  gap: 1.4cqi;
+  padding: 1.6cqi;
+  border-radius: 2.6cqi;
+  background: #fff;
+  box-shadow: 0 1cqi 2cqi -1.4cqi rgb(0 28 85 / 0.35);
+}
+.ib-face {
   display: grid;
   place-items: center;
-  width: 10%;
+  width: 6.2cqi;
   aspect-ratio: 1;
-  margin: -5% 0 0 -5%;
   border-radius: 50%;
+  background: linear-gradient(135deg, #7cc8f0, #2f7fc1);
+  color: #fff;
+  font-size: 2.8cqi;
+  font-style: normal;
+  font-weight: 800;
+}
+.ib-mail small {
+  display: block;
+  font-size: 2.05cqi;
+  line-height: 1.35;
+  color: var(--color-navy);
+}
+.ib-mail .ib-preview {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--color-muted);
+}
+.ib-mail em,
+.ib-mail time {
+  float: right;
+  font-size: 1.9cqi;
+  font-style: normal;
+  font-weight: 600;
+  color: #2f7fc1;
+}
+.ib-mail--draft {
+  background: rgb(47 127 193 / 0.07);
+  box-shadow: inset 0 0 0 0.3cqi rgb(47 127 193 / 0.35);
+  animation: ib-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.ib-mail--draft .ib-face {
+  background: linear-gradient(135deg, #ffb48a, #e0582a);
+}
+.ib-mail--new {
+  position: relative;
+  box-shadow: inset 0.8cqi 0 0 #2f7fc1, 0 1.4cqi 2.6cqi -1.4cqi rgb(0 28 85 / 0.45);
+  animation: ib-drop 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+.ib-mail--new::after {
+  content: "";
+  position: absolute;
+  right: 1.6cqi;
+  bottom: 1.8cqi;
+  width: 1.6cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #2f7fc1;
+}
+@keyframes ib-in {
+  from { opacity: 0; translate: 0 -1cqi; }
+}
+@keyframes ib-drop {
+  from { opacity: 0; translate: 0 -5cqi; scale: 0.94; }
+}
+.ib-mail--old > span {
+  display: grid;
+  gap: 1cqi;
+  padding-top: 0.6cqi;
+}
+.ib-mail--old > span i {
+  height: 1.4cqi;
+  border-radius: 1cqi;
+  background: rgb(0 28 85 / 0.1);
+}
+.ib-mail--old > span i:nth-child(1) { width: 50%; }
+.ib-mail--old > span i:nth-child(3) { width: 72%; }
+.ib-mail--old .ib-face {
+  background: rgb(0 28 85 / 0.1);
+}
+.ib-dots {
+  display: inline-flex;
+  gap: 0.5cqi;
+  margin-left: 0.8cqi;
+}
+.ib-dots i {
+  width: 0.9cqi;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #2f7fc1;
+  animation: ib-dot 0.9s ease-in-out infinite;
+}
+.ib-dots i:nth-child(2) { animation-delay: 0.15s; }
+.ib-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes ib-dot {
+  50% { translate: 0 -0.8cqi; opacity: 0.5; }
+}
+/* "Delivered", beside the phone, once the plane is in. GSAP pops it in. */
+.cm-check {
+  position: absolute;
+  right: -15cqi;
+  top: 46%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqi;
+  padding: 1.4cqi 2.4cqi;
+  border-radius: 99px;
   background: #22c55e;
   color: #fff;
-  font-size: clamp(18px, 2.4vw, 32px);
+  font-size: 3cqi;
   font-weight: 800;
-  box-shadow: 0 0 0 8px rgb(34 197 94 / 0.2), 0 16px 30px -12px rgb(22 163 74 / 0.8);
+  white-space: nowrap;
+  box-shadow: 0 0 0 1.4cqi rgb(34 197 94 / 0.2), 0 3cqi 5cqi -2cqi rgb(22 163 74 / 0.8);
   opacity: 0;
   visibility: hidden;
+}
+.cm-check small {
+  font-size: 2.4cqi;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ib *,
+  .ib-phone-wrap {
+    animation: none !important;
+  }
 }
 .cm-card {
   display: grid;

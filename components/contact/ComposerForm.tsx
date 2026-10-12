@@ -1,7 +1,10 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
+import { Floaties } from "@/components/Floaties";
+import { useLenis } from "@/components/SmoothScroll";
+import Inbox, { subjectOf, type Arrival } from "./Inbox";
 
 const MAX = 1200;
 const COLORS = ["#001c55", "#2f7fc1", "#7cc8f0", "#f26b38", "#a6dff7"];
@@ -27,12 +30,34 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
+  // The phone on the left: what you're writing, what has landed, and its buzz.
+  const [typing, setTyping] = useState(false);
+  const [arrived, setArrived] = useState<Arrival[]>([]);
+  const [notify, setNotify] = useState<Arrival | null>(null);
+  const [buzz, setBuzz] = useState(0);
+  const typed = useRef(0);
   const { contextSafe } = useGSAP({ scope: root });
+  const lenis = useLenis();
+  useEffect(() => () => clearTimeout(typed.current), []);
+  const keyed = () => {
+    setTyping(true);
+    clearTimeout(typed.current);
+    typed.current = window.setTimeout(() => setTyping(false), 1200);
+  };
 
   const toggle = (t: string) => setPicked((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
 
+  // It lands: a notification, a buzz, and the message at the top of the inbox.
+  const land = () => {
+    const m = { id: Date.now(), from: name.trim() || "You", subject: subjectOf(picked), text: message.trim() };
+    setArrived((a) => [...a, m]);
+    setNotify(m);
+    setBuzz((b) => b + 1);
+    window.setTimeout(() => setNotify((n) => (n?.id === m.id ? null : n)), 3200);
+  };
+
   const mailto = () => {
-    const subject = `Portfolio message${picked.length ? ` · ${picked.join(", ")}` : ""}${name.trim() ? ` — from ${name.trim()}` : ""}`;
+    const subject = `${subjectOf(picked)}${name.trim() ? ` — from ${name.trim()}` : ""}`;
     const body = `${message.trim()}${name.trim() ? `\n\n— ${name.trim()}` : ""}`;
     return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
@@ -43,7 +68,7 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
     window.location.href = href;
   };
 
-  // Fold the message into a paper plane and fly it into the illustration's envelope.
+  // Fold the message into a paper plane and fly it into the phone's inbox.
   const fly = contextSafe((href: string) => {
     const el = root.current!;
     const q = gsap.utils.selector(el);
@@ -53,13 +78,17 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
     const plane = q(".cm-plane")[0];
     const svg = q(".cm-flight svg")[0];
     const trail = q(".cm-trail")[0];
-    const target = document.querySelector(".cm-target");
-    const check = document.querySelector(".cm-check");
+    const target = q(".cm-target")[0];
+    const check = q(".cm-check")[0];
+    const scene = q(".ib")[0];
     const box = area.getBoundingClientRect();
-    const p0 = centre(send);
+    // From the send button (kept on screen) to the top of the inbox.
+    const s0 = centre(send);
+    const p0 = { x: s0.x, y: Math.min(window.innerHeight - 40, Math.max(40, s0.y)) };
     const p3 = target ? centre(target) : { x: -80, y: -80 };
-    const p1 = { x: p0.x, y: p0.y - 320 };
-    const p2 = { x: p3.x + 260, y: p3.y - 340 };
+    const side = p3.x < p0.x - 120; // the phone beside the form, or above it on a phone
+    const p1 = side ? { x: p0.x + 40, y: p0.y - 360 } : { x: p0.x + 160, y: p0.y - 120 };
+    const p2 = side ? { x: p3.x + 300, y: p3.y - 300 } : { x: p3.x + 190, y: p3.y + 60 };
 
     svg.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
     trail.setAttribute("d", `M${p0.x} ${p0.y} C${p1.x} ${p1.y} ${p2.x} ${p2.y} ${p3.x} ${p3.y}`);
@@ -89,15 +118,20 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
           gsap.set(trail, { drawSVG: `0% ${t * 100}%` });
         },
       })
-      .to(plane, { scale: 0, duration: 0.2, ease: "power2.in" })
-      // Touchdown: the envelope checks in, a burst of paper flies off it.
+      // Into the phone: it dives into the slot at the top of the inbox.
+      .to(plane, { scale: 0.2, autoAlpha: 0, duration: 0.22, ease: "power2.in" })
+      // Touchdown: the phone buzzes, a notification drops, and paper flies off it.
       .add(() => {
+        land();
+        // The plane's wake sets the prayer flags flying.
+        scene?.classList.add("is-gust");
+        window.setTimeout(() => scene?.classList.remove("is-gust"), 1800);
         if (check) gsap.fromTo(check, { scale: 0, autoAlpha: 1 }, { scale: 1, duration: 0.8, ease: "elastic.out(1, 0.45)" });
         const bits = q(".cm-bits i");
         gsap.set(bits, { x: p3.x, y: p3.y, autoAlpha: 1, rotation: 0, scale: () => gsap.utils.random(0.6, 1.2) });
         gsap.to(bits, {
           duration: () => gsap.utils.random(0.9, 1.4),
-          physics2D: { velocity: () => gsap.utils.random(220, 480), angle: () => gsap.utils.random(200, 340), gravity: 800 },
+          physics2D: { velocity: () => gsap.utils.random(200, 420), angle: () => gsap.utils.random(200, 340), gravity: 800 },
           rotation: () => gsap.utils.random(-360, 360),
           ease: "none",
         });
@@ -121,15 +155,28 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
     const href = mailto();
     // Exposed for the layout tests, which can't follow a mailto: link.
     root.current!.dataset.mailto = href;
-    if (!matchMedia(MOTION_OK).matches) return open(href);
+    if (!matchMedia(MOTION_OK).matches) return (land(), open(href));
     setSending(true);
     setStatus("Sending…");
-    fly(href);
+    // On a phone the inbox is above the form: bring it into view, then fly.
+    const t = root.current!.querySelector(".cm-target")!.getBoundingClientRect();
+    if (t.top < 70 || t.bottom > innerHeight - 20) {
+      const y = window.scrollY + t.top - innerHeight * 0.3;
+      if (lenis) lenis.scrollTo(y, { duration: 0.6, onComplete: () => fly(href) });
+      else {
+        window.scrollTo({ top: y, behavior: "smooth" });
+        window.setTimeout(() => fly(href), 700);
+      }
+    } else fly(href);
   };
 
   return (
-    <div className="cm-form-wrap" ref={root}>
-      {/* The reveal animates this inner box, never the wrapper: a transformed ancestor
+    <div className="cm-grid cm-form-wrap" ref={root}>
+      <div className="cm-art" data-anim="left">
+        <Floaties />
+        <Inbox draft={{ name, topics: picked, message, typing }} arrived={arrived} notify={notify} buzz={buzz} />
+      </div>
+      {/* The reveal animates these inner boxes, never the wrapper: a transformed ancestor
           would turn the fixed flight overlay below into an absolutely positioned one. */}
       <div data-anim="right">
       <form className="cm-card" onSubmit={submit} noValidate>
@@ -144,7 +191,16 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
 
         <label className="cm-field">
           <span>Your name</span>
-          <input name="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Optional" />
+          <input
+            name="name"
+            autoComplete="name"
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              keyed();
+            }}
+            placeholder="Optional"
+          />
         </label>
 
         <label className="cm-field">
@@ -156,6 +212,7 @@ export default function ComposerForm({ email, topics }: { email: string; topics:
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
+              keyed();
               if (error) setError("");
             }}
             placeholder="Hi Rajendra, I'd like to talk about…"

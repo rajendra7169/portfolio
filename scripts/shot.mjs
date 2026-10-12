@@ -436,30 +436,36 @@ for (const vp of VIEWPORTS) {
     if (pg.name === "contact") {
       await wait(1600);
       const chState = await page.evaluate(async () => {
-        const sweep = document.querySelector(".ch-sweep");
-        const angle = () => { const m = new DOMMatrixReadOnly(getComputedStyle(sweep).transform); return Math.atan2(m.b, m.a); };
-        const a1 = angle();
-        await new Promise((r) => setTimeout(r, 400));
-        const a2 = angle();
-        // Watch the blips for one full turn of the beam.
-        const pinged = new Set();
-        const obs = new MutationObserver((ms) => ms.forEach((m) => m.target.classList.contains("is-ping") && pinged.add(m.target.getAttribute("aria-label"))));
-        document.querySelectorAll(".ch-blip").forEach((b) => obs.observe(b, { attributes: true, attributeFilter: ["class"] }));
-        await new Promise((r) => setTimeout(r, 4600));
-        obs.disconnect();
-        return {
-          title: document.querySelector(".ch-title-text").textContent,
-          turning: Math.abs(a2 - a1) > 0.05,
-          pinged: pinged.size,
-          avatar: getComputedStyle(document.querySelector(".ch-avatar-img")).transform,
-        };
+        const stage = document.querySelector(".ch-stage");
+        const read = () => ({ on: stage.dataset.on, name: document.querySelector(".cc-hand-name").textContent, cc: getComputedStyle(stage).getPropertyValue("--cc").trim() });
+        const a = read();
+        // The hand ticks round by itself to the next channel (within a few seconds of the intro).
+        let b = read();
+        for (let t = 0; t < 40 && b.on === a.on; t++) {
+          await new Promise((r) => setTimeout(r, 200));
+          b = read();
+        }
+        return { title: document.querySelector(".ch-title-text").textContent, a, b };
       });
       check(scope, chState.title === "Contact Me", `contact hero decodes ("${chState.title}")`);
       const rowsFit = await page.evaluate(() => [...document.querySelectorAll(".ch-copy")].every((b) => b.getBoundingClientRect().right <= innerWidth));
       check(scope, rowsFit, "every copy button is on screen");
-      check(scope, chState.turning, "the radar beam sweeps");
-      check(scope, chState.pinged === 7, `every channel pings as the beam passes (${chState.pinged}/7)`);
-      await page.screenshot({ path: `${OUT}/${vp.name}-contact-radar.png` });
+      check(scope, chState.a.on !== chState.b.on && chState.a.name !== chState.b.name, `the clock's hand ticks to the next channel (${chState.a.name} → ${chState.b.name})`);
+      // Each channel, reached from the keyboard, swings the hand to it, paints its
+      // name on the hand and gives the clock its colour.
+      const marks = await page.evaluate(async () => {
+        const out = [];
+        for (const m of document.querySelectorAll(".cc-mark")) {
+          m.focus();
+          await new Promise((r) => setTimeout(r, 120));
+          const stage = document.querySelector(".ch-stage");
+          out.push(stage.dataset.on === m.dataset.i && document.querySelector(".cc-hand-name").textContent === m.dataset.name && document.querySelector(".cc-now").href === m.href && stage.style.getPropertyValue("--cc") === m.dataset.c);
+        }
+        document.activeElement.blur();
+        return out;
+      });
+      check(scope, marks.length === 7 && marks.every(Boolean), `every channel can be pointed at, and themes the clock (${marks.filter(Boolean).length}/7)`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-contact-clock.png` });
 
       // Copy the email address.
       await page.locator(".ch-copy").first().click();
@@ -481,10 +487,14 @@ for (const vp of VIEWPORTS) {
       }));
       check(scope, refused.error.length > 0 && !refused.flying, `an empty message is refused ("${refused.error}")`);
 
-      // ...a real one folds into a plane, flies to the envelope, then opens the email app.
+      // ...a real one shows on the phone as it's written, folds into a plane, flies
+      // into the phone's inbox, then opens the email app.
       await page.locator(".cm-topic", { hasText: "React" }).click();
       await page.locator(".cm-field input").fill("Test Visitor");
       await page.locator(".cm-field textarea").fill("Hello Rajendra, can we talk about a React project?");
+      await wait(200);
+      const draft = await page.evaluate(() => document.querySelector(".ib-mail--draft")?.textContent ?? "");
+      check(scope, draft.includes("Test Visitor") && draft.includes("React"), "the phone shows the message as it's written");
       await page.locator(".cm-send").click();
       await wait(1500);
       const mid = await page.evaluate(() => ({
@@ -501,7 +511,7 @@ for (const vp of VIEWPORTS) {
       check(scope, mid.onScreen, "the plane is on screen mid-flight");
       await wait(3400); // on a phone it scrolls up to the inbox first
       const done = await page.evaluate(() => ({
-        landed: getComputedStyle(document.querySelector(".cm-check")).opacity === "1",
+        landed: getComputedStyle(document.querySelector(".cm-check")).opacity === "1" && (document.querySelector(".ib-mail--new")?.textContent ?? "").includes("Test Visitor"),
         overlayGone: getComputedStyle(document.querySelector(".cm-flight")).visibility === "hidden",
         mailto: document.querySelector(".cm-form-wrap").dataset.mailto ?? "",
       }));
