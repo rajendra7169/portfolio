@@ -1,0 +1,926 @@
+/* ══ Fitevo's world ════════════════════════════════════════════════════════
+   The app's warm dark theme: night, surface and line, cream text, saffron for
+   calories, and its macro colours. One family, Plus Jakarta Sans, heavy for
+   numbers the way the app sets them. GSAP owns transform on the rings svg, the
+   title, chips, medals and shots. */
+.w-fv {
+  --fv-night: #12100e;
+  --fv-surface: #1b1916;
+  --fv-line: #2a2622;
+  --fv-cream: #f4ecdd;
+  --fv-dim: #a2968a;
+  --fv-saffron: #e8702c;
+  --fv-gold: #e8b65a;
+  --fv-protein: #6ba66b;
+  --fv-carbs: #c9a64a;
+  --fv-fat: #b5697a;
+  --fv-water: #6b86c9;
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  background: var(--fv-night);
+  color: var(--fv-cream);
+  font-family: var(--fv-font), system-ui, sans-serif;
+}
+.w-fv :focus-visible {
+  outline-color: var(--fv-saffron);
+}
+.fv-h2 {
+  font-size: clamp(44px, 6vw, 104px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+.fv-sub {
+  max-width: 40ch;
+  margin-top: 14px;
+  font-size: clamp(17px, 1.3vw, 20px);
+  line-height: 1.55;
+  color: var(--fv-dim);
+}
+
+/* ── The ring ───────────────────────────────────────────────────────────── */
+.fv-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 96px);
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 16px) var(--gutter) 64px;
+  background:
+    radial-gradient(60% 70% at 78% 50%, rgb(232 112 44 / 0.16), transparent 70%),
+    var(--fv-night);
+}
+.fv-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fv-dim);
+}
+.fv-kicker-tile {
+  width: 40px;
+}
+.fv-title {
+  margin-top: 14px;
+  font-size: clamp(88px, 12vw, 210px);
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+}
+.fv-tagline {
+  max-width: 22ch;
+  margin-top: 18px;
+  font-size: clamp(22px, 2vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.fv-ask {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  min-height: 60px;
+  margin-top: 26px;
+  padding: 10px 10px 10px 18px;
+  border: 1.5px solid var(--fv-saffron);
+  border-radius: 20px;
+  background: var(--fv-surface);
+  font-size: 16px;
+  transition: box-shadow 0.3s;
+}
+.fv-ask.is-sent {
+  box-shadow: 0 0 0 6px rgb(232 112 44 / 0.22);
+}
+.fv-ask-spark {
+  color: var(--fv-saffron);
+}
+.fv-ask-caret {
+  display: none;
+  width: 2px;
+  height: 20px;
+  background: var(--fv-saffron);
+  animation: blink 1s steps(1) infinite;
+}
+.w-fv.is-live .fv-ask-caret {
+  display: block;
+}
+.fv-ask-send {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  flex: none;
+  border-radius: 50%;
+  background: var(--fv-saffron);
+  color: var(--fv-night);
+  font-weight: 800;
+}
+.fv-ask-out {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 10px;
+  list-style: none;
+}
+.fv-ask-out li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--fv-surface);
+  box-shadow: inset 0 0 0 1px var(--fv-line);
+  font-size: 14px;
+}
+.fv-ask-out em {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--fv-saffron);
+}
+.fv-lede {
+  max-width: 34rem;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--fv-dim);
+}
+.fv-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.fv-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 16px;
+  background: var(--fv-saffron);
+  color: var(--fv-night);
+  font-weight: 700;
+}
+.fv-rings {
+  position: relative;
+  justify-self: center;
+  width: min(44vw, 76vh, 620px);
+  aspect-ratio: 1;
+}
+.fv-rings-svg {
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+}
+.fv-r circle {
+  fill: none;
+}
+.fv-r-track {
+  stroke: var(--fv-line);
+}
+.fv-r-fill {
+  stroke-linecap: round;
+}
+.fv-r-kcal circle { stroke-width: 22px; }
+.fv-r-p circle,
+.fv-r-c circle,
+.fv-r-f circle { stroke-width: 14px; }
+.fv-r-kcal .fv-r-fill { stroke: var(--fv-saffron); filter: drop-shadow(0 0 10px rgb(232 112 44 / 0.5)); }
+.fv-r-p .fv-r-fill { stroke: var(--fv-protein); }
+.fv-r-c .fv-r-fill { stroke: var(--fv-carbs); }
+.fv-r-f .fv-r-fill { stroke: var(--fv-fat); }
+.fv-rings-core {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+}
+.fv-rings-core small {
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fv-dim);
+}
+.fv-left {
+  font-size: clamp(56px, 7vw, 116px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
+}
+.fv-macros {
+  position: absolute;
+  left: 50%;
+  bottom: -54px;
+  display: flex;
+  gap: 18px;
+  translate: -50% 0;
+  white-space: nowrap;
+  list-style: none;
+  font-size: 14px;
+  color: var(--fv-dim);
+}
+.fv-macro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.fv-macro i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.fv-macro b {
+  color: var(--fv-cream);
+  font-variant-numeric: tabular-nums;
+}
+.fv-macro-p i { background: var(--fv-protein); }
+.fv-macro-c i { background: var(--fv-carbs); }
+.fv-macro-f i { background: var(--fv-fat); }
+
+/* ── A day ──────────────────────────────────────────────────────────────── */
+.fv-day {
+  --t: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+  gap: clamp(24px, 5vw, 96px);
+  padding: clamp(80px, 12vh, 140px) var(--gutter) 80px;
+  /* morning warmth fading into night as the day runs */
+  background: linear-gradient(180deg, color-mix(in srgb, #3a2214 calc((1 - var(--t)) * 100%), #0b0a12), var(--fv-night));
+}
+.fv-day.is-pinned {
+  align-items: center;
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 8px);
+  padding-bottom: 70px;
+}
+.fv-clock {
+  display: none;
+  margin-top: 10px;
+  font-size: clamp(80px, 11vw, 190px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--fv-saffron);
+}
+.fv-day.is-pinned .fv-clock {
+  display: block;
+}
+.fv-day-list {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+  list-style: none;
+}
+.fv-day-item {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  column-gap: 16px;
+}
+.fv-day-item time {
+  grid-row: span 2;
+  font-weight: 800;
+  color: var(--fv-saffron);
+  font-variant-numeric: tabular-nums;
+}
+.fv-day-item b {
+  font-size: 20px;
+  font-weight: 700;
+}
+.fv-day-item > span {
+  color: var(--fv-dim);
+  line-height: 1.55;
+}
+.fv-day-shot {
+  display: block;
+  grid-column: 2;
+  width: min(62vw, 260px);
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 24px;
+  box-shadow: 0 0 0 5px #0b0c10, 0 24px 50px -24px rgb(0 0 0 / 0.9);
+}
+.fv-day-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Pinned, only the current moment of the day shows on the left. */
+.fv-day.is-pinned .fv-day-list {
+  display: grid;
+}
+.fv-day.is-pinned .fv-day-item {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.fv-day.is-pinned .fv-day-item.is-on {
+  opacity: 1;
+}
+.fv-day.is-pinned .fv-day-item b {
+  font-size: clamp(28px, 2.6vw, 42px);
+  letter-spacing: -0.03em;
+}
+.fv-day.is-pinned .fv-day-item > span {
+  max-width: 34ch;
+  font-size: 18px;
+}
+.fv-day.is-pinned .fv-day-item time,
+.fv-day.is-pinned .fv-day-shot {
+  display: none;
+}
+.fv-day.is-pinned .fv-day-item {
+  grid-template-columns: minmax(0, 1fr);
+}
+.fv-day-stage {
+  display: none;
+}
+.fv-day.is-pinned .fv-day-stage {
+  display: grid;
+  justify-items: center;
+}
+.fv-day-phone {
+  width: min(100%, 300px, 36vh);
+}
+.fv-shot:not(.is-on) {
+  opacity: 0;
+  visibility: hidden;
+}
+.fv-day-bar {
+  display: none;
+}
+.fv-day.is-pinned .fv-day-bar {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+.fv-day-track {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--fv-line);
+}
+.fv-day-track i {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--fv-gold), var(--fv-saffron));
+}
+.fv-day-track em {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--fv-cream);
+  box-shadow: 0 0 0 3px var(--fv-night);
+}
+
+/* ── A new PR ───────────────────────────────────────────────────────────── */
+.fv-pr {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  padding: clamp(100px, 16vh, 180px) var(--gutter);
+  overflow: clip;
+  text-align: center;
+  background: radial-gradient(50% 60% at 50% 50%, rgb(232 182 90 / 0.14), transparent 70%);
+}
+.fv-pr-burst {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 0;
+  height: 0;
+}
+.fv-pr-burst i {
+  position: absolute;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+}
+.fv-pr-lift {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+.fv-pr-big {
+  margin-top: 6px;
+  font-size: clamp(110px, 20vw, 360px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
+  background: linear-gradient(180deg, var(--fv-cream), var(--fv-gold));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.fv-pr-num {
+  font-variant-numeric: tabular-nums;
+}
+.fv-pr-note {
+  max-width: 44ch;
+  margin-top: 14px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--fv-dim);
+}
+.fv-tiers {
+  width: min(100%, 720px);
+  margin-top: 44px;
+}
+.fv-tiers-track {
+  position: relative;
+  display: block;
+  height: 8px;
+  border-radius: 8px;
+  background: var(--fv-line);
+}
+.fv-tiers-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--fv-protein), var(--fv-gold), var(--fv-saffron));
+  clip-path: inset(0 50% 0 0);
+}
+.w-fv.is-live .fv-tiers-fill {
+  clip-path: none;
+}
+.fv-tiers-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  background: var(--fv-cream);
+  box-shadow: 0 0 0 5px var(--fv-saffron), 0 0 24px var(--fv-saffron);
+}
+.fv-tiers ol {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-top: 16px;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+.fv-tiers .is-you {
+  color: var(--fv-cream);
+}
+
+/* ── Badges ─────────────────────────────────────────────────────────────── */
+.fv-badges,
+.fv-plan,
+.fv-pulse,
+.fv-next {
+  padding: clamp(80px, 12vh, 140px) var(--gutter) 40px;
+}
+/* The year: stats on the left, the medals on the right, the calendar below. */
+.fv-badges {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 28px clamp(28px, 4vw, 72px);
+  align-items: center;
+}
+.fv-badges .fv-h2 {
+  font-size: clamp(40px, min(4.6vw, 8.4vh), 80px);
+}
+.fv-year {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: 30px;
+}
+.fv-year dt {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+.fv-year dd {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+.fv-year b {
+  font-size: clamp(28px, min(2.6vw, 5vh), 44px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--fv-cream);
+  font-variant-numeric: tabular-nums;
+}
+.fv-year div:first-child b {
+  color: var(--fv-saffron);
+}
+.fv-toast {
+  min-height: 52px;
+  margin-top: 22px;
+}
+.fv-toast-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 10px 10px;
+  border-radius: 16px;
+  background: var(--fv-surface);
+  box-shadow: inset 0 0 0 1px var(--fv-line), 0 20px 40px -20px #000;
+  font-size: 14px;
+  font-weight: 700;
+}
+.fv-toast-in i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--fv-gold);
+  color: #3a2208;
+  font-style: normal;
+}
+.fv-toast-in small {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fv-dim);
+}
+.fv-medals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2.4vh, 26px) 14px;
+  list-style: none;
+}
+.fv-medal {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 8px;
+  text-align: center;
+}
+.fv-medal b {
+  font-size: clamp(13px, 1vw, 16px);
+  font-weight: 800;
+}
+.fv-medal-desc {
+  max-width: 18ch;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--fv-dim);
+}
+.fv-medal-disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(64px, min(7.6vw, 13vh), 124px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe7b5, var(--fv-gold) 45%, #9b6a24);
+  box-shadow: inset 0 -6px 0 rgb(0 0 0 / 0.18), inset 0 0 0 5px rgb(255 255 255 / 0.2), 0 18px 34px -18px var(--fv-gold);
+  color: #3a2208;
+  font-size: clamp(26px, min(3.2vw, 5.6vh), 52px);
+  transition: filter 0.6s, box-shadow 0.6s;
+}
+.fv-medal-disc svg {
+  width: 1em;
+  height: 1em;
+}
+/* A shine that sweeps across when it unlocks. */
+.fv-medal-disc::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 40%, rgb(255 255 255 / 0.7) 50%, transparent 60%);
+  translate: -100% 0;
+}
+.fv-medal.is-new .fv-medal-disc::after {
+  animation: fv-shine 0.9s ease-out;
+}
+@keyframes fv-shine {
+  to { translate: 100% 0; }
+}
+.fv-medal.is-locked .fv-medal-disc {
+  background: radial-gradient(circle at 35% 30%, #3a352f, #24211d 60%, #1a1815);
+  box-shadow: inset 0 0 0 2px rgb(244 236 221 / 0.08);
+  color: rgb(244 236 221 / 0.22);
+}
+.fv-medal.is-locked b {
+  color: var(--fv-dim);
+}
+.fv-medal.is-locked .fv-medal-desc {
+  opacity: 0.6;
+}
+.fv-ruler {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+}
+.fv-ruler-track {
+  position: relative;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--fv-line);
+}
+.fv-ruler-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--fv-saffron), var(--fv-gold));
+  transform-origin: left center;
+}
+.fv-ruler-pin {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: var(--fv-gold);
+  box-shadow: 0 0 0 3px var(--fv-night);
+}
+.fv-ruler-months {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fv-dim);
+}
+/* Pinned: the year plays out on one screen. */
+.fv-badges.is-pinned {
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 10px);
+  padding-bottom: 34px;
+}
+
+/* ── Today's plan ───────────────────────────────────────────────────────── */
+.fv-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  gap: clamp(28px, 5vw, 96px);
+}
+.fv-checks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 28px;
+  list-style: none;
+}
+.fv-check {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  column-gap: 14px;
+  padding: 18px 0;
+  border-top: 1px solid var(--fv-line);
+}
+.fv-check-box {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--fv-saffron);
+  transition: background-color 0.4s, box-shadow 0.4s;
+}
+.fv-check-box svg {
+  width: 20px;
+  fill: none;
+  stroke: var(--fv-night);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 22;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s 0.15s var(--ease);
+}
+.fv-check.is-todo .fv-check-box {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--fv-line);
+}
+.fv-check.is-todo .fv-check-box svg {
+  stroke-dashoffset: 22;
+}
+.fv-check b {
+  font-size: 18px;
+  font-weight: 700;
+}
+.fv-check > span:last-child {
+  margin-top: 4px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--fv-dim);
+}
+
+/* ── Heartbeat ──────────────────────────────────────────────────────────── */
+.fv-pulse-row {
+  position: relative;
+  margin-top: 48px;
+}
+.fv-ecg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 6px;
+  width: 100%;
+  height: 90px;
+}
+.fv-ecg path {
+  fill: none;
+  stroke: var(--fv-saffron);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 8px rgb(232 112 44 / 0.7));
+}
+.fv-nodes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+  padding-top: 120px;
+  list-style: none;
+}
+.fv-nodes li {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--fv-surface);
+  box-shadow: inset 0 0 0 1px var(--fv-line);
+}
+.fv-nodes b {
+  font-size: 18px;
+}
+.fv-nodes span {
+  font-size: 14px;
+  color: var(--fv-dim);
+}
+.fv-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-top: 40px;
+  color: var(--fv-dim);
+  font-weight: 500;
+}
+.fv-stack span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fv-cream);
+}
+
+/* ── Next ───────────────────────────────────────────────────────────────── */
+.fv-next {
+  padding-bottom: clamp(80px, 12vh, 140px);
+}
+.fv-next-link {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 22px;
+  max-width: 820px;
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: 28px;
+  background: var(--fv-surface);
+  box-shadow: inset 0 0 0 1px var(--fv-line);
+  transition: box-shadow 0.4s;
+}
+.fv-next-link:hover {
+  box-shadow: inset 0 0 0 2px var(--fv-saffron);
+}
+.fv-next-tile {
+  grid-row: span 2;
+  width: 76px;
+}
+.fv-next-link b {
+  font-size: clamp(38px, 4.4vw, 68px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+.fv-next-link span {
+  color: var(--fv-dim);
+}
+
+/* ── Phones ─────────────────────────────────────────────────────────────── */
+@media (max-width: 899px) {
+  .fv-hero,
+  .fv-day,
+  .fv-plan {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fv-rings {
+    width: min(86vw, 420px);
+    margin-bottom: 64px;
+  }
+  .fv-macros {
+    gap: 10px;
+    font-size: 12px;
+  }
+  .fv-checks,
+  .fv-nodes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fv-ecg {
+    display: none;
+  }
+  .fv-nodes {
+    padding-top: 0;
+  }
+  /* The year on phones: stats in a row of three, a 4-wide shelf of medals. */
+  .fv-badges {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    align-content: center;
+    gap: 16px;
+  }
+  .fv-badges.is-pinned .fv-sub {
+    font-size: 14px;
+  }
+  .fv-year {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 12px;
+    margin-top: 14px;
+  }
+  .fv-year dt {
+    font-size: 11px;
+  }
+  .fv-year dd {
+    font-size: 11px;
+  }
+  .fv-year b {
+    font-size: 20px;
+  }
+  .fv-toast {
+    min-height: 44px;
+    margin-top: 10px;
+  }
+  .fv-medals {
+    gap: 12px 8px;
+  }
+  .fv-medal-disc {
+    width: min(17vw, 64px);
+    font-size: 24px;
+  }
+  .fv-medal b {
+    font-size: 11px;
+  }
+  .fv-medal-desc {
+    display: none;
+  }
+  .fv-tiers ol {
+    font-size: 11px;
+  }
+}
+
+/* The day, pinned on phones: the clock and the moment above the phone. */
+@media (max-width: 899px) {
+  .fv-day.is-pinned {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 14px;
+    padding-top: calc(var(--header-h) + 2px);
+    padding-bottom: 56px;
+  }
+  .fv-day.is-pinned .fv-h2 {
+    font-size: 30px;
+  }
+  .fv-day.is-pinned .fv-clock {
+    margin-top: 2px;
+    font-size: 58px;
+  }
+  .fv-day.is-pinned .fv-day-list {
+    margin-top: 8px;
+  }
+  .fv-day.is-pinned .fv-day-item b {
+    font-size: 21px;
+  }
+  .fv-day.is-pinned .fv-day-item > span {
+    font-size: 14px;
+  }
+  .fv-day.is-pinned .fv-day-phone {
+    width: min(48vw, calc((100svh - 450px) / 2.17));
+  }
+  .fv-day.is-pinned .fv-day-bar {
+    bottom: 22px;
+  }
+}

@@ -5018,3 +5018,18 @@ main {
   from { scale: 0 1; }
   to { scale: 1 1; }
 }
+
+/* ── Fitevo's ring readout ───────────────────────────────────────────────── */
+
+.fv-macros {
+  grid-column: 1 / -1;
+  font: 500 11.5px var(--font-mono);
+  color: #8b8073;
+}
+
+.fv-left {
+  font-size: 46px;
+  font-weight: 900;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
