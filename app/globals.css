@@ -3219,6 +3219,36 @@ main {
   align-items: center;
   gap: clamp(24px, 4vw, 72px);
 }
+/* The text and its light ink copy share one cell; the ink sits above the lanyard. */
+.xh-copy {
+  grid-column: 1;
+  grid-row: 1;
+}
+.xh-ink {
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  user-select: none;
+  clip-path: var(--ink, inset(0 0 100% 0));
+}
+.xh-ink,
+.xh-ink * {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+  -webkit-text-stroke-color: #fff;
+  background: transparent !important;
+  border-color: rgb(255 255 255 / 0.45) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  text-shadow: 0 1px 2px rgb(0 28 85 / 0.35);
+}
+.xh-ink .btn--ghost {
+  box-shadow: inset 0 0 0 1.5px #fff !important;
+}
+.xh-ink .xh-status-dot,
+.xh-ink .xh-status-dot::after {
+  background: #4ade80 !important;
+}
 .xh-eyebrow {
   padding-left: 14px;
 }
@@ -3280,13 +3310,23 @@ main {
 .xh-stage {
   --stage-h: min(82svh, 740px);
   /* The badge scales with the stage height so it always clears the hint below. */
-  --bw: min(300px, calc(var(--stage-h) * 0.43));
+  --bw: min(290px, calc(var(--stage-h) * 0.4));
+  /* The lanyard hangs from the top of the screen: the stage reaches up through the hero's top padding. */
+  --lift: calc(var(--header-h) + 8px);
   position: relative;
+  grid-column: 2;
+  grid-row: 1;
   align-self: start;
   justify-self: center;
   width: min(100%, 520px);
-  height: var(--stage-h);
+  height: calc(var(--stage-h) + var(--lift));
+  margin-top: calc(-1 * var(--lift));
   perspective: 1200px;
+  pointer-events: none;
+}
+.xh-badge,
+.xh-hint {
+  pointer-events: auto;
 }
 .xh-anchor {
   position: absolute;
@@ -3304,41 +3344,105 @@ main {
   position: absolute;
   inset: 0;
 }
-/* Zero-width box at the top centre: its origin is the pivot. */
+/* Zero-width column at the top centre: its origin is the pivot. The strap
+   stretches to fill whatever height is left above the clip and the badge. */
 .xh-swing {
   position: absolute;
-  top: 6px;
+  top: 0;
   left: 50%;
   width: 0;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 64px;
   transform-origin: 0 0;
 }
+/* The lanyard in the card's own colours: Matrika teal with maroon edges, woven,
+   and the company name printed down it the way company lanyards are. */
 .xh-strap {
-  position: absolute;
-  top: 0;
-  left: -15px;
+  position: relative;
+  flex: 1;
   width: 30px;
-  height: 30%;
+  min-height: 60px;
+  overflow: hidden;
   border-radius: 0 0 4px 4px;
   background:
-    repeating-linear-gradient(180deg, rgb(255 255 255 / 0.07) 0 6px, transparent 6px 12px),
-    linear-gradient(90deg, #001c55, #2f7fc1 50%, #001c55);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+    repeating-linear-gradient(180deg, rgb(255 255 255 / 0.06) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.12) 0 1px, transparent 1px 3px),
+    linear-gradient(90deg, #6e0d11 0 3px, #8d1216 3px 6px, #1d5b5c 6px calc(100% - 6px), #8d1216 calc(100% - 6px) calc(100% - 3px), #6e0d11 calc(100% - 3px));
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.25), inset 7px 0 8px -7px rgb(0 0 0 / 0.55), inset -7px 0 8px -7px rgb(0 0 0 / 0.55);
+}
+.xh-strap-print {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  writing-mode: vertical-rl;
+  translate: -50% 0;
+  font: 800 8.5px/1 var(--font-body);
+  letter-spacing: 0.32em;
+  white-space: nowrap;
+  color: rgb(255 255 255 / 0.82);
+  text-shadow: 0 0 1px rgb(0 0 0 / 0.4);
+  pointer-events: none;
+}
+.xh-co {
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+}
+a.xh-co:hover {
+  text-decoration-color: currentColor;
+}
+.xg-branch-site {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.xg-branch-url {
+  margin-left: 10px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgb(29 91 92 / 0.14);
+  color: #1d5b5c;
+  font: 600 12.5px var(--font-mono);
+  text-decoration: none;
+}
+.xg-branch-url:hover {
+  background: #1d5b5c;
+  color: #fff;
+}
+/* The strap's end points, measured each frame to clip the ink copies. */
+.xh-strap-a,
+.xh-strap-b {
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+.xh-strap-a {
+  top: 0;
+}
+.xh-strap-b {
+  bottom: 0;
 }
 .xh-clip {
-  position: absolute;
-  top: calc(30% - 8px);
-  left: -17px;
+  position: relative;
+  z-index: 1;
+  flex: none;
   width: 34px;
   height: 36px;
+  margin: -8px 0;
   border-radius: 8px 8px 5px 5px;
   background: linear-gradient(#eef3f9, #9fb3c9);
   box-shadow: 0 4px 8px -4px rgb(0 28 85 / 0.6), inset 0 -6px 0 rgb(0 28 85 / 0.12);
 }
 .xh-badge-tilt {
-  position: absolute;
-  top: calc(30% + 20px);
-  left: calc(var(--bw) / -2);
+  position: relative;
+  z-index: 2;
+  flex: none;
   width: var(--bw);
   transform-style: preserve-3d;
 }
@@ -3377,7 +3481,8 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  aspect-ratio: 300 / 440;
+  /* the real card's proportions (54 × 92 mm) */
+  aspect-ratio: 1182 / 2007;
   padding: 26px 22px 18px;
   overflow: hidden;
   border-radius: 22px;
@@ -3386,7 +3491,22 @@ main {
   box-shadow: 0 50px 80px -36px rgb(0 28 85 / 0.6), 0 0 0 1px rgb(0 28 85 / 0.08);
 }
 .xh-front {
+  padding: 0;
   background: #fff;
+}
+.xh-card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.xh-front .xh-hole {
+  top: 1.3%;
+  width: 40px;
+  height: 7px;
+  margin-left: -20px;
+  background: rgb(0 0 0 / 0.16);
 }
 .xh-hole {
   position: absolute;
@@ -3399,78 +3519,6 @@ main {
   background: rgb(0 28 85 / 0.12);
   box-shadow: inset 0 2px 3px rgb(0 28 85 / 0.3);
 }
-.xh-band {
-  display: grid;
-  gap: 2px;
-  align-self: stretch;
-  margin: 14px -22px 0;
-  padding: 12px 16px;
-  background: linear-gradient(120deg, var(--color-navy), #2f7fc1);
-  color: #fff;
-}
-.xh-band b {
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.xh-band small {
-  font: 500 10px var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #a6dff7;
-}
-.xh-photo {
-  width: 50%;
-  aspect-ratio: 1;
-  margin-top: 18px;
-  overflow: hidden;
-  border-radius: 50%;
-  background: radial-gradient(circle at 50% 30%, #d3f0fd, #93d3f3);
-  box-shadow: 0 0 0 5px #fff, 0 0 0 7px rgb(166 223 247 / 0.9);
-}
-.xh-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 8%;
-  user-select: none;
-  pointer-events: none;
-}
-.xh-name {
-  margin-top: 14px;
-  font-size: 22px;
-  font-weight: 800;
-}
-.xh-role {
-  font-size: 15px;
-  font-weight: 600;
-  color: #2f7fc1;
-}
-.xh-meta {
-  display: flex;
-  gap: 24px;
-  margin-top: 12px;
-  font: 600 12px var(--font-mono);
-}
-.xh-meta small {
-  display: block;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-.xh-barcode {
-  display: flex;
-  gap: 2px;
-  height: 30px;
-  margin-top: auto;
-}
-.xh-barcode i {
-  display: block;
-  background: var(--color-navy);
-}
-/* Holographic foil, same recipe as the certificate cards. */
 .xh-foil {
   position: absolute;
   inset: 0;
@@ -3488,65 +3536,84 @@ main {
   opacity: 0.55;
 }
 .xh-back {
+  --u: calc(var(--bw) / 290);
+  padding: calc(26 * var(--u)) calc(18 * var(--u)) calc(16 * var(--u));
   transform: rotateY(180deg);
   background: linear-gradient(160deg, var(--color-navy), #1e4e8c);
   color: #fff;
 }
 .xh-back-head {
   display: grid;
-  gap: 4px;
-  margin-top: 30px;
+  gap: calc(4 * var(--u));
+  margin-top: calc(14 * var(--u));
+  text-align: center;
 }
 .xh-back-head small {
-  font: 500 10px var(--font-mono);
+  font: 500 calc(10 * var(--u)) var(--font-mono);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #7cc8f0;
 }
 .xh-back-head b {
-  font-size: 40px;
+  font-size: calc(34 * var(--u));
   font-weight: 800;
   line-height: 1;
 }
 .xh-back-head span {
-  font-size: 15px;
+  font-size: calc(13.5 * var(--u));
   color: #cfe8f7;
 }
-.xh-platforms {
-  display: flex;
-  gap: 10px;
-  margin-top: 22px;
-  font-size: 22px;
-}
-.xh-platforms svg {
-  box-sizing: content-box;
-  padding: 9px;
-  border-radius: 12px;
-  background: #fff;
-}
-.xh-promises {
-  margin-top: 16px;
-  font: 600 11px var(--font-mono);
-  letter-spacing: 0.06em;
-  color: #a6dff7;
-}
-.xh-qr {
+.xh-does {
   display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 2px;
-  width: 34%;
-  aspect-ratio: 1;
-  margin-top: auto;
-  padding: 6px;
-  border-radius: 8px;
-  background: #fff;
+  gap: calc(6 * var(--u));
+  width: 100%;
+  margin-top: calc(18 * var(--u));
 }
-.xh-qr i.on {
-  background: var(--color-navy);
+.xh-do {
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  padding: calc(8 * var(--u)) calc(10 * var(--u));
+  border-radius: calc(10 * var(--u));
+  background: rgb(255 255 255 / 0.09);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  font-size: calc(12 * var(--u));
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+}
+.xh-do i {
+  flex: none;
+  font-size: calc(16 * var(--u));
+  font-style: normal;
+}
+.xh-ships {
+  display: grid;
+  justify-items: center;
+  gap: calc(8 * var(--u));
+  margin-top: calc(16 * var(--u));
+}
+.xh-ships small {
+  font: 500 calc(10 * var(--u)) var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #7cc8f0;
+}
+.xh-ships-row {
+  display: flex;
+  gap: calc(9 * var(--u));
+}
+.xh-ship {
+  width: calc(42 * var(--u));
+  font-size: calc(10 * var(--u));
+}
+.xh-ships-names {
+  font: 500 calc(10 * var(--u)) var(--font-mono);
+  color: #cfe8f7;
 }
 .xh-back-foot {
-  margin-top: 10px;
-  font: 500 10px var(--font-mono);
+  margin-top: auto;
+  font: 500 calc(10 * var(--u)) var(--font-mono);
   color: #7cc8f0;
 }
 .xh-hint {
@@ -3614,23 +3681,6 @@ main {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
-}
-.xg-branches {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(18px, 2.4vw, 36px);
-  list-style: none;
-}
-.xg-branch {
-  --lane: var(--color-navy);
-  padding: 2px;
-  border-radius: 24px;
-  background: conic-gradient(from var(--spin), var(--lane), transparent 22%, transparent 50%, var(--lane) 72%, transparent);
-  animation: spin-border 6s linear infinite;
-  box-shadow: 0 40px 70px -46px rgb(0 28 85 / 0.6);
-}
-.xg-branch--blazify {
-  --lane: #2f7fc1;
 }
 @keyframes spin-border {
   to { --spin: 360deg; }
@@ -5304,6 +5354,14 @@ main {
   .xh-ctas {
     justify-content: center;
   }
+  /* On a phone the badge hangs in its own row under the buttons, on a short
+     strap from a clip there, rather than on a lanyard the height of the screen. */
+  .xh-copy {
+    grid-area: 1 / 1;
+  }
+  .xh-inner {
+    --bw-m: 240px;
+  }
   .xh-stage {
     --bw: var(--bw-m);
     --lift: 0px;
@@ -5314,7 +5372,9 @@ main {
     height: calc(var(--bw-m) * 2007 / 1182 + 146px);
     margin-top: 18px;
   }
-  .xg-branches,
+  .xh-swing {
+    padding-bottom: 30px;
+  }
   .xg-log {
     grid-template-columns: minmax(0, 1fr);
   }

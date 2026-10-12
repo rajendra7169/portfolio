@@ -348,6 +348,37 @@ for (const vp of VIEWPORTS) {
       check(scope, xh.counts, "experience counters land on their values");
       check(scope, xh.badgeOn, "the ID badge hangs on screen");
       check(scope, xh.hintClear, "the badge clears the hint below it");
+      if (vp.isMobile) {
+        // On a phone the lanyard is screen-tall, so a scroll's kick must stay small:
+        // the card stays below the buttons and on screen through a quick flick.
+        const swing = await page.evaluate(async () => {
+          const badge = document.querySelector(".xh-badge");
+          const ctas = document.querySelector(".xh-ctas");
+          let ok = true;
+          let maxShift = 0;
+          const rest = badge.getBoundingClientRect().left;
+          for (let i = 0; i < 40; i++) {
+            if (i < 8) scrollTo(0, i * 60);
+            else if (i < 16) scrollTo(0, (15 - i) * 60);
+            await new Promise((r) => setTimeout(r, 40));
+            const b = badge.getBoundingClientRect();
+            ok &&= b.top >= ctas.getBoundingClientRect().bottom && b.left >= -2 && b.right <= innerWidth + 2;
+            maxShift = Math.max(maxShift, Math.abs(b.left - rest));
+          }
+          scrollTo(0, 0);
+          return { ok, maxShift: Math.round(maxShift) };
+        });
+        check(scope, swing.ok, `on a phone the card stays below the buttons while it swings (moves ${swing.maxShift}px at most)`);
+      }
+      const lan = await page.evaluate(() => ({
+        top: document.querySelector(".xh-strap-a").getBoundingClientRect().top,
+        below: document.querySelector(".xh-anchor").getBoundingClientRect().top - document.querySelector(".xh-ctas").getBoundingClientRect().bottom,
+        ink: getComputedStyle(document.querySelector(".xh-ink")).clipPath,
+        head: getComputedStyle(document.querySelector(".header-ink")).clipPath,
+      }));
+      if (vp.isMobile) check(scope, lan.below >= 0 && lan.below < 60, `on a phone the strap starts just below the buttons (${Math.round(lan.below)}px under them)`);
+      else check(scope, lan.top <= 1, `the lanyard hangs from the top of the screen (${Math.round(lan.top)}px)`);
+      check(scope, lan.ink.startsWith("polygon") && lan.head.startsWith("polygon"), "text the lanyard passes behind turns light (ink clipped to the strap)");
 
       const rot = () => page.evaluate(() => { const m = new DOMMatrixReadOnly(getComputedStyle(document.querySelector(".xh-swing")).transform); return Math.round((Math.atan2(m.b, m.a) * 180) / Math.PI); });
       if (!vp.isMobile) {
@@ -606,7 +637,8 @@ for (const vp of VIEWPORTS) {
         counts: Object.fromEntries(Object.keys(counts).map((sel) => [sel, document.querySelectorAll(sel).length])),
         brokenImgs: [...document.images].filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.src),
         // A button whose background got overridden turns invisible on the light page.
-        faintBtns: [...document.querySelectorAll(".btn")]
+        // The Experience hero's white ink copy is meant to be light; it only shows over the lanyard.
+        faintBtns: [...document.querySelectorAll(".btn")].filter((b) => !b.closest(".xh-ink"))
           .filter((b) => {
             const rgba = (c) => c.match(/[\d.]+/g).map(Number);
             const bg = rgba(getComputedStyle(b).backgroundColor);
@@ -632,6 +664,23 @@ for (const vp of VIEWPORTS) {
     check(scope, after.faintBtns.length === 0, `buttons are visible${after.faintBtns.length ? ` (faint: ${after.faintBtns.join(", ")})` : ""}`);
     check(scope, after.wordmarks.length === 0, `tech logos are icons${after.wordmarks.length ? ` (wordmarks: ${after.wordmarks.join(", ")})` : ""}`);
     for (const [sel, n] of Object.entries(pg.counts)) check(scope, after.counts[sel] === n, `${n} × ${sel} (${after.counts[sel]})`);
+    // Once scrolled through, every scroll-driven piece of a world has played to its end.
+    if (pg.world) {
+      await wait(1500); // phones play some of these once, on a timer, after they scroll in
+      const end = await page.evaluate((name) => {
+        const vis = (s) => [...document.querySelectorAll(s)].filter((e) => parseFloat(getComputedStyle(e).opacity) > 0.99).length;
+        if (name === "fitevo") return { ok: document.querySelectorAll(".fv-medal.is-locked").length === 0, what: "all 11 badges unlock" };
+        if (name === "tally") {
+          const past = document.querySelectorAll(".tl-cal li.is-past").length;
+          const score = document.querySelector(".tl-score").textContent;
+          return { ok: (past === 28 || !document.querySelector(".tl-month.is-live")) && score === "84", what: `the month grows all its trees (${past} days, health ${score}%)` };
+        }
+        if (name === "vocabu") return { ok: vis(".vc-found-list li") === 11, what: `the scanned page's words are all looked up (${vis(".vc-found-list li")})` };
+        if (name === "jarvis") return { ok: vis(".jv-tele > div") === 7, what: "the boot telemetry is all on screen" };
+        return null;
+      }, pg.name);
+      if (end) check(scope, end.ok, end.what);
+    }
 
     await page.evaluate(() => scrollTo(0, 0));
     await wait(600);

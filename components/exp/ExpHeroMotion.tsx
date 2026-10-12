@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
@@ -23,11 +23,59 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
       };
       badge.addEventListener("click", flip);
 
+      // Text the lanyard passes behind turns light. The strap's two end markers give
+      // its centre line on screen; widened to the strap, that outline clips the ink
+      // copies of the hero text and of the header bar. Redrawn every frame while the
+      // hero is on screen, so it follows the swing.
+      const header = document.querySelector<HTMLElement>(".header");
+      const inks = [q(".xh-ink")[0] as HTMLElement, header].filter(Boolean) as HTMLElement[];
+      const [ends0, ends1] = [q(".xh-strap-a")[0], q(".xh-strap-b")[0]];
+      const strap = q(".xh-strap")[0] as HTMLElement;
+      const wide = matchMedia(DESKTOP);
+      const drawInk = () => {
+        const a = ends0.getBoundingClientRect();
+        const b = ends1.getBoundingClientRect();
+        const len = Math.hypot(b.left - a.left, b.top - a.top) || 1;
+        const [ux, uy] = [(b.left - a.left) / len, (b.top - a.top) / len];
+        const half = strap.offsetWidth / 2;
+        const [nx, ny] = [-uy * half, ux * half];
+        // On a desktop the lanyard hangs from the top of the screen: run its top end
+        // well past the edge. On a phone it starts at its clip under the buttons.
+        const over = wide.matches ? 300 : 0;
+        const [ax, ay] = [a.left - ux * over, a.top - uy * over];
+        const pts = [
+          [ax + nx, ay + ny],
+          [b.left + nx, b.top + ny],
+          [b.left - nx, b.top - ny],
+          [ax - nx, ay - ny],
+        ];
+        for (const t of inks) {
+          const r = t.getBoundingClientRect();
+          t.style.setProperty("--ink", `polygon(${pts.map(([x, y]) => `${(x - r.left).toFixed(1)}px ${(y - r.top).toFixed(1)}px`).join(", ")})`);
+        }
+      };
+      const inkOn = ScrollTrigger.create({
+        trigger: el,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: (self) => (self.isActive ? gsap.ticker.add(drawInk) : gsap.ticker.remove(drawInk)),
+      });
+      drawInk();
+
       const mm = gsap.matchMedia();
-      mm.add({ motion: MOTION_OK, fine: `${MOTION_OK} and (hover: hover) and (pointer: fine)` }, (ctx) => {
-        const { motion, fine } = ctx.conditions as Record<string, boolean>;
+      mm.add({ motion: MOTION_OK, desktop: DESKTOP, fine: `${MOTION_OK} and (hover: hover) and (pointer: fine)` }, (ctx) => {
+        const { motion, desktop, fine } = ctx.conditions as Record<string, boolean>;
         if (!motion) return;
         const swing = q(".xh-swing")[0];
+        const tilt = q(".xh-badge-tilt")[0] as HTMLElement;
+
+        // The swings below are made for a desktop, where the card hangs about 500px
+        // under its pivot across half a wide screen. On a phone there is far less
+        // room either side, so every angle is scaled to keep the card's travel to a
+        // tenth of the screen's width, and it never swings up over the buttons.
+        const reach = () => Math.max(1, tilt.offsetTop + tilt.offsetHeight / 2);
+        const k = () => (desktop ? 1 : Math.min(1, (innerWidth * 0.1) / reach() / Math.sin((22 * Math.PI) / 180)));
+        const period = () => (desktop ? 5.4 : 5.4 * gsap.utils.clamp(1, 1.5, Math.sqrt(reach() / 470)));
 
         // Idle sway, like a badge hanging in a breeze. Recreated after every
         // swing (a killed tween can't be relied on to restart).
@@ -38,19 +86,21 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
         };
         const startSway = inContext(ctx, () => {
           stopSway();
-          sway = gsap.to(swing, { keyframes: { rotation: [0, 2.4, 0, -2.4, 0], easeEach: "sine.inOut" }, duration: 5.4, ease: "none", repeat: -1 });
+          const a = 2.4 * k();
+          sway = gsap.to(swing, { keyframes: { rotation: [0, a, 0, -a, 0], easeEach: "sine.inOut" }, duration: period(), ease: "none", repeat: -1 });
         });
         // Let go and it swings back through centre, losing energy each pass.
         const settle = inContext(ctx, (from: number) => {
           stopSway();
-          gsap.fromTo(swing, { rotation: from }, { rotation: 0, duration: 2.4, ease: "elastic.out(1.1, 0.18)", overwrite: "auto", onComplete: startSway });
+          gsap.fromTo(swing, { rotation: from }, { rotation: 0, duration: 2.4 * (period() / 5.4), ease: "elastic.out(1.1, 0.18)", overwrite: "auto", onComplete: startSway });
         });
-        // A push from wherever it hangs now, then the same settle.
+        // A push from wherever it hangs now (in desktop degrees), then the same settle.
         let kicking = false;
-        const kick = inContext(ctx, (to: number) => {
+        const kick = inContext(ctx, (by: number) => {
           if (kicking) return;
           kicking = true;
           stopSway();
+          const to = by * k();
           gsap.to(swing, {
             rotation: to,
             duration: 0.3,
@@ -68,7 +118,7 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
           trigger: badge,
           dragClickables: true,
           allowNativeTouchScrolling: true,
-          bounds: { minRotation: -70, maxRotation: 70 },
+          bounds: { minRotation: -70 * k(), maxRotation: 70 * k() },
           onPress() {
             stopSway();
             kicking = false;
@@ -80,6 +130,10 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
             settle(this.rotation);
           },
         });
+
+        // The phone turned, or the window resized: the reach, and so the limits, change.
+        const rebound = () => drag.applyBounds({ minRotation: -70 * k(), maxRotation: 70 * k() });
+        ScrollTrigger.addEventListener("refresh", rebound);
 
         // Scrolling gives the badge a little kick in the direction of travel.
         ScrollTrigger.create({
@@ -100,7 +154,8 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
           .from(q(".hx-glow"), { scale: 0.4, autoAlpha: 0, duration: 2, stagger: 0.2 }, 0)
           .from(q(".hx-floor-grid"), { rotationX: 88, autoAlpha: 0, duration: 1.8, ease: "expo.inOut" }, 0)
           .from(q(".hx-field"), { autoAlpha: 0, duration: 1.4 }, 0.2)
-          .from(q(".xh-drop"), { yPercent: -120, duration: 1.1, ease: "bounce.out" }, 0.25)
+          // (On a phone the strap starts under the buttons: a short drop, faded in, so it never crosses them.)
+          .from(q(".xh-drop"), desktop ? { yPercent: -120, duration: 1.1, ease: "bounce.out" } : { yPercent: -18, autoAlpha: 0, duration: 1, ease: "bounce.out" }, 0.25)
           .add(() => kick(22), 0.95)
           .from(q(".xh-anchor"), { scale: 0, duration: 0.6, ease: "back.out(3)" }, 0.2)
           .from(q(".xh-eyebrow"), { y: 20, autoAlpha: 0, duration: 0.8 }, 0.2)
@@ -118,7 +173,6 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
         let onMove: ((e: PointerEvent) => void) | null = null;
         let onLeave: (() => void) | null = null;
         if (fine) {
-          const tilt = q(".xh-badge-tilt")[0] as HTMLElement;
           gsap.set(tilt, { transformPerspective: 900 });
           const ry = gsap.quickTo(tilt, "rotationY", { duration: 0.6, ease: "power3.out" });
           const rx = gsap.quickTo(tilt, "rotationX", { duration: 0.6, ease: "power3.out" });
@@ -142,12 +196,18 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
 
         return () => {
           drag.kill();
-          if (onMove) (q(".xh-badge-tilt")[0] as HTMLElement).removeEventListener("pointermove", onMove);
-          if (onLeave) (q(".xh-badge-tilt")[0] as HTMLElement).removeEventListener("pointerleave", onLeave);
+          ScrollTrigger.removeEventListener("refresh", rebound);
+          if (onMove) tilt.removeEventListener("pointermove", onMove);
+          if (onLeave) tilt.removeEventListener("pointerleave", onLeave);
         };
       }, el);
 
-      return () => badge.removeEventListener("click", flip);
+      return () => {
+        badge.removeEventListener("click", flip);
+        gsap.ticker.remove(drawInk);
+        inkOn.kill();
+        header?.style.removeProperty("--ink");
+      };
     },
     { scope: root },
   );
