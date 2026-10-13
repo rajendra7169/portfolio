@@ -309,26 +309,6 @@ for (const vp of VIEWPORTS) {
         await page.screenshot({ path: `${OUT}/${vp.name}-edu-stop.png` });
       }
 
-      // The vault: cards dealt into place, and a click flips one.
-      await page.locator(".cv-grid").scrollIntoViewIfNeeded();
-      await wait(2600);
-      const dealt = await page.evaluate(() =>
-        [...document.querySelectorAll(".cv-card")].every((c) => {
-          // Settled = fully visible, unrotated, unscaled, and within a pixel of its slot.
-          const m = new DOMMatrixReadOnly(getComputedStyle(c).transform === "none" ? undefined : getComputedStyle(c).transform);
-          return getComputedStyle(c).opacity === "1" && Math.abs(m.a - 1) < 0.01 && Math.abs(m.b) < 0.01 && Math.abs(m.e) < 1 && Math.abs(m.f) < 1;
-        }),
-      );
-      check(scope, dealt, "all six certificate cards are dealt into place");
-      await page.locator(".cv-flip").first().click();
-      await wait(1100);
-      const flipped = await page.evaluate(() => {
-        const card = document.querySelector(".cv-card");
-        return card.classList.contains("is-flipped") && card.querySelector(".cv-flip").getAttribute("aria-pressed") === "true";
-      });
-      await page.screenshot({ path: `${OUT}/${vp.name}-edu-vault.png` });
-      check(scope, flipped, "clicking a certificate flips it");
-      await page.locator(".cv-flip").first().click();
       await page.evaluate(() => scrollTo(0, 0));
       await wait(800);
     }

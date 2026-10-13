@@ -195,16 +195,6 @@ export const degrees = [
   },
 ];
 
-// provider = the organisation behind the logo shown on the original site.
-export const certifications: { title: string; by: string; color: string; logo: string; provider: string }[] = [
-  { title: "Machine Learning", by: "Andrew Ng", color: "#b5706f", logo: "/logos/stanford_logo.png", provider: "Stanford Online" },
-  { title: "Deep Learning", by: "Andrew Ng", color: "#5f6364", logo: "/logos/deeplearning_ai_logo.png", provider: "DeepLearning.AI" },
-  { title: "ML on GCP", by: "GCP Training", color: "#63c397", logo: "logos:google-icon", provider: "Google Cloud" },
-  { title: "Data Science", by: "Alex Aklson", color: "#74a7dc", logo: "/logos/ibm_logo.png", provider: "IBM" },
-  { title: "Big Data", by: "Kim Akers", color: "#e2876a", logo: "logos:microsoft-icon", provider: "Microsoft" },
-  { title: "Advanced Data Science", by: "Romeo Kienzler", color: "#74a7dc", logo: "/logos/ibm_logo.png", provider: "IBM" },
-];
-
 // Education page: the stops on "the path", oldest first. `year` drives the year counter.
 export const journey = [
   { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"] },

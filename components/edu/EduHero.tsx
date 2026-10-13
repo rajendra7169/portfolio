@@ -2,16 +2,15 @@
 // Same layering rule as the home hero: outer box = parallax, inner box = intro.
 import Icon from "@/components/Icon";
 import HeroField from "@/components/hero/HeroField";
-import { certifications, codingProfiles, degrees } from "@/lib/content";
+import { codingProfiles, degrees } from "@/lib/content";
 import EduHeroMotion from "./EduHeroMotion";
 
-const SEAL_TEXT = "SUNWAY ✦ ST. LAWRENCE ✦ STANFORD ✦ DEEPLEARNING.AI ✦ GOOGLE CLOUD ✦ IBM ✦ MICROSOFT ✦ ";
+const SEAL_TEXT = "SUNWAY ✦ BSc. IT ✦ ST. LAWRENCE ✦ +2 ✦ KATHMANDU ✦ PAPER PUBLISHED 2024 ✦ ";
 const CONFETTI = ["#001c55", "#2f7fc1", "#7cc8f0", "#a6dff7", "#f26b38", "#ffffff"];
 
 export default function EduHero() {
   const stats = [
     { value: degrees.length, label: "degrees" },
-    { value: certifications.length, label: "certifications" },
     { value: codingProfiles.length, label: "coding arenas" },
   ];
 
@@ -37,7 +36,7 @@ export default function EduHero() {
               <span className="hx-line hx-line--a eh-title-text">Education</span>
             </span>
           </h1>
-          <p className="eh-sub">Two degrees, six certifications and five coding arenas: the learning behind the work.</p>
+          <p className="eh-sub">Two degrees and five coding arenas: the learning behind the work.</p>
 
           <dl className="hx-stats eh-stats">
             {stats.map((s) => (
