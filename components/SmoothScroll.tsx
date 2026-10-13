@@ -25,9 +25,36 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
     const instance = new Lenis({ autoRaf: false, lerp: 0.1, anchors: true });
     // One clock: Lenis is driven by GSAP's ticker and reports back to ScrollTrigger.
+    // But only while it's gliding: on the ticker for good, it asked for a frame on
+    // every screen refresh even with nothing moving, and each of those frames
+    // restyled every animated thing on the page. Every smooth scroll, from the
+    // wheel, an anchor or code, goes through scrollTo, so that wakes it; it comes
+    // off once the glide is done (and GSAP's ticker can then sleep).
     instance.on("scroll", ScrollTrigger.update);
-    const raf = (time: number) => instance.raf(time * 1000);
-    gsap.ticker.add(raf);
+    let awake = false;
+    let fresh = false;
+    const raf = (time: number) => {
+      // The first frame back moves one frame's worth, not the time asleep (a jump)
+      // nor nothing (a stall).
+      if (fresh) {
+        fresh = false;
+        instance.time = time * 1000 - 1000 / 60;
+      }
+      instance.raf(time * 1000);
+      if (instance.isScrolling !== "smooth") {
+        gsap.ticker.remove(raf);
+        awake = false;
+      }
+    };
+    const scrollTo = instance.scrollTo.bind(instance);
+    instance.scrollTo = (...args: Parameters<Lenis["scrollTo"]>) => {
+      if (!awake) {
+        awake = true;
+        fresh = true;
+        gsap.ticker.add(raf);
+      }
+      return scrollTo(...args);
+    };
     gsap.ticker.lagSmoothing(0);
     setLenis(instance);
 

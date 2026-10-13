@@ -9,7 +9,27 @@ import { Draggable } from "gsap/Draggable";
 import { useGSAP as useGSAPBase } from "@gsap/react";
 
 if (typeof window !== "undefined") {
+  // As it registers, ScrollTrigger starts an empty requestAnimationFrame loop (a
+  // workaround for an old Firefox repaint glitch) that runs for as long as the
+  // page is open. A frame requested on every screen refresh makes the browser
+  // render one, restyling everything animated on the page each time, even with
+  // nothing moving. The loop only continues by asking again, so dropping its
+  // first request stops it; every other request goes through untouched.
+  const raf = window.requestAnimationFrame;
+  let starting = true;
+  window.requestAnimationFrame = (cb) => {
+    if (starting) {
+      const src = String(cb);
+      if (src.length < 120 && src.includes("requestAnimationFrame(")) return 0;
+    }
+    return raf.call(window, cb);
+  };
   gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, Physics2DPlugin, Draggable, useGSAPBase);
+  starting = false;
+  window.requestAnimationFrame = raf;
+  // With nothing animating, GSAP's ticker stops asking for frames, but only checks
+  // every 120 frames (two seconds of frames for nothing after each animation).
+  gsap.config({ autoSleep: 20 });
 }
 
 /**
@@ -21,6 +41,33 @@ if (typeof window !== "undefined") {
  */
 export function inContext<T extends (...args: never[]) => unknown>(ctx: gsap.Context, fn: T): T {
   return (ctx.add as unknown as (name: null, f: T) => T)(null, fn);
+}
+
+/**
+ * Pause these animations while `trigger` is off screen, and carry on from where
+ * they were when it's back (only those that were playing). Endless loops kept
+ * the page rendering every frame for parts no one could see. Make it inside the
+ * same context as the animations, so it goes when they do.
+ */
+export function pauseOffscreen(trigger: Element, animations: () => (gsap.core.Animation | null | undefined)[]) {
+  const held = new Set<gsap.core.Animation>();
+  return ScrollTrigger.create({
+    trigger,
+    start: "top bottom",
+    end: "bottom top",
+    onToggle: (self) => {
+      if (self.isActive) {
+        held.forEach((a) => a.resume());
+        held.clear();
+      } else
+        animations().forEach((a) => {
+          if (a && !a.paused() && a.isActive()) {
+            a.pause();
+            held.add(a);
+          }
+        });
+    },
+  });
 }
 
 export const MOTION_OK = "(prefers-reduced-motion: no-preference)";
