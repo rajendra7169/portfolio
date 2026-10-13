@@ -8,7 +8,8 @@ import { projectBySlug, projects } from "@/lib/projects";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
+// The seven pages are built ahead; any other address gets notFound() below.
+// (No `dynamicParams = false`: on Netlify's runtime it turns every one of these pages into a 404.)
 export const generateStaticParams = () => projects.map((p) => ({ slug: p.slug }));
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
