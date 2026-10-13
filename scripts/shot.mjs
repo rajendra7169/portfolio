@@ -1031,6 +1031,8 @@ for (const vp of VIEWPORTS) {
     check(scope, await pageClear(page), "nothing is left covering the portfolio");
     // Arriving through a page change, Home's hero is where it belongs (each held
     // animation set-up runs once: run twice, the hero's scroll pin pushed it down the screen).
+    // (The name may still be decoding on a busy machine: give it a moment to settle.)
+    await page.waitForFunction(() => document.querySelector(".hx-line--a")?.textContent === "Rajendra", null, { timeout: 4000 }).catch(() => {});
     const hero = await page.evaluate(() => ({ top: Math.round(document.querySelector(".hx").getBoundingClientRect().top), name: document.querySelector(".hx-line--a")?.textContent }));
     check(scope, Math.abs(hero.top) <= 1 && hero.name === "Rajendra", `Home's hero is in place after the way back (top ${hero.top}, "${hero.name}")`);
     await page.close();
