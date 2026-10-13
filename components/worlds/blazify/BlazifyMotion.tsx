@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext, pauseOffscreen } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 import { matchStatus } from "@/components/proj/light";
 import { scrollToTarget, useLenis } from "@/components/SmoothScroll";
@@ -92,6 +92,7 @@ export default function BlazifyMotion({ className, children }: { className: stri
         const sing = gsap.timeline({ repeat: -1, repeatDelay: 0.8, delay: 2.4 });
         q(".bz-word").forEach((w) => sing.fromTo(w, { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 0.42, ease: "none" }));
         sing.to(q(".bz-word"), { backgroundPosition: "100% 0", duration: 0.5, stagger: 0.03, ease: "power1.in" }, "+=1.6");
+        pauseOffscreen(q(".bz-hero")[0] ?? el, () => [sing]);
 
         // Scratch the record: drag it round, and it spins on from wherever you leave it.
         // On a touch screen the record fills the width, so only its label scratches;

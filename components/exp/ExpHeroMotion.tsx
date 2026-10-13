@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext, pauseOffscreen } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
@@ -28,7 +28,15 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
       // copies of the hero text and of the header bar. Redrawn every frame while the
       // hero is on screen, so it follows the swing.
       const header = document.querySelector<HTMLElement>(".header");
-      const inks = [q(".xh-ink")[0] as HTMLElement, header].filter(Boolean) as HTMLElement[];
+      // Each: the box the outline is measured against, and the copy it clips. The
+      // clip is written straight onto the copy: as a custom property on the header,
+      // it restyled everything inside the header every frame.
+      const xhInk = q(".xh-ink")[0] as HTMLElement | undefined;
+      const headerInk = header?.querySelector<HTMLElement>(".header-ink");
+      const inks = [
+        xhInk && { box: xhInk, clip: xhInk, last: "" },
+        header && headerInk && { box: header, clip: headerInk, last: "" },
+      ].filter(Boolean) as { box: HTMLElement; clip: HTMLElement; last: string }[];
       const [ends0, ends1] = [q(".xh-strap-a")[0], q(".xh-strap-b")[0]];
       const strap = q(".xh-strap")[0] as HTMLElement;
       const wide = matchMedia(DESKTOP);
@@ -50,8 +58,11 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
           [ax - nx, ay - ny],
         ];
         for (const t of inks) {
-          const r = t.getBoundingClientRect();
-          t.style.setProperty("--ink", `polygon(${pts.map(([x, y]) => `${(x - r.left).toFixed(1)}px ${(y - r.top).toFixed(1)}px`).join(", ")})`);
+          const r = t.box.getBoundingClientRect();
+          const clip = `polygon(${pts.map(([x, y]) => `${(x - r.left).toFixed(1)}px ${(y - r.top).toFixed(1)}px`).join(", ")})`;
+          if (clip === t.last) continue; // still: nothing to repaint
+          t.last = clip;
+          t.clip.style.clipPath = clip;
         }
       };
       const inkOn = ScrollTrigger.create({
@@ -89,6 +100,8 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
           const a = 2.4 * k();
           sway = gsap.to(swing, { keyframes: { rotation: [0, a, 0, -a, 0], easeEach: "sine.inOut" }, duration: period(), ease: "none", repeat: -1 });
         });
+        // Off screen, it hangs still until it's back.
+        pauseOffscreen(el, () => [sway]);
         // Let go and it swings back through centre, losing energy each pass.
         const settle = inContext(ctx, (from: number) => {
           stopSway();
@@ -206,7 +219,7 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
         badge.removeEventListener("click", flip);
         gsap.ticker.remove(drawInk);
         inkOn.kill();
-        header?.style.removeProperty("--ink");
+        inks.forEach((t) => t.clip.style.removeProperty("clip-path"));
       };
     },
     { scope: root },

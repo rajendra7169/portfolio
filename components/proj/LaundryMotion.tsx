@@ -9,7 +9,7 @@
 // again, the dial and the lights pick a stage. Scrolling past gives the drum a
 // push. With reduced motion the controls just change the display and the notes.
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext, pauseOffscreen } from "@/lib/gsap";
 
 const EMPTY = 222; // water level (the wave's top, in the drum's 200-unit box): below the glass
 const LEVEL = [EMPTY, EMPTY, 104, 150, EMPTY]; // per stage
@@ -83,8 +83,10 @@ export default function LaundryMotion({ children }: { children: ReactNode }) {
         const drum = gsap.to(q(".lw-drum"), { rotation: 360, svgOrigin: "100 100", duration: 4, ease: "none", repeat: -1 });
         drum.timeScale(SPEED[0]);
         let base = SPEED[0];
-        gsap.to(q(".lw-wave"), { x: -100, duration: 2.2, ease: "none", repeat: -1 });
-        gsap.to(q(".lw-wave--back"), { x: -100, duration: 3.4, ease: "none", repeat: -1 });
+        const waves = [
+          gsap.to(q(".lw-wave"), { x: -100, duration: 2.2, ease: "none", repeat: -1 }),
+          gsap.to(q(".lw-wave--back"), { x: -100, duration: 3.4, ease: "none", repeat: -1 }),
+        ];
         const bubbles = q(".lw-bubble").map((b, i) =>
           gsap.fromTo(
             b,
@@ -95,6 +97,8 @@ export default function LaundryMotion({ children }: { children: ReactNode }) {
         let shake: gsap.core.Tween | null = null;
         let printed = false;
         let ride: gsap.core.Tween | null = null;
+        // All of it rests while the machine is off screen.
+        pauseOffscreen(el, () => [drum, ...waves, ...bubbles, shake, ride]);
 
         const speed = (to: number, duration = 1) => {
           base = to;

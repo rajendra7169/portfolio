@@ -111,14 +111,21 @@ export default function ContactHeroMotion({ children }: { children: ReactNode })
         let held = false;
         let quietTill = 0;
         const quiet = () => (quietTill = Date.now() + 6000);
-        // (It starts once the intro has spun the hand in.)
+        // (It starts once the intro has spun the hand in. The wait between ticks is a
+        // timer, not a delayed tween, so GSAP's ticker can sleep through it.)
+        let waiting = 0;
+        const step = inContext(ctx, () => {
+          if (shown && !held && Date.now() > quietTill && !document.hidden) point((on + 1) % marks.length, true);
+          waiting = window.setTimeout(step, 2800);
+        });
         const tick = motion
-          ? gsap
-              .delayedCall(2.8, () => {
-                if (shown && !held && Date.now() > quietTill && !document.hidden) point((on + 1) % marks.length, true);
-                tick?.restart(true);
-              })
-              .pause()
+          ? {
+              restart: () => {
+                clearTimeout(waiting);
+                waiting = window.setTimeout(step, 2800);
+              },
+              kill: () => clearTimeout(waiting),
+            }
           : null;
         const watch = ScrollTrigger.create({
           trigger: stage,
@@ -201,7 +208,7 @@ export default function ContactHeroMotion({ children }: { children: ReactNode })
           .from(q(".ch-blurb"), { y: 24, autoAlpha: 0, duration: 0.9 }, 0.9)
           .from(q(".ch-row"), { x: -40, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, 1.05)
           .from(q(".ch-ctas > *"), { y: 24, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, 1.35)
-          .add(() => tick?.restart(true));
+          .add(() => tick?.restart());
         afterReveal(() => intro.play());
 
         // Mouse: the clock and its readouts drift at their own depths.
