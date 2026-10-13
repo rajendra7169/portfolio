@@ -1,0 +1,17 @@
+# Netlify builds the site with its Next.js runtime (picked up automatically).
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Stories runs on Supabase. Both values are public by design: they ship in
+  # the browser, and the database's row-level security protects the data.
+  NEXT_PUBLIC_SUPABASE_URL = "https://ydrnqsbuxgdxxlrmmrze.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_Hx_tflvkn44yZVifuHRKjQ_uXT6a_jN"
+
+# The Blazify apps read these; never cache them for long.
+[[headers]]
+  for = "/blazify/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
