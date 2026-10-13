@@ -23,36 +23,86 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
           if (!motion) return;
 
           /* ── Always-on machinery: orbits, arcs, ticker ─────────────────── */
+          // Web Animations on the separate rotate/translate properties: the browser
+          // runs them on the GPU with no work per frame (GSAP's scroll exit still
+          // scales the orbits through transform, which these combine with).
+          // (The rings are svg elements, where the browser only puts `transform` on the
+          // GPU, not `rotate`; nothing else moves them, so they take transform.)
+          const turn = (sel: string, turns: number, seconds: number, prop: "rotate" | "transform" = "rotate") =>
+            q(sel).map((n) =>
+              n.animate(prop === "rotate" ? [{ rotate: "0deg" }, { rotate: `${turns * 360}deg` }] : [{ transform: "rotate(0deg)" }, { transform: `rotate(${turns * 360}deg)` }], {
+                duration: seconds * 1000,
+                iterations: Infinity,
+              }),
+            );
           const spins = [
-            gsap.to(q(".hx-orbit--inner"), { rotation: 360, duration: 34, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-orbit--inner .hx-orb-spin"), { rotation: -360, duration: 34, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-orbit--outer"), { rotation: -360, duration: 52, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-orbit--outer .hx-orb-spin"), { rotation: 360, duration: 52, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-ring--arc"), { rotation: 360, svgOrigin: "300 300", duration: 5, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-ring--arc2"), { rotation: -360, svgOrigin: "300 300", duration: 9, ease: "none", repeat: -1 }),
-            gsap.to(q(".hx-ring--dash"), { rotation: 360, svgOrigin: "300 300", duration: 60, ease: "none", repeat: -1 }),
+            ...turn(".hx-orbit--inner", 1, 34),
+            ...turn(".hx-orbit--inner .hx-orb-spin", -1, 34),
+            ...turn(".hx-orbit--outer", -1, 52),
+            ...turn(".hx-orbit--outer .hx-orb-spin", 1, 52),
+            ...turn(".hx-rings--arc", 1, 5, "transform"),
+            ...turn(".hx-rings--arc2", -1, 9, "transform"),
+            ...turn(".hx-rings--dash", 1, 60, "transform"),
           ];
-          const ticker = gsap.to(q(".hx-marquee-track"), { xPercent: -50, duration: 40, ease: "none", repeat: -1 });
-
-          // Hovering the stage spins everything up.
+          const ticker = q(".hx-marquee-track")[0].animate([{ translate: "0 0" }, { translate: "-50% 0" }], { duration: 40000, iterations: Infinity });
+          ticker.currentTime = 40000 * 1000; // far in, so scrolling back up can run it backwards
+          // Their speeds, eased by GSAP: hovering the stage spins everything up; scroll speed pushes the ticker.
+          // (Two objects, so the scroll's overwrite never cuts short a hover's ease.)
+          // Each speed change is handed to the browser's animations, so it's only done
+          // when the speed has really moved (and the spins only follow the hover).
+          const hover = { v: 1 };
+          const push = { v: 1 };
+          let spinRate = 1;
+          let tickRate = 1;
+          const near = (a: number, b: number) => Math.abs(a - b) < 0.02 * Math.max(1, Math.abs(b));
+          const setSpins = () => {
+            if (near(spinRate, hover.v)) return;
+            spinRate = hover.v;
+            spins.forEach((a) => a.updatePlaybackRate(spinRate));
+          };
+          const setRates = () => {
+            const r = hover.v * push.v;
+            if (near(tickRate, r)) return;
+            tickRate = r;
+            ticker.updatePlaybackRate(r);
+          };
           const stage = q(".hx-stage")[0] as HTMLElement;
-          const rev = inContext(ctx, (speed: number) => [...spins, ticker].forEach((t) => gsap.to(t, { timeScale: speed, duration: 0.8, ease: "power2.out" })));
+          const rev = inContext(ctx, (to: number) =>
+            gsap.to(hover, {
+              v: to,
+              duration: 0.8,
+              ease: "power2.out",
+              overwrite: true,
+              onUpdate: () => {
+                setSpins();
+                setRates();
+              },
+              // (and exactly where it lands)
+              onComplete: () => {
+                spinRate = tickRate = NaN;
+                setSpins();
+                setRates();
+              },
+            }),
+          );
           const onEnter = () => rev(3.5);
           const onLeave = () => rev(1);
           stage.addEventListener("pointerenter", onEnter);
           stage.addEventListener("pointerleave", onLeave);
 
-          // Scroll speed pushes the ticker; it eases back to cruising.
           ScrollTrigger.create({
             trigger: el,
             start: "top top",
             end: "bottom top",
             onUpdate: inContext(ctx, (self: ScrollTrigger) => {
               const v = Math.min(Math.abs(self.getVelocity()) / 250, 6);
-              gsap.to(ticker, { timeScale: self.direction * (1 + v), duration: 0.2, overwrite: true });
-              gsap.to(ticker, { timeScale: 1, duration: 1.4, delay: 0.25, ease: "power2.out" });
+              gsap.to(push, { v: self.direction * (1 + v), duration: 0.2, overwrite: true, onUpdate: setRates });
+              gsap.to(push, { v: 1, duration: 1.4, delay: 0.25, ease: "power2.out", onUpdate: setRates, onComplete: () => ((tickRate = NaN), setRates()) });
             }),
           });
+          // Off screen, they rest.
+          const loops = [...spins, ticker];
+          ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onToggle: (self) => loops.forEach((a) => (self.isActive ? a.play() : a.pause())) });
 
           /* ── Intro: built now (so nothing flashes), played as the curtain opens ── */
           const intro = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
@@ -91,15 +141,20 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             .fromTo(q(".hx-cue-in"), { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8 }, 2)
             .from(q(".hx-cyber-hint"), { y: 14, autoAlpha: 0, duration: 0.9, ease: "back.out(2)" }, 2.3);
 
-          // After the intro: "I build …" cycles, decoding each phrase.
-          const builds = gsap.timeline({ paused: true, repeat: -1 });
-          hero.builds.forEach((_, i) => {
-            const next = hero.builds[(i + 1) % hero.builds.length];
-            builds
-              .to({}, { duration: 2.2 })
-              .to(q(".hx-build-text"), { scrambleText: { text: next, chars: "lowerCase", speed: 0.7 }, duration: 0.9, ease: "none" });
+          // After the intro: "I build …" cycles, decoding each phrase. (The pauses are
+          // timers, not tweens, so GSAP's ticker can sleep through them.)
+          let built = 0;
+          let wait = 0;
+          const build = inContext(ctx, () => {
+            built = (built + 1) % hero.builds.length;
+            gsap.to(q(".hx-build-text"), {
+              scrambleText: { text: hero.builds[built], chars: "lowerCase", speed: 0.7 },
+              duration: 0.9,
+              ease: "none",
+              onComplete: () => void (wait = window.setTimeout(build, 2200)),
+            });
           });
-          intro.eventCallback("onComplete", () => void builds.play());
+          intro.eventCallback("onComplete", () => void (wait = window.setTimeout(build, 2200)));
 
           afterReveal(() => intro.play());
 
@@ -161,6 +216,8 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
             if (onMove) el.removeEventListener("pointermove", onMove);
             stage.removeEventListener("pointerenter", onEnter);
             stage.removeEventListener("pointerleave", onLeave);
+            loops.forEach((a) => a.cancel());
+            clearTimeout(wait);
           };
         },
         el,

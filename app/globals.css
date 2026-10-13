@@ -849,6 +849,10 @@ main {
   height: 100%;
   overflow: visible;
 }
+.hx-rings--turn {
+  position: absolute;
+  inset: 0;
+}
 .hx-ring {
   fill: none;
   stroke: var(--color-navy);

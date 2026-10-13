@@ -108,6 +108,9 @@ export default function Hero() {
         <div className="hx-stage">
           <div className="hx-tilt">
             <div className="hx-rings-wrap" data-depth="0.4">
+              {/* The rings that turn each get an svg of their own, stacked in the same
+                  order, so each turns as one layer on the GPU instead of the whole dial
+                  repainting every frame. */}
               <svg className="hx-rings" viewBox="0 0 600 600" aria-hidden="true">
                 <defs>
                   <linearGradient id="hx-arc" x1="0" y1="0" x2="1" y2="1">
@@ -115,11 +118,19 @@ export default function Hero() {
                     <stop offset="1" stopColor="#4aa8e0" />
                   </linearGradient>
                 </defs>
-                <circle className="hx-ring hx-ring--dash" cx="300" cy="300" r="170" />
                 <circle className="hx-ring hx-ring--solid" cx="300" cy="300" r="228" />
-                <circle className="hx-ring hx-ring--arc" cx="300" cy="300" r="228" stroke="url(#hx-arc)" />
                 <circle className="hx-ring hx-ring--dots" cx="300" cy="300" r="290" />
+              </svg>
+              <svg className="hx-rings hx-rings--turn hx-rings--dash" viewBox="0 0 600 600" aria-hidden="true">
+                <circle className="hx-ring hx-ring--dash" cx="300" cy="300" r="170" />
+              </svg>
+              <svg className="hx-rings hx-rings--turn hx-rings--arc" viewBox="0 0 600 600" aria-hidden="true">
+                <circle className="hx-ring hx-ring--arc" cx="300" cy="300" r="228" stroke="url(#hx-arc)" />
+              </svg>
+              <svg className="hx-rings hx-rings--turn hx-rings--arc2" viewBox="0 0 600 600" aria-hidden="true">
                 <circle className="hx-ring hx-ring--arc hx-ring--arc2" cx="300" cy="300" r="290" stroke="url(#hx-arc)" />
+              </svg>
+              <svg className="hx-rings hx-rings--turn" viewBox="0 0 600 600" aria-hidden="true">
                 {/* Tick marks around the outside, like an instrument dial. */}
                 {Array.from({ length: 60 }, (_, i) => (
                   <line
