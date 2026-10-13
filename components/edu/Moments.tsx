@@ -6,8 +6,10 @@
 // for that part). Extra kinds used here:
 //   write  revealed left to right, as it's written    slam   a stamp landing
 //   drop   falls away                                  fly    flies off by data-x / data-y
-//   ride   travels along the path whose data-track matches its data-on
+//   ride   travels along the path whose data-track matches its data-on, or along
+//          several in turn (data-route="name@at:duration ..."); data-upright keeps it level
 //   toss   thrown up by data-y                         trace  an invisible guide for the pen
+//   spin   turns by data-r degrees about data-o (a clock's hands)
 
 const INK = "var(--color-navy)";
 const SKY = "#7cc8f0";
@@ -88,23 +90,33 @@ function Cap({ fill = INK }: { fill?: string }) {
   );
 }
 
-/** Village to Kathmandu: the pencil draws the road, and a bus takes it. */
+/** Village to Kathmandu: school up in the hills; the pencil draws the road down
+    to the city, a bus takes it, and the pencil sketches the college it stops at. */
 export function KathmanduScene() {
   const tags: [string, number, number][] = [
-    ["new city", 520, 50],
-    ["new people", 640, 70],
-    ["new place", 540, 112],
-    ["new challenges", 662, 132],
+    ["new city", 520, 40],
+    ["new people", 640, 60],
+    ["new place", 540, 102],
+    ["new challenges", 662, 122],
   ];
+  const hut = (x: number, y: number, at: number) => (
+    <g data-v="grow" data-at={at}>
+      <rect x={x - 14} y={y - 20} width="28" height="20" fill="#fff" stroke={INK} strokeWidth="1.5" />
+      <path d={`M${x - 19} ${y - 18} ${x} ${y - 34} ${x + 19} ${y - 18}Z`} fill="#c2562f" />
+      <rect x={x - 4} y={y - 12} width="8" height="12" fill={MID} />
+    </g>
+  );
   return (
     <svg viewBox="0 0 800 450" className="es es-moment" data-tool="pencil" aria-hidden="true">
-      {/* the village: hills, terraces, a tree and the school */}
+      {/* the hills, and the terraces the pencil sketches into them */}
       <path data-v="fade" data-at="0" d="M0 362H800V372C560 396 240 396 0 372Z" fill={PALE} opacity="0.45" />
-      <path data-v="fade" data-at="0" d="M0 362C34 300 96 226 176 220 260 214 340 290 470 362Z" fill={PALE} opacity="0.6" />
+      <path data-v="fade" data-at="0" d="M-4 362C30 300 96 226 176 220 260 214 340 290 470 362Z" fill={PALE} opacity="0.6" />
       <path data-v="fade" data-at="0.02" d="M30 362C120 322 250 318 400 362Z" fill={SKY} opacity="0.35" />
-      {["M60 300C110 270 170 264 230 274", "M40 330C110 300 200 294 290 312", "M110 268C140 250 180 246 214 252"].map((d, i) => (
-        <path key={d} data-v="draw" data-at={0.03 + i * 0.015} d={d} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+      {["M110 268C140 250 180 246 214 252", "M60 300C110 270 170 264 230 274", "M40 330C110 300 200 294 290 312"].map((d, i) => (
+        <path key={d} data-v="draw" data-pen data-at={(0.04 + i * 0.045).toFixed(3)} data-d="0.035" d={d} fill="none" stroke="#fff" strokeWidth="2.4" strokeLinecap="round" />
       ))}
+      {hut(318, 300, 0.1)}
+      {hut(372, 330, 0.12)}
       <g transform="translate(52 330)">
         <g data-v="pop" data-at="0.06">
           <rect x="-3" y="-34" width="6" height="34" fill="#8a5a3c" />
@@ -112,6 +124,7 @@ export function KathmanduScene() {
           <circle cx="-12" cy="-38" r="14" fill="#4fb07c" />
         </g>
       </g>
+      {/* the school */}
       <g data-v="grow" data-at="0.08">
         <rect x="96" y="264" width="126" height="66" fill="#fff" stroke={INK} strokeWidth="2" />
         <rect x="108" y="290" width="26" height="18" fill={PALE} stroke={INK} strokeWidth="1.5" />
@@ -129,49 +142,65 @@ export function KathmanduScene() {
           <path d="M0 0 26 22H10L26 42H0Z" fill="#dc143c" stroke="#003893" strokeWidth="2.4" strokeLinejoin="round" />
         </g>
       </g>
-      <text data-v="write" data-pen data-at="0.15" x="128" y="372" fill={INK} style={{ ...DEVA, fontSize: 22, fontWeight: 700 }}>
-        गाउँ
-      </text>
 
-      {/* the road the pencil draws, from the school to the city */}
-      <path data-v="draw" data-at="0.22" data-d="0.22" d="M236 338C292 346 318 384 400 382S520 356 612 358" fill="none" stroke="#fff" strokeWidth="14" strokeLinecap="round" />
-      <path data-v="draw" data-pen data-track="road" data-at="0.22" data-d="0.22" d="M236 338C292 346 318 384 400 382S520 356 612 358" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
+      {/* the road the pencil draws, from the school down to the city */}
+      <path data-v="draw" data-at="0.2" data-d="0.22" d="M236 338C292 346 318 384 400 382S500 360 560 362" fill="none" stroke="#fff" strokeWidth="14" strokeLinecap="round" />
+      <path data-v="draw" data-pen data-track="road" data-at="0.2" data-d="0.22" d="M236 338C292 346 318 384 400 382S500 360 560 362" fill="none" stroke={INK} strokeWidth="2.4" strokeLinecap="round" />
 
-      {/* Kathmandu: the mountains behind, the city, the tower and a temple */}
-      <path data-v="fade" data-at="0.46" d="M500 362 548 268 572 292 628 200 660 240 700 196 742 248 800 222V362Z" fill="#fff" stroke="rgb(0 28 85 / 0.12)" />
-      <path data-v="fade" data-at="0.47" d="M616 220 628 200 640 220 632 216ZM690 212 700 196 712 214 702 210Z" fill={PALE} />
+      {/* Kathmandu: the mountains behind, the temple, the tower, the city */}
+      <path data-v="fade" data-at="0.44" d="M500 362 548 268 572 292 628 200 660 240 700 196 742 248 800 222V362Z" fill="#fff" stroke="rgb(0 28 85 / 0.12)" />
+      <path data-v="fade" data-at="0.45" d="M616 220 628 200 640 220 632 216ZM690 212 700 196 712 214 702 210Z" fill={PALE} />
       {(
         [
-          [540, 38, 64, MID],
-          [582, 30, 98, SKY],
-          [714, 40, 76, MID],
-          [758, 36, 54, SKY],
+          [748, 28, 82, MID],
+          [778, 24, 58, SKY],
         ] as const
       ).map(([x, w, h, c], i) => (
-        <g key={x} data-v="grow" data-at={0.5 + i * 0.03}>
+        <g key={x} data-v="grow" data-at={0.48 + i * 0.03}>
           <rect x={x} y={362 - h} width={w} height={h} fill={c} />
           {Array.from({ length: Math.floor(h / 22) }, (_, k) => (
-            <rect key={k} x={x + 7} y={362 - h + 9 + k * 22} width={w - 14} height="7" rx="1.5" fill="#fff" opacity="0.7" />
+            <rect key={k} x={x + 6} y={362 - h + 9 + k * 22} width={w - 12} height="7" rx="1.5" fill="#fff" opacity="0.7" />
           ))}
         </g>
       ))}
-      <g data-v="grow" data-at="0.6">
-        <rect x="628" y="322" width="36" height="40" fill="#c2562f" />
-        <path d="M612 326 646 306 680 326ZM620 306 646 290 672 306ZM628 288 646 276 664 288Z" fill={INK} />
-        <path d="M646 276V262" stroke={INK} strokeWidth="2" />
-        <circle cx="646" cy="260" r="3.5" fill="#f2b33d" />
+      <g data-v="grow" data-at="0.52">
+        <rect x="662" y="322" width="36" height="40" fill="#c2562f" />
+        <path d="M646 326 680 306 714 326ZM654 306 680 290 706 306ZM662 288 680 276 698 288Z" fill={INK} />
+        <path d="M680 276V262" stroke={INK} strokeWidth="2" />
+        <circle cx="680" cy="260" r="3.5" fill="#f2b33d" />
       </g>
-      <g data-v="grow" data-at="0.63">
-        <path d="M688 362 692 216H702L706 362Z" fill="#fff" stroke={INK} strokeWidth="1.6" />
-        <rect x="685" y="228" width="24" height="5" rx="1" fill={INK} />
-        <path d="M690 216Q697 196 704 216Z" fill={INK} />
-        <path d="M697 200V184" stroke={INK} strokeWidth="1.6" />
+      <g data-v="grow" data-at="0.55">
+        <path d="M720 362 724 216H734L738 362Z" fill="#fff" stroke={INK} strokeWidth="1.6" />
+        <rect x="717" y="228" width="24" height="5" rx="1" fill={INK} />
+        <path d="M722 216Q729 196 736 216Z" fill={INK} />
+        <path d="M729 200V184" stroke={INK} strokeWidth="1.6" />
       </g>
-      <path data-v="draw" data-at="0.46" d="M500 362H800" stroke={INK} strokeWidth="2" />
+      <path data-v="draw" data-at="0.44" d="M500 362H800" stroke={INK} strokeWidth="2" />
 
-      {/* the bus, after the road is drawn */}
-      <g data-v="fade" data-at="0.44" data-d="0.02">
-        <g data-v="ride" data-on="road" data-at="0.45" data-d="0.2" transform="translate(612 358)">
+      {/* the college, sketched by the pencil, then filled in */}
+      <g data-v="fade" data-at="0.76">
+        <rect x="532" y="300" width="108" height="52" fill="#fff" />
+        <path d="M526 300 586 270 646 300Z" fill={INK} />
+        {[540, 560, 580, 600, 620].map((x) => (
+          <rect key={x} x={x} y="308" width="10" height="44" rx="2" fill={PALE} />
+        ))}
+        <rect x="522" y="352" width="128" height="10" fill="#c9d6e3" />
+        <circle cx="586" cy="288" r="7" fill="#fff" />
+        <path d="M586 284V288H589" fill="none" stroke={INK} strokeWidth="1.4" strokeLinecap="round" />
+      </g>
+      <path data-v="draw" data-pen data-at="0.64" data-d="0.12" d="M532 352V300H640V352M526 300 586 270 646 300M522 362V352H650V362" fill="none" stroke={INK} strokeWidth="2" strokeLinejoin="round" />
+      <g transform="translate(586 318)">
+        <g data-v="pop" data-at="0.8">
+          <rect x="-26" y="-9" width="52" height="15" rx="3" fill={BOLT} />
+          <text y="2.5" textAnchor="middle" fill="#fff" style={{ ...BODY, fontSize: 9.5, fontWeight: 800, letterSpacing: 1 }}>
+            COLLEGE
+          </text>
+        </g>
+      </g>
+
+      {/* the bus, after the road is drawn, to the college steps */}
+      <g data-v="fade" data-at="0.43" data-d="0.02">
+        <g data-v="ride" data-on="road" data-at="0.44" data-d="0.18" transform="translate(560 362)">
           <rect x="-26" y="-22" width="52" height="20" rx="5" fill={BOLT} />
           {[-19, -7, 5].map((x) => (
             <rect key={x} x={x} y="-18" width="9" height="7" rx="1.5" fill="#fff" />
@@ -182,11 +211,8 @@ export function KathmanduScene() {
         </g>
       </g>
 
-      <text data-v="write" data-pen data-at="0.68" x="586" y="410" fill={INK} style={{ ...DEVA, fontSize: 22, fontWeight: 700 }}>
-        काठमाडौं
-      </text>
       {tags.map(([t, x, y], i) => (
-        <g key={t} data-v="pop" data-at={0.76 + i * 0.05}>
+        <g key={t} data-v="pop" data-at={0.84 + i * 0.04}>
           <Bubble x={x} y={y} text={t} fill={i % 2 ? MID : INK} />
         </g>
       ))}
@@ -194,84 +220,115 @@ export function KathmanduScene() {
   );
 }
 
-/** +2 in English: the board, the laughs, and the notebook of words. */
-export function EnglishScene() {
-  const words: [string, string][] = [
-    ["debit", "नामे"],
-    ["credit", "जम्मा"],
-    ["asset", "सम्पत्ति"],
-    ["liability", "दायित्व"],
-    ["balance", "मौज्दात"],
-  ];
-  const student = (cx: number, shirt: string, at: number) => (
-    <g data-v="pop" data-at={at}>
-      <path d={`M${cx - 30} 384C${cx - 28} 356 ${cx + 28} 356 ${cx + 30} 384Z`} fill={shirt} />
-      <circle cx={cx} cy="336" r="18" fill={SKIN} />
-      <path d={`M${cx - 18} 334C${cx - 18} 312 ${cx + 18} 312 ${cx + 18} 334C${cx + 10} 324 ${cx - 8} 322 ${cx - 18} 334Z`} fill={INK} />
+/** A standing figure, its feet at x,y. */
+function Person({ x = 0, y = 0, shirt, hair = INK, long = false, s = 1.25 }: { x?: number; y?: number; shirt: string; hair?: string; long?: boolean; s?: number }) {
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {long && <rect x="-12" y="-69" width="24" height="31" rx="11" fill={hair} />}
+      <rect x="-7" y="-24" width="5" height="24" rx="2" fill={INK} />
+      <rect x="2" y="-24" width="5" height="24" rx="2" fill={INK} />
+      <path d={long ? "M-15-14-10-44Q0-49 10-44L15-14Z" : "M-12-20Q-12-46 0-46 12-46 12-20Z"} fill={shirt} />
+      <circle cy="-56" r="10" fill={SKIN} />
+      <path d={long ? "M-10-58C-9-70 9-70 10-58 2-64-4-64-10-58Z" : "M-10-57C-10-70 10-70 10-57 5-63-5-63-10-57Z"} fill={hair} />
     </g>
   );
+}
+
+/** A little chat bubble with three dots. */
+function Chat({ x, y, at }: { x: number; y: number; at: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <g data-v="pop" data-at={at}>
+        <rect x="-18" y="-12" width="36" height="22" rx="11" fill="#fff" stroke="rgb(0 28 85 / 0.15)" />
+        <path d="M-6 9-10 17-1 10Z" fill="#fff" />
+        {[-8, 0, 8].map((dx) => (
+          <circle key={dx} cx={dx} cy="-1" r="2.4" fill={MUTED} />
+        ))}
+      </g>
+    </g>
+  );
+}
+
+/** New in the city: on my own in a crowd, then friends, then on stage hosting a programme. */
+export function FriendsScene() {
+  const groupA = [128, 168, 208];
+  const groupB = [300, 340, 380];
   return (
     <svg viewBox="0 0 800 450" className="es es-moment" data-tool="pencil" aria-hidden="true">
-      {/* the board, written in chalk */}
-      <rect data-v="fade" data-at="0" x="24" y="24" width="338" height="200" rx="12" fill="#c49a6c" />
-      <rect data-v="fade" data-at="0" x="34" y="34" width="318" height="180" rx="6" fill="#17436a" />
-      <text data-v="write" data-at="0.03" data-d="0.07" x="56" y="74" fill="#eef6fb" style={{ ...BODY, fontWeight: 800, fontSize: 20 }}>
-        Accountancy
-      </text>
-      <path data-v="draw" data-at="0.1" d="M56 84H178" stroke="#eef6fb" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-      <text data-v="write" data-at="0.12" data-d="0.1" x="56" y="124" fill="#eef6fb" style={{ ...BODY, fontWeight: 600, fontSize: 18 }}>
-        Debit what comes in,
-      </text>
-      <text data-v="write" data-at="0.22" data-d="0.1" x="56" y="154" fill="#eef6fb" style={{ ...BODY, fontWeight: 600, fontSize: 18 }}>
-        credit what goes out.
-      </text>
-      <text data-v="write" data-at="0.32" data-d="0.05" x="56" y="194" fill={PALE} style={{ ...MONO, fontWeight: 700, fontSize: 17 }}>
-        Dr. = Cr.
-      </text>
+      <path data-v="draw" data-at="0" d="M16 404H784" stroke="rgb(0 28 85 / 0.18)" strokeWidth="2" strokeLinecap="round" />
 
-      {/* the class, and me in the middle not following */}
-      <rect data-v="fade" data-at="0.36" x="24" y="384" width="338" height="14" rx="5" fill={MID} />
-      {student(80, SKY, 0.38)}
-      {student(196, INK, 0.4)}
-      {student(312, SKY, 0.42)}
-      <g data-v="pop" data-at="0.46">
-        <rect x="216" y="252" width="38" height="38" rx="12" fill="#fff" stroke="rgb(0 28 85 / 0.18)" />
-        <circle cx="214" cy="300" r="4" fill="#fff" stroke="rgb(0 28 85 / 0.18)" />
-        <text x="235" y="280" textAnchor="middle" fill={INK} style={{ ...BODY, fontWeight: 800, fontSize: 24 }}>
-          ?
-        </text>
-      </g>
-      {(
-        [
-          [28, 262, 0.5],
-          [300, 256, 0.54],
-        ] as const
-      ).map(([x, y, at]) => (
-        <g key={x} data-v="pop" data-at={at}>
-          <rect x={x} y={y} width="64" height="28" rx="14" fill="#fff" stroke="rgb(0 28 85 / 0.15)" />
-          <text x={x + 32} y={y + 19} textAnchor="middle" fill={MUTED} style={{ ...BODY, fontStyle: "italic", fontWeight: 600, fontSize: 14 }}>
-            haha
-          </text>
+      {/* the stage, waiting */}
+      <rect data-v="fade" data-at="0.02" x="540" y="112" width="240" height="220" fill="#16356e" />
+      <path data-v="fade" data-at="0.03" d="M528 98H792V118H528ZM528 118C548 170 540 260 572 330H528ZM792 118C772 170 780 260 748 330H792Z" fill="#a3283a" />
+      <rect data-v="fade" data-at="0.04" x="510" y="330" width="290" height="16" rx="3" fill="#c49a6c" />
+      <rect data-v="fade" data-at="0.04" x="514" y="346" width="282" height="58" fill="#8a5a3c" />
+      <path data-v="fade" data-at="0.05" d="M470 404V384H486V365H498V346H514V404Z" fill="#c49a6c" />
+
+      {/* (the lights come up later, behind whoever is on stage) */}
+      <path data-v="fade" data-at="0.74" d="M566 112 540 330H664L602 112ZM752 112 678 330H790Z" fill="#fff8d6" opacity="0.28" />
+
+      {/* two groups, talking among themselves */}
+      {[...groupA, ...groupB].map((x, i) => (
+        <g key={x} data-v="pop" data-at={0.06 + i * 0.015}>
+          <Person x={x} y={402} shirt={[SKY, MID, PALE][i % 3]} long={i === 1 || i === 5} />
         </g>
       ))}
+      <Chat x={160} y={292} at={0.16} />
+      <Chat x={344} y={288} at={0.19} />
 
-      {/* the notebook the pencil fills */}
-      <rect data-v="fade" data-at="0.56" x="420" y="26" width="356" height="396" rx="12" fill="#fff" stroke="rgb(0 28 85 / 0.12)" />
-      {Array.from({ length: 6 }, (_, i) => (
-        <path key={i} data-v="draw" data-at={0.57 + i * 0.006} d={`M436 ${132 + i * 52}H760`} stroke="rgb(0 28 85 / 0.08)" strokeWidth="1.2" />
+      {/* the way over to them, and on to the stage */}
+      <path data-v="draw" data-pen data-track="walk1" data-at="0.26" data-d="0.06" d="M50 404C100 414 190 414 248 404" fill="none" stroke={BOLT} strokeWidth="2.4" strokeLinecap="round" opacity="0.7" />
+      <g transform="translate(160 292)">
+        <g data-v="pop" data-at="0.44">
+          <rect x="-18" y="-12" width="36" height="22" rx="11" fill={MID} />
+          <path d="M-6 9-10 17-1 10Z" fill={MID} />
+          <text y="3.5" textAnchor="middle" fill="#fff" style={{ ...BODY, fontWeight: 800, fontSize: 12 }}>
+            hi!
+          </text>
+        </g>
+      </g>
+      <path data-v="draw" data-pen data-track="walk2" data-at="0.5" data-d="0.12" d="M248 404C330 414 420 414 470 404L506 346 602 330" fill="none" stroke={BOLT} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
+
+      {/* me: on my own at first, then walking over, then up on the stage */}
+      <g data-v="fade" data-at="0.1">
+        <g data-v="ride" data-upright data-route="walk1@0.33:0.09 walk2@0.63:0.12" transform="translate(602 330)">
+          <Person shirt={BOLT} />
+        </g>
+      </g>
+
+      {/* the co-host, and the mics */}
+      <g data-v="pop" data-at="0.76">
+        <Person x={704} y={330} shirt={MID} long />
+      </g>
+      {[613, 693].map((x, i) => (
+        <g key={x} transform={`translate(${x} 294)`}>
+          <g data-v="pop" data-at={0.78 + i * 0.02}>
+            <path d="M0 0 4-12" stroke="#2b2b33" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="4.5" cy="-14" r="3.6" fill="#2b2b33" />
+          </g>
+        </g>
       ))}
-      <path data-v="draw" data-at="0.58" d="M572 40V410" stroke="rgb(242 107 56 / 0.4)" strokeWidth="1.4" />
-      <text data-v="write" data-pen data-at="0.62" data-d="0.05" x="446" y="78" fill={INK} style={{ ...BODY, fontWeight: 800, fontSize: 19 }}>
-        My words
+      <g data-v="pop" data-at="0.8">
+        <rect x="514" y="170" width="200" height="40" rx="20" fill="#fff" stroke="rgb(0 28 85 / 0.15)" />
+        <path d="M590 208 600 226 604 208Z" fill="#fff" />
+      </g>
+      <text data-v="write" data-pen data-at="0.83" data-d="0.1" x="536" y="195" fill={INK} style={{ ...BODY, fontWeight: 700, fontSize: 14 }}>
+        Good evening, everyone!
       </text>
-      {words.map(([en, ne], i) => (
-        <g key={en} data-v="write" data-pen data-at={(0.69 + i * 0.062).toFixed(3)} data-d="0.056">
-          <text x="446" y={124 + i * 52} fill={INK} style={{ ...BODY, fontWeight: 600, fontSize: 18 }}>
-            {en}
-          </text>
-          <text x="586" y={124 + i * 52} fill={MID} style={{ ...DEVA, fontWeight: 600, fontSize: 19 }}>
-            {ne}
-          </text>
+
+      {/* and the room claps */}
+      {(
+        [
+          [100, 318],
+          [236, 318],
+          [272, 314],
+          [408, 314],
+        ] as const
+      ).map(([x, y], i) => (
+        <g key={x} transform={`translate(${x} ${y})`}>
+          <g data-v="pop" data-at={0.93 + i * 0.015}>
+            <path d="M-8-4-14-10M0-8V-16M8-4 14-10" stroke={BOLT} strokeWidth="2.2" strokeLinecap="round" />
+          </g>
         </g>
       ))}
     </svg>
@@ -441,71 +498,118 @@ export function BbsScene() {
   );
 }
 
-/** The final-year project: failed, rejected, rebuilt, passed. */
-export function ProjectScene() {
-  const pages: [string, string, number, number][] = [
-    ["v1", "FAILED", 0.02, -4],
-    ["v2", "REJECTED", 0.34, 2],
-    ["v3", "PASSED", 0.66, -1],
+/** The hard part: failed subjects, sat again and passed; late nights; and the
+    final-year project, accepted the first time. */
+export function HustleScene() {
+  const rows: [number, boolean][] = [
+    [118, true],
+    [96, false],
+    [130, true],
+    [104, true],
+    [122, false],
+    [88, true],
   ];
   return (
-    <svg viewBox="0 0 800 450" className="es es-moment" data-tool="cursor" aria-hidden="true">
-      {pages.map(([v, verdict, B, tilt], k) => {
-        const ok = k === 2;
-        const c = ok ? GREEN : RED;
-        return (
-          <g key={v} transform={`translate(${150 + k * 250} 236) rotate(${tilt})`}>
-            <rect data-v="fade" data-at={B} x="-100" y="-150" width="200" height="280" rx="8" fill="#fff" stroke="rgb(0 28 85 / 0.14)" />
-            <g transform="translate(66 -122)">
-              <g data-v="pop" data-at={B + 0.01}>
-                <rect x="-17" y="-10" width="34" height="20" rx="10" fill={PALE} />
-                <text y="4.5" textAnchor="middle" fill={INK} style={{ ...MONO, fontWeight: 700, fontSize: 11 }}>
-                  {v}
-                </text>
-              </g>
+    <svg viewBox="0 0 800 450" className="es es-moment" data-tool="pen" aria-hidden="true">
+      {/* the results */}
+      <g transform="translate(40 52) rotate(-3)">
+        <rect data-v="fade" data-at="0" width="250" height="330" rx="8" fill="#fff" stroke="rgb(0 28 85 / 0.14)" />
+        <text data-v="fade" data-at="0.02" x="22" y="38" fill={INK} style={{ ...BODY, fontWeight: 800, fontSize: 15 }}>
+          Semester results
+        </text>
+        <path data-v="draw" data-at="0.03" d="M22 50H228" stroke={INK} strokeWidth="1.4" />
+        {rows.map(([w, pass], k) => {
+          const y = 86 + k * 40;
+          return (
+            <g key={k}>
+              <rect data-v="fade" data-at={0.04 + k * 0.012} x="22" y={y - 9} width={w} height="9" rx="4.5" fill="rgb(0 28 85 / 0.14)" />
+              <text data-v="fade" data-at={0.05 + k * 0.012} x="160" y={y} fill={pass ? GREEN : RED} style={{ ...BODY, fontWeight: 800, fontSize: 13 }}>
+                {pass ? "Pass" : "Fail"}
+              </text>
             </g>
-            <text data-v="write" data-pen data-at={(B + 0.03).toFixed(2)} data-d="0.05" x="-82" y="-102" fill={INK} style={{ ...BODY, fontWeight: 800, fontSize: 13.5 }}>
-              Final year project
-            </text>
-            {[150, 136, 160, 110].map((w, j) => (
-              <path key={j} data-v="draw" data-pen data-at={(B + 0.09 + j * 0.025).toFixed(3)} data-d="0.02" d={`M-82 ${-80 + j * 14}h${w}`} stroke="rgb(0 28 85 / 0.2)" strokeWidth="4" strokeLinecap="round" />
-            ))}
-            <rect data-v="fade" data-at={B + 0.19} x="-82" y="-16" width="164" height="78" rx="6" fill="#eef7fc" />
-            {k === 1 ? (
-              <path data-v="draw" data-at={B + 0.2} d="M-72 48 -44 30-16 40 12 14 40 22 72 0" fill="none" stroke={MID} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-            ) : (
-              [22, 38, 30, 50, 44].map((h, j) => <rect key={j} data-v="grow" data-at={B + 0.19 + j * 0.012} x={-70 + j * 30} y={56 - h} width="18" height={h} rx="3" fill={j === 3 ? MID : SKY} />)
-            )}
-            <g transform="translate(0 100) rotate(-12)">
-              <g data-v="slam" data-at={B + 0.26}>
-                <rect x="-74" y="-22" width="148" height="44" rx="9" fill={ok ? "rgb(26 127 55 / 0.08)" : "rgb(217 58 58 / 0.07)"} stroke={c} strokeWidth="3.4" />
-                <text y="8" textAnchor="middle" fill={c} style={{ ...BODY, fontWeight: 900, fontSize: 21, letterSpacing: 1 }}>
-                  {verdict}
-                </text>
-              </g>
-            </g>
-          </g>
-        );
-      })}
-      {/* and again */}
-      {[0, 1].map((k) => (
-        <g key={k}>
-          <path data-v="draw" data-at={0.3 + k * 0.32} d={`M${232 + k * 250} 76C${254 + k * 250} 38 ${292 + k * 250} 38 ${312 + k * 250} 70`} fill="none" stroke={BOLT} strokeWidth="2.4" strokeLinecap="round" />
-          <path data-v="pop" data-at={0.32 + k * 0.32} d={`M${304 + k * 250} 66l9 6 1-11`} fill="none" stroke={BOLT} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-          <text data-v="fade" data-at={0.32 + k * 0.32} x={272 + k * 250} y="32" textAnchor="middle" fill={BOLT} style={{ ...BODY, fontStyle: "italic", fontWeight: 700, fontSize: 13 }}>
-            again
-          </text>
+          );
+        })}
+        {/* the fails, sat again: struck out and passed */}
+        {rows.flatMap(([, pass], k) =>
+          pass
+            ? []
+            : [
+                <path key={`s${k}`} data-v="draw" data-pen data-at={(0.14 + (k === 1 ? 0 : 0.12)).toFixed(2)} data-d="0.03" d={`M156 ${81 + k * 40}H192`} stroke={RED} strokeWidth="2.6" strokeLinecap="round" />,
+                <text key={`p${k}`} data-v="write" data-pen data-at={(0.18 + (k === 1 ? 0 : 0.12)).toFixed(2)} data-d="0.04" x="198" y={86 + k * 40} fill={GREEN} style={{ ...BODY, fontStyle: "italic", fontWeight: 800, fontSize: 13 }}>
+                  Pass
+                </text>,
+              ],
+        )}
+      </g>
+
+      {/* the late nights */}
+      <g transform="translate(470 66)">
+        <g data-v="pop" data-at="0.34">
+          <path d="M12-18A20 20 0 1 0 22 16 16 16 0 1 1 12-18Z" fill="#ffc83d" />
         </g>
-      ))}
+      </g>
+      <circle data-v="fade" data-at="0.34" cx="400" cy="160" r="54" fill="#fff" stroke={INK} strokeWidth="3" />
+      {Array.from({ length: 12 }, (_, k) => {
+        const a = (k / 12) * Math.PI * 2;
+        return <path key={k} data-v="fade" data-at={0.35} d={`M${f(400 + Math.cos(a) * 44)} ${f(160 + Math.sin(a) * 44)}L${f(400 + Math.cos(a) * 50)} ${f(160 + Math.sin(a) * 50)}`} stroke={INK} strokeWidth={k % 3 ? 1.4 : 2.6} />;
+      })}
+      <path data-v="spin" data-at="0.36" data-d="0.24" data-r="1440" data-o="400 160" d="M400 160V122" stroke={MID} strokeWidth="2.6" strokeLinecap="round" />
+      <path data-v="spin" data-at="0.36" data-d="0.24" data-r="120" data-o="400 160" d="M400 160H428" stroke={INK} strokeWidth="4" strokeLinecap="round" />
+      <circle data-v="fade" data-at="0.35" cx="400" cy="160" r="4" fill={BOLT} />
+      <path data-v="draw" data-at="0.36" d="M318 392H482" stroke={INK} strokeWidth="2.6" strokeLinecap="round" />
       {(
         [
-          [690, 360],
-          [740, 314],
-          [610, 380],
+          [330, 16, 120, MID],
+          [334, 14, 128, BOLT],
+          [328, 15, 112, SKY],
+        ] as const
+      ).map(([x, h, w, c], k) => (
+        <rect key={k} data-v="grow" data-at={0.4 + k * 0.03} x={x} y={392 - (k + 1) * 16} width={w} height={h} rx="3" fill={c} />
+      ))}
+      {[0, 1, 2].map((k) => (
+        <g key={k} data-v="pop" data-at={0.44 + k * 0.05}>
+          <rect x={410 + k * 22} y="324" width="18" height="20" rx="4" fill="#fff" stroke={INK} strokeWidth="1.8" />
+          <path d={`M${428 + k * 22} 328c7 0 7 10 0 10`} fill="none" stroke={INK} strokeWidth="1.8" />
+        </g>
+      ))}
+
+      {/* the final-year project, accepted the first time */}
+      <g transform="translate(546 56) rotate(2)">
+        <rect data-v="fade" data-at="0.56" width="220" height="330" rx="8" fill="#fff" stroke="rgb(0 28 85 / 0.14)" />
+        <text data-v="write" data-pen data-tool="cursor" data-at="0.6" data-d="0.05" x="20" y="40" fill={INK} style={{ ...BODY, fontWeight: 800, fontSize: 14.5 }}>
+          Final year project
+        </text>
+        <text data-v="fade" data-at="0.64" x="20" y="60" fill={MUTED} style={{ ...BODY, fontSize: 10.5 }}>
+          Laundry Recommendation System
+        </text>
+        {[170, 150, 176, 120].map((w, j) => (
+          <path key={j} data-v="draw" data-pen data-at={(0.67 + j * 0.025).toFixed(3)} data-d="0.02" d={`M20 ${88 + j * 15}h${w}`} stroke="rgb(0 28 85 / 0.2)" strokeWidth="4" strokeLinecap="round" />
+        ))}
+        <rect data-v="fade" data-at="0.77" x="20" y="152" width="180" height="78" rx="6" fill="#eef7fc" />
+        {[24, 40, 32, 54, 46].map((h, j) => (
+          <rect key={j} data-v="grow" data-at={0.78 + j * 0.012} x={34 + j * 32} y={218 - h} width="18" height={h} rx="3" fill={j === 3 ? MID : SKY} />
+        ))}
+        <g transform="translate(110 280) rotate(-10)">
+          <g data-v="slam" data-at="0.87">
+            <rect x="-86" y="-30" width="172" height="58" rx="10" fill="rgb(26 127 55 / 0.08)" stroke={GREEN} strokeWidth="3.6" />
+            <text y="2" textAnchor="middle" fill={GREEN} style={{ ...BODY, fontWeight: 900, fontSize: 24, letterSpacing: 1 }}>
+              ACCEPTED
+            </text>
+            <text y="19" textAnchor="middle" fill={GREEN} style={{ ...BODY, fontWeight: 700, fontSize: 10.5, letterSpacing: 1.5 }}>
+              FIRST SUBMISSION
+            </text>
+          </g>
+        </g>
+      </g>
+      {(
+        [
+          [770, 330],
+          [740, 400],
+          [540, 404],
         ] as const
       ).map(([x, y], i) => (
         <g key={x} transform={`translate(${x} ${y})`}>
-          <g data-v="pop" data-at={0.95 + i * 0.015}>
+          <g data-v="pop" data-at={0.94 + i * 0.015}>
             <path d="M0-10 2.6-2.6 10 0 2.6 2.6 0 10-2.6 2.6-10 0-2.6-2.6Z" fill="#ffc83d" />
           </g>
         </g>
@@ -676,10 +780,10 @@ export function PenTools() {
 
 export const MOMENTS = {
   kathmandu: KathmanduScene,
-  english: EnglishScene,
+  friends: FriendsScene,
   visa: VisaScene,
   bbs: BbsScene,
-  project: ProjectScene,
+  project: HustleScene,
   convocation: ConvocationScene,
   now: NowScene,
 } as const;

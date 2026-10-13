@@ -226,7 +226,7 @@ export const schoolStop: PathStop | null = {
 // scene is `after`, and draws itself on the path (components/edu/Moments.tsx).
 export type PathMoment = {
   after: PathStop["scene"];
-  scene: "kathmandu" | "english" | "visa" | "bbs" | "project" | "convocation" | "now";
+  scene: "kathmandu" | "friends" | "visa" | "bbs" | "project" | "convocation" | "now";
   title: string;
   line: string;
   year?: number;
@@ -237,13 +237,13 @@ export const pathMoments: PathMoment[] = [
     after: "school",
     scene: "kathmandu",
     title: "Village to Kathmandu",
-    line: "Every subject at my village's government school was taught in Nepali. After the SLC I came to Kathmandu: a new city, new people, new challenges.",
+    line: "School was in a village up in the hills. Then I came to Kathmandu for college: a new city, new people, new challenges.",
   },
   {
     after: "school",
-    scene: "english",
-    title: "Learning in English",
-    line: "+2 was taught in English, and I had only ever studied in Nepali. Some people laughed at me. I kept a notebook of words and learned them one by one.",
+    scene: "friends",
+    title: "Finding my voice",
+    line: "New people, and so much to learn. I started making friends and talking to people, and one day I was on stage, hosting a programme with a co-host.",
   },
   {
     after: "ledger",
@@ -260,8 +260,8 @@ export const pathMoments: PathMoment[] = [
   {
     after: "stack",
     scene: "project",
-    title: "The final-year project",
-    line: "It failed. Then it was rejected. I rebuilt it until it passed.",
+    title: "The hard part",
+    line: "It wasn't easy. I failed some subjects and sat them again, through a lot of late nights. The final-year project was accepted the first time.",
   },
   {
     after: "paper",
