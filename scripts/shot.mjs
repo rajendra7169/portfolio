@@ -9,7 +9,7 @@ const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, ""
 const OUT = "shots";
 const ALL_PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
-  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 0, ".eh-arena-link": 5 } },
+  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 4, ".cv-card": 0, ".eh-arena-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".xp-now": 1, ".xp-area": 4, ".xp-card": 3, ".xg-commit": 15 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".pl-card": 7, ".pl-dev": 3, ".pl-icons .pl-icon": 6, ".pl-grid .pl-icon": 5, ".pl-lock .pl-media": 1, ".dv-dock": 0, ".lw-leds button": 5, ".lw-stack li": 6, ".lw-cloth": 4 } },
   // Project pages: each one is its own world, `world` = its data-world. `next` = the world its last link opens.
@@ -268,12 +268,12 @@ for (const vp of VIEWPORTS) {
       await page.screenshot({ path: `${OUT}/${vp.name}-edu-toss.png` });
       check(scope, flying > 20, `cap toss fires confetti (${flying} pieces in the air)`);
 
-      const STAMPS = ["2017", "2024", "Dec 2024"];
-      const YEARS = ["2015", "2021", "2024"];
+      const STAMPS = ["2014", "2017", "2024", "Dec 2024"];
+      const YEARS = ["2014", "2015", "2021", "2024"];
       if (!vp.isMobile) {
         const rail = await page.evaluate(() => document.querySelector(".ep").classList.contains("is-rail") && !!document.querySelector(".pin-spacer .ep-viewport"));
         check(scope, rail, "degrees path is a pinned horizontal rail");
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < STAMPS.length; i++) {
           await page.evaluate((i) => {
             const vpEl = document.querySelector(".ep-viewport");
             const spacer = vpEl.parentElement;
@@ -295,6 +295,8 @@ for (const vp of VIEWPORTS) {
             return {
               stamp: getComputedStyle(stamp).opacity,
               stampText: stamp.querySelector("b").textContent,
+              // Its scene has drawn in by the time it's centred.
+              drawn: [...card.querySelectorAll(".ep-scene [data-v]")].every((p) => getComputedStyle(p).opacity === "1"),
               year: document.querySelector(".ep-year").textContent,
               fits: r.top >= 0 && r.bottom <= line.top + 30 && r.left >= 0 && r.right <= innerWidth,
               rect: `card ${Math.round(r.top)}–${Math.round(r.bottom)}, line at ${Math.round(line.top)}`,
@@ -302,20 +304,21 @@ for (const vp of VIEWPORTS) {
               // The stamp must not land on his text.
               stampClear: (() => {
                 const a = stamp.getBoundingClientRect();
-                const b = card.querySelector(".ep-points").getBoundingClientRect();
+                const b = card.querySelector(".ep-scene").getBoundingClientRect();
                 return a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom;
               })(),
             };
           }, i);
           check(scope, st.stamp === "1" && st.stampText === STAMPS[i], `stop ${i + 1}: stamp "${st.stampText}" has landed`);
           check(scope, st.year === YEARS[i], `stop ${i + 1}: year counter reads ${st.year}`);
+          check(scope, st.drawn, `stop ${i + 1}: its scene has drawn in`);
           check(scope, st.fits, `stop ${i + 1}: card fits above the path (${st.rect})`);
           check(scope, st.riderCentred, `stop ${i + 1}: rider rides the centre of the path`);
           check(scope, st.stampClear, `stop ${i + 1}: stamp clears the text`);
           await page.screenshot({ path: `${OUT}/${vp.name}-edu-stop-${i + 1}.png` });
         }
       } else {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < STAMPS.length; i++) {
           await page.locator(".ep-card").nth(i).evaluate((c) => c.scrollIntoView({ block: "start" }));
           await page.evaluate(() => scrollBy(0, -120));
           await wait(1400);
@@ -650,6 +653,30 @@ for (const vp of VIEWPORTS) {
         check(scope, Math.abs(done.receipt) <= 2, `the receipt prints when it ends (offset ${Math.round(done.receipt)}px)`);
         await page.screenshot({ path: `${OUT}/${vp.name}-projects-receipt.png` });
       }
+
+      // The year of commits at the foot of the page: scrolled to the end, every
+      // week has filled in, HEAD sits on the last day and the stats have counted up.
+      for (let i = 0; i < 40; i++) {
+        await page.mouse.wheel(0, 700);
+        await wait(160);
+      }
+      await wait(2200);
+      const gc = await page.evaluate(() => ({
+        weeks: document.querySelectorAll(".gc-week").length,
+        on: document.querySelectorAll(".gc-week.is-on").length,
+        armed: document.querySelector(".gc-cal").classList.contains("is-armed"),
+        head: document.querySelector(".gc-head-date").textContent,
+        stats: [...document.querySelectorAll(".gc-stats b[data-to]")].map((b) => b.textContent === b.dataset.to),
+        fits: (() => {
+          const h = document.querySelector(".gc-head").getBoundingClientRect();
+          const c = document.querySelector(".gc-card").getBoundingClientRect();
+          return h.left >= c.left - 1 && h.right <= c.right + 1;
+        })(),
+      }));
+      check(scope, gc.weeks >= 52 && (!gc.armed || gc.on === gc.weeks), `the commit calendar fills in (${gc.on}/${gc.weeks} weeks)`);
+      check(scope, gc.stats.length === 3 && gc.stats.every(Boolean), "its stats count up to their values");
+      check(scope, gc.fits, `HEAD ("${gc.head}") stays inside the card`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-projects-commits.png` });
     }
 
     if (pg.world) {
