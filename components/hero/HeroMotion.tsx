@@ -100,9 +100,19 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
               gsap.to(push, { v: 1, duration: 1.4, delay: 0.25, ease: "power2.out", onUpdate: setRates, onComplete: () => ((tickRate = NaN), setRates()) });
             }),
           });
-          // Off screen, they rest.
+          // Off screen, they rest (and so does the "I build …" cycle below: a phrase
+          // that comes due while the hero is away waits for it to come back).
           const loops = [...spins, ticker];
-          ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onToggle: (self) => loops.forEach((a) => (self.isActive ? a.play() : a.pause())) });
+          let due = false;
+          const inView = ScrollTrigger.create({
+            trigger: el,
+            start: "top bottom",
+            end: "bottom top",
+            onToggle: (self) => {
+              loops.forEach((a) => (self.isActive ? a.play() : a.pause()));
+              if (self.isActive && due) build();
+            },
+          });
 
           /* ── Intro: built now (so nothing flashes), played as the curtain opens ── */
           const intro = gsap.timeline({ paused: true, defaults: { ease: "expo.out" } });
@@ -146,6 +156,8 @@ export default function HeroMotion({ children }: { children: ReactNode }) {
           let built = 0;
           let wait = 0;
           const build = inContext(ctx, () => {
+            due = !inView.isActive;
+            if (due) return;
             built = (built + 1) % hero.builds.length;
             gsap.to(q(".hx-build-text"), {
               scrambleText: { text: hero.builds[built], chars: "lowerCase", speed: 0.7 },
