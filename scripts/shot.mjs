@@ -9,7 +9,7 @@ const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, ""
 const OUT = "shots";
 const ALL_PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
-  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 4, ".cv-card": 0, ".eh-arena-link": 5 } },
+  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 4, ".ep-moment": 7, ".cv-card": 0, ".eh-arena-link": 5 } },
   { path: "/experience", name: "experience", h1: "Experience", counts: { ".xp-now": 1, ".xp-area": 4, ".xp-card": 3, ".xg-commit": 15 } },
   { path: "/projects", name: "projects", h1: "Projects", counts: { ".pl-card": 7, ".pl-dev": 3, ".pl-icons .pl-icon": 6, ".pl-grid .pl-icon": 5, ".pl-lock .pl-media": 1, ".dv-dock": 0, ".lw-leds button": 5, ".lw-stack li": 6, ".lw-cloth": 4 } },
   // Project pages: each one is its own world, `world` = its data-world. `next` = the world its last link opens.
@@ -274,16 +274,12 @@ for (const vp of VIEWPORTS) {
         const rail = await page.evaluate(() => document.querySelector(".ep").classList.contains("is-rail") && !!document.querySelector(".pin-spacer .ep-viewport"));
         check(scope, rail, "degrees path is a pinned horizontal rail");
         for (let i = 0; i < STAMPS.length; i++) {
+          // Each panel holds in the middle while it draws; data-hold is where it's in
+          // place and done (scroll past the start of the pin, written by EduPathMotion).
           await page.evaluate((i) => {
-            const vpEl = document.querySelector(".ep-viewport");
-            const spacer = vpEl.parentElement;
-            const track = document.querySelector(".ep-track");
+            const spacer = document.querySelector(".ep-viewport").parentElement;
             const stop = document.querySelectorAll(".ep-stop")[i];
-            const distance = track.scrollWidth - innerWidth;
-            const centre = stop.getBoundingClientRect().left - track.getBoundingClientRect().left + stop.offsetWidth / 2;
-            const p = Math.max(0, (centre - innerWidth / 2) / distance);
-            const top = spacer.getBoundingClientRect().top + scrollY;
-            scrollTo(0, top + p * (spacer.offsetHeight - innerHeight));
+            scrollTo(0, spacer.getBoundingClientRect().top + scrollY + Number(stop.dataset.hold));
           }, i);
           await wait(2000);
           const st = await page.evaluate((i) => {
@@ -296,7 +292,7 @@ for (const vp of VIEWPORTS) {
               stamp: getComputedStyle(stamp).opacity,
               stampText: stamp.querySelector("b").textContent,
               // Its scene has drawn in by the time it's centred.
-              drawn: [...card.querySelectorAll(".ep-scene [data-v]")].every((p) => getComputedStyle(p).opacity === "1"),
+              drawn: [...card.querySelectorAll(".ep-scene [data-v]")].every((p) => Math.abs(Number(getComputedStyle(p).opacity) - Number(p.getAttribute("opacity") ?? 1)) < 0.01),
               year: document.querySelector(".ep-year").textContent,
               fits: r.top >= 0 && r.bottom <= line.top + 30 && r.left >= 0 && r.right <= innerWidth,
               rect: `card ${Math.round(r.top)}–${Math.round(r.bottom)}, line at ${Math.round(line.top)}`,
@@ -316,6 +312,34 @@ for (const vp of VIEWPORTS) {
           check(scope, st.riderCentred, `stop ${i + 1}: rider rides the centre of the path`);
           check(scope, st.stampClear, `stop ${i + 1}: stamp clears the text`);
           await page.screenshot({ path: `${OUT}/${vp.name}-edu-stop-${i + 1}.png` });
+        }
+        // The story between the stops: each moment draws in, fits above the path, and
+        // the travelling pen is in it, writing (or resting where it finished).
+        const moments = await page.evaluate(() => document.querySelectorAll(".ep-moment").length);
+        for (let i = 0; i < moments; i++) {
+          await page.evaluate((i) => {
+            const spacer = document.querySelector(".ep-viewport").parentElement;
+            scrollTo(0, spacer.getBoundingClientRect().top + scrollY + Number(document.querySelectorAll(".ep-moment")[i].dataset.hold));
+          }, i);
+          await wait(1800);
+          const m = await page.evaluate((i) => {
+            const el = document.querySelectorAll(".ep-moment")[i];
+            const r = el.getBoundingClientRect();
+            const sc = el.querySelector(".ep-scene").getBoundingClientRect();
+            const pen = document.querySelector(".ep-pen");
+            const t = new DOMMatrix(getComputedStyle(pen).transform);
+            return {
+              title: el.querySelector("h3").textContent,
+              // (at its own opacity; the parts that fly or fall away are gone by now)
+              drawn: [...el.querySelectorAll(".ep-scene [data-v]")].filter((p) => !p.closest('[data-v="drop"], [data-v="fly"]')).every((p) => Math.abs(Number(getComputedStyle(p).opacity) - Number(p.getAttribute("opacity") ?? 1)) < 0.01),
+              fits: r.top >= 0 && r.bottom <= document.querySelector(".ep-line").getBoundingClientRect().top + 30 && r.left >= -1 && r.right <= innerWidth + 1,
+              pen: getComputedStyle(pen).opacity === "1" && t.e >= sc.left - 40 && t.e <= sc.right + 40 && t.f >= sc.top - 60 && t.f <= sc.bottom + 40,
+            };
+          }, i);
+          check(scope, m.drawn, `"${m.title}" draws in`);
+          check(scope, m.fits, `"${m.title}" fits above the path`);
+          check(scope, m.pen, `the pen is at work in "${m.title}"`);
+          await page.screenshot({ path: `${OUT}/${vp.name}-edu-moment-${i + 1}.png` });
         }
       } else {
         for (let i = 0; i < STAMPS.length; i++) {
