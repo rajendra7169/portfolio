@@ -28,9 +28,12 @@ const check = (scope, ok, msg) => {
 };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Is the transition curtain out of the way at the centre of the screen?
-const curtainClear = (page) =>
-  page.evaluate(() => !document.elementFromPoint(innerWidth / 2, innerHeight / 2)?.closest(".curtain"));
+// Nothing covers the page: no transition overlay, no leftover dim.
+const pageClear = (page) =>
+  page.evaluate(() => {
+    const top = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+    return !top?.closest(".portal") && !document.querySelector(".page-leave") && !document.documentElement.classList.contains("is-leaving");
+  });
 
 // Scroll through the whole page so every scroll-triggered animation fires.
 const scrollThrough = (page) =>
@@ -71,7 +74,7 @@ for (const vp of VIEWPORTS) {
     await page.evaluate(() => document.fonts.ready);
     await wait(2600); // first entrance animations
 
-    check(scope, await curtainClear(page), "intro curtain has lifted");
+    check(scope, await pageClear(page), "nothing covers the page");
     const top = await page.evaluate(() => {
       const h1 = document.querySelector("h1");
       const r = h1.getBoundingClientRect();
@@ -609,6 +612,168 @@ for (const vp of VIEWPORTS) {
       check(scope, w.next, `its last link leads on to ${pg.next}`);
       await page.screenshot({ path: `${OUT}/${vp.name}-${pg.name}-hero.png` });
 
+      if (pg.name === "blazify") {
+        await page.locator(".bz-eq").scrollIntoViewIfNeeded();
+        await page.locator(".bz-eq-chip", { hasText: "Bass boost" }).click();
+        await wait(1100);
+        const eq = await page.evaluate(() => ({
+          bands: [...document.querySelectorAll(".bz-eq-band input")].map((i) => Number(i.value)),
+          pressed: document.querySelector(".bz-eq-chip[aria-pressed='true']")?.textContent,
+        }));
+        check(scope, eq.pressed === "Bass boost" && eq.bands.join() === "7,6,4,2,0,0,0,0,0,0", `an EQ preset moves the bands (${eq.bands.join(" ")})`);
+        await page.locator(".bz-eq-band input").nth(9).fill("10");
+        await wait(200);
+        const custom = await page.evaluate(() => document.querySelector(".bz-eq-preset").textContent);
+        check(scope, custom === "Custom", `dragging a band makes it a custom curve ("${custom}")`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-blazify-eq.png` });
+        await page.locator(".bz-os-btn[data-os='windows']").evaluate((b) => b.click());
+        const os = await page.locator(".bz-b-laptop").getAttribute("data-os");
+        check(scope, os === "windows", `Side B's laptop switches to Windows (${os})`);
+        // The listening room: what the host does crosses the wire to the friend.
+        await page.locator(".bz-room").evaluate((s) => s.scrollIntoView({ block: "center" }));
+        await wait(600);
+        await page.locator(".bz-room-ctrl .is-main").evaluate((b) => b.click());
+        await page.locator(".bz-room-ctrl button").last().evaluate((b) => b.click());
+        await wait(1100);
+        const room = await page.evaluate(() => ({ decks: [...document.querySelectorAll(".bz-room-dev small")].map((x) => x.textContent), log: [...document.querySelectorAll(".bz-room-log li")].map((l) => l.textContent).join(" | ") }));
+        check(scope, room.decks.length === 2 && room.decks[0] === room.decks[1] && room.log.includes("skip_next"), `the friend's phone follows the host (${room.decks.join(" | ")})`);
+        // The liner notes: every track plays its own piece of the app.
+        await page.locator(".ln").evaluate((s) => s.scrollIntoView({ block: "start" }));
+        await wait(600);
+        const notes = [];
+        for (let i = 0; i < 8; i++) {
+          await page.locator(".ln-track").nth(i).evaluate((b) => b.click());
+          await wait(250);
+          notes.push(await page.evaluate((i) => document.querySelector(".ln-track[aria-selected='true']")?.id === `ln-tab-${i}` && document.querySelector(".ln-toy")?.children.length === 1 && document.querySelector(".ln-head h3")?.textContent === document.querySelectorAll(".ln-track b")[i].textContent, i));
+        }
+        check(scope, notes.every(Boolean), `every liner note opens its own track (${notes.filter(Boolean).length}/8)`);
+        await page.locator(".ln-track").nth(0).evaluate((b) => b.click());
+        await wait(300);
+        await page.locator(".ln-search-bar input").fill("lofi");
+        await wait(500);
+        const found = await page.locator(".ln-result").count();
+        check(scope, found === 6, `the search track finds songs, albums, artists, playlists, podcasts and files (${found})`);
+        await page.locator(".ln-track").nth(4).evaluate((b) => b.click());
+        await wait(300);
+        await page.locator('.ln-sw[aria-label="Sky blue"]').evaluate((b) => b.click());
+        await wait(1000);
+        const tint = await page.evaluate(() => ({ acc: getComputedStyle(document.querySelector(".w-bz")).getPropertyValue("--bz-amber").trim(), kept: localStorage.getItem("blazify-colour") }));
+        check(scope, tint.acc !== "rgb(255, 167, 38)" && (tint.kept ?? "").includes("#039be5"), `a colour from the app's palette repaints the page (${tint.acc})`);
+        await page.locator(".ln-col .ln-textbtn").evaluate((b) => b.click());
+        await wait(900);
+        const back = await page.evaluate(() => ({ acc: getComputedStyle(document.querySelector(".w-bz")).getPropertyValue("--bz-amber").trim(), kept: localStorage.getItem("blazify-colour") }));
+        check(scope, back.acc === "rgb(255, 167, 38)" && back.kept === null, "back to Blaze puts the page's own colour back");
+        await page.locator(".ln-track").nth(7).evaluate((b) => b.click());
+        await wait(300);
+        for (const b of await page.locator(".ln-ns-str").all()) await b.evaluate((x) => x.click());
+        await wait(300);
+        const free = await page.evaluate(() => document.querySelector(".ln-ns").classList.contains("is-free"));
+        check(scope, free, "all three strings cut, and the phone floats free");
+        await page.screenshot({ path: `${OUT}/${vp.name}-blazify-notes.png` });
+        await page.locator(".bz-mini-play").evaluate((b) => b.click());
+        const paused = await page.evaluate(() => document.querySelector('[data-world="blazify"]').classList.contains("is-paused"));
+        check(scope, paused, "the mini player pauses");
+      }
+      if (pg.name === "fitevo") {
+        await wait(5000); // the hero logs its first meals by itself
+        const left = await page.evaluate(() => Number(document.querySelector(".fv-left").textContent));
+        check(scope, left < 2431, `a sentence becomes a logged meal (${left} kcal left)`);
+      }
+      if (pg.name === "nexterm") {
+        await page.locator(".nt-theme", { hasText: "Dracula" }).evaluate((b) => { b.scrollIntoView({ block: "center" }); b.click(); });
+        await wait(1200); // the page eases to the new colours over half a second, after the scroll
+        const bg = await page.evaluate(() => getComputedStyle(document.querySelector(".w-nx")).backgroundColor);
+        check(scope, bg === "rgb(40, 42, 54)", `nexterm theme repaints the page (${bg})`);
+        await page.evaluate(() => localStorage.removeItem("nexterm-theme"));
+      }
+      if (pg.name === "jarvis") {
+        await page.evaluate(() => scrollTo(0, 0));
+        await page.locator(".jv-reactor").click();
+        await wait(1200);
+        const said = await page.evaluate(() => document.querySelector(".jv-voice").textContent);
+        check(scope, said === "Yes sir.", `pressing the core wakes it ("${said}")`);
+        await page.locator(".jv-demo").evaluate((d) => d.scrollIntoView({ block: "center" }));
+        await wait(9000); // runs once by itself as it comes into view
+        const jv = await page.evaluate(() => ({
+          done: document.querySelectorAll(".jv-stage.is-done").length,
+          reply: document.querySelector(".jv-reply").textContent,
+        }));
+        check(scope, jv.done === 10 && jv.reply.startsWith("Done, sir. It's"), `one command lights all ten stages ("${jv.reply}")`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-jarvis-pipeline.png` });
+        await page.locator(".jv-gate").evaluate((g) => g.scrollIntoView({ block: "center" }));
+        await wait(1400);
+        const gate = async (risk, conf) => {
+          await page.locator(`.jv-gate-risk[data-risk="${risk}"]`).click();
+          await page.locator("#jv-conf").fill(String(conf));
+          return page.evaluate(() => document.querySelector(".jv-gate-out b").textContent);
+        };
+        const g = [await gate("LOW", 0.95), await gate("HIGH", 0.95), await gate("MEDIUM", 0.7), await gate("NONE", 0.3)];
+        check(scope, g.join() === "Acts,Asks first,Offers choices,Escalates", `the confidence gate decides (${g.join(", ")})`);
+      }
+      if (pg.name === "tally") {
+        await page.evaluate(() => scrollTo(0, 0));
+        const sky = async (m) => page.evaluate((m) => { const d = document.querySelector(".tl-range-input"); d.value = String(m); d.dispatchEvent(new Event("input", { bubbles: true })); const w = document.querySelector(".w-tl"); return [w.dataset.phase, w.dataset.tone]; }, m);
+        const noon = await sky(720), night = await sky(1380);
+        check(scope, noon.join() === "day,light" && night.join() === "night,dark", `the day dial turns the sky (${noon.join("/")} → ${night.join("/")})`);
+        await page.locator(".tl-check").click();
+        await wait(1300);
+        await page.locator(".tl-check").click();
+        await wait(1400);
+        const planted = await page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.tl-plant-tree[data-slot="0"]')).opacity));
+        check(scope, planted > 0.99, `checking in and out grows a tree (opacity ${planted})`);
+        await page.locator(".tl-now").click();
+        await page.screenshot({ path: `${OUT}/${vp.name}-tally-planted.png` });
+      }
+      if (pg.name === "r-ai") {
+        await page.evaluate(() => scrollTo(0, 0));
+        await wait(600);
+        await page.locator(".ra-stick").click();
+        await wait(900);
+        const out = await page.evaluate(() => document.querySelector(".ra-hero").dataset.drive);
+        await page.locator(".ra-stick").click();
+        await wait(900);
+        const back = await page.evaluate(() => document.querySelector(".ra-hero").dataset.drive);
+        check(scope, out === "out" && back === "in", `the drive unplugs and plugs back in (${out} → ${back})`);
+        await page.locator(".ra-model").nth(1).evaluate((b) => { b.scrollIntoView({ block: "center" }); b.click(); });
+        await wait(2600);
+        const pack = await page.evaluate(() => ({ on: document.querySelectorAll('.ra-model[aria-pressed="true"]').length, used: document.querySelector(".ra-used").textContent }));
+        check(scope, pack.on === 2 && pack.used === "3.8", `downloading a model fills the drive (${pack.on} models, ${pack.used} GB)`);
+        await page.locator('.ra-tab[data-tab="1"]').evaluate((b) => b.click());
+        const shot = await page.evaluate(() => [...document.querySelectorAll(".ra-shot")].findIndex((s) => s.classList.contains("is-on")));
+        check(scope, shot === 1, "the Image tab shows Image Studio");
+        await page.locator('.ra-mode[data-mode="img"]').evaluate((b) => b.click());
+        await wait(900);
+        const ram = await page.evaluate(() => [document.querySelector(".ra-seg-chat").getBoundingClientRect().width, document.querySelector(".ra-seg-img").getBoundingClientRect().width]);
+        check(scope, ram[0] < 1 && ram[1] > 20, `chat steps aside for the image engine (${ram.map(Math.round).join(" / ")} px)`);
+      }
+      if (pg.name === "vocabu") {
+        await page.evaluate(() => scrollTo(0, 0));
+        await page.locator(".vc-chip", { hasText: "eloquent" }).click();
+        await wait(900);
+        const word = await page.evaluate(() => document.querySelector(".vc-card header b").textContent);
+        check(scope, word === "eloquent", `the search looks up the app's own words ("${word}")`);
+        await page.locator(".vc-theme").click();
+        await wait(700);
+        const theme = await page.evaluate(() => [document.querySelector(".w-vc").dataset.theme, getComputedStyle(document.querySelector(".w-vc")).backgroundColor]);
+        check(scope, theme[0] === "dark" && theme[1] === "rgb(15, 23, 36)", `the page switches to the app's dark theme (${theme.join(", ")})`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-vocabu-dark.png` });
+        await page.locator(".vc-theme").click();
+        await page.evaluate(() => localStorage.removeItem("vocabu-theme"));
+        if (!vp.isMobile) {
+          await page.locator(".vc-deck").scrollIntoViewIfNeeded();
+          await wait(600);
+          const top = () => page.evaluate(() => [...document.querySelectorAll(".vc-dcard")].sort((a, b) => +getComputedStyle(b).zIndex - +getComputedStyle(a).zIndex)[0].querySelector("b").textContent);
+          const t0 = await top();
+          await page.locator(".vc-deck-btn.is-next").click();
+          await wait(900);
+          const t1 = await top();
+          check(scope, t0 !== t1, `the explore deck deals the next word (${t0} → ${t1})`);
+        }
+      }
+      await page.evaluate(() => scrollTo(0, 0));
+      await wait(600);
+    }
+
     }
 
     await scrollThrough(page);
@@ -701,15 +866,19 @@ for (const vp of VIEWPORTS) {
       check(scope, shown, "menu opens");
       await page.screenshot({ path: `${OUT}/${vp.name}-menu.png` });
     }
+    // A page change keeps the header (the same element, untouched) and dims the
+    // old page the moment the link is clicked.
+    await page.evaluate(() => (document.querySelector(".header").dataset.kept = "yes"));
     await page.click(".nav-list a[href='/projects']");
-    await wait(450);
-    const midway = await curtainClear(page);
+    await wait(90);
+    const dim = await page.evaluate(() => document.documentElement.classList.contains("is-leaving"));
     await page.screenshot({ path: `${OUT}/${vp.name}-transition.png` });
     await page.waitForURL("**/projects", { timeout: 5000 }).catch(() => {});
     await wait(2200);
-    check(scope, !midway, "curtain covers the screen mid-transition");
+    check(scope, dim, "the old page answers the click at once");
     check(scope, page.url().endsWith("/projects"), `lands on /projects (${page.url()})`);
-    check(scope, await curtainClear(page), "curtain lifts after navigating");
+    check(scope, await pageClear(page), "the new page is fully there after the change");
+    check(scope, await page.evaluate(() => document.querySelector(".header").dataset.kept === "yes"), "the header stays the same through the change");
     const state = await page.evaluate(() => ({
       h1: document.querySelector("h1 .sr-only")?.textContent.trim(),
       h1Visible: [...document.querySelectorAll("h1 .char")].every((c) => getComputedStyle(c).transform === "none" || /matrix\(1, 0, 0, 1, 0, 0\)/.test(getComputedStyle(c).transform)),

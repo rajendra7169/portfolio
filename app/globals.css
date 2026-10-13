@@ -10,7 +10,7 @@
   --color-paper: #f7fcff;    /* card bodies */
   --color-bolt: #f26b38;     /* ⚡ bullets */
 
-  --font-sig: var(--font-mrs), cursive;
+  --font-logo: var(--font-agustina), cursive;
   --font-body: var(--font-figtree), system-ui, sans-serif;
   --font-mono: var(--font-gsc), ui-monospace, monospace;
 }
@@ -281,29 +281,45 @@ main {
   }
 }
 
-/* ── Page transition curtain ────────────────────────────────────────────── */
-.curtain {
+/* ── Page changes ───────────────────────────────────────────────────────────
+   components/pageLeave.ts lays a copy of the old page over it and lifts it
+   away while the next page is put together underneath; the header, the scroll
+   bar and the back-to-top button sit above the cover, so they never move. */
+.page-leave {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  display: none;
+  z-index: 85;
+  overflow: hidden;
   pointer-events: none;
 }
-.motion-ok .curtain {
-  display: block;
-  pointer-events: auto;
-}
-/* Failsafe: if the script never takes over, the curtain still gets out of the way. */
-.motion-ok .curtain:not(.is-live) {
-  animation: curtain-failsafe 0.4s 4s forwards;
-}
-@keyframes curtain-failsafe {
-  to { opacity: 0; visibility: hidden; }
-}
-.curtain-layer {
+.page-leave-bg,
+.page-leave-sheet {
   position: absolute;
   inset: 0;
-  display: grid;
+}
+.page-leave-sheet {
+  overflow: hidden;
+}
+/* A thin bar runs along the top if the next page takes a moment. */
+.nav-loading {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 160;
+  height: 3px;
+  background: linear-gradient(90deg, #2f7fc1, #7cc8f0);
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0;
+  pointer-events: none;
+}
+.is-leaving .nav-loading {
+  opacity: 1;
+  animation: nav-loading 3s cubic-bezier(0.1, 0.7, 0.2, 1) 0.12s both;
+}
+@keyframes nav-loading {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(0.92); }
+}
 
 /* The portal: an app's screen growing to fill the window on the way into its page. */
 .portal {
@@ -312,19 +328,13 @@ main {
   z-index: 210;
   display: none;
   place-items: center;
+  pointer-events: none;
 }
-.curtain-layer--sky {
-  background: var(--color-card);
-}
-.curtain-layer--navy {
-  background: var(--color-navy);
-}
-.curtain-sig {
-  font-family: var(--font-sig);
-  font-size: clamp(56px, 9vw, 120px);
-  color: #fff;
-  padding: 0 0.3em;
-  clip-path: inset(0 100% 0 0);
+.portal-icon {
+  width: clamp(88px, 10vw, 140px);
+  aspect-ratio: 1;
+  background: center / contain no-repeat;
+  filter: drop-shadow(0 20px 40px rgb(0 0 0 / 0.35));
 }
 
 /* ── Scroll progress + back to top ──────────────────────────────────────── */

@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useRef, type ComponentProps, type MouseEvent, type ReactNode } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, type ComponentProps, type MouseEvent, type ReactNode } from "react";
+import { gsap, ScrollTrigger, holdSetups, runSetups } from "@/lib/gsap";
 import { useLenis } from "./SmoothScroll";
+import { leavePage, type Leaving } from "./pageLeave";
 
 const motionOk = () => !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Entrance animations queue here while the curtain is closed and run as it opens.
+// Entrance animations queue here while a page is on its way in, and run the
+// moment it is in place (inside the view transition, so they play live).
 let holding = typeof window !== "undefined" && motionOk();
 const queue: (() => void)[] = [];
 export function afterReveal(fn: () => void) {
@@ -20,92 +22,153 @@ function release() {
   queue.splice(0).forEach((fn) => fn());
 }
 
-const NavigateContext = createContext<(href: string) => void>(() => {});
+/**
+ * How to leave for the next page. Without `via`, it's a view transition: the
+ * header stays put, the old page lifts away, the page title glides to where the
+ * new one sits, and the new page plays its own entrance. With `via`, the page
+ * goes through a portal: a rectangle (`from`, usually an app's screen) grows to
+ * fill the window in `color`, with `icon` in the middle, and the next page
+ * reveals out of it.
+ */
+export type Via = { from: DOMRect; color: string; icon?: string };
+type Navigate = (href: string, via?: Via) => void;
+const NavigateContext = createContext<Navigate>(() => {});
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const lenis = useLenis();
-  const root = useRef<HTMLDivElement>(null);
-  const covered = useRef(true); // the curtain starts closed for the intro
   const busy = useRef(false);
+  const portal = useRef<HTMLDivElement>(null);
+  const viaPortal = useRef(false);
+  const arriving = useRef(false);
+  const leaving = useRef<Leaving | null>(null);
 
-  const parts = () => {
-    const el = root.current!;
-    return { layers: el.querySelectorAll<HTMLElement>(".curtain-layer"), sig: el.querySelector<HTMLElement>(".curtain-sig")! };
-  };
-
-  const open = (delay = 0) => {
-    const { layers, sig } = parts();
-    gsap.delayedCall(delay + 0.4, release);
-    gsap
-      .timeline({ delay, onComplete: () => void ((covered.current = false), (busy.current = false)) })
-      .to(sig, { autoAlpha: 0, y: -16, duration: 0.3, ease: "power2.in" })
-      .to([...layers].reverse(), { yPercent: -100, duration: 0.75, ease: "expo.inOut", stagger: 0.09 }, 0.1)
-      .set(root.current, { pointerEvents: "none" });
-  };
-
-  // First visit: write the signature, then lift the curtain.
-  useEffect(() => {
-    root.current!.classList.add("is-live");
-    if (!motionOk()) {
-      covered.current = false;
-      release();
-      return;
-    }
-    const { sig } = parts();
-    gsap.fromTo(sig, { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "power2.inOut", delay: 0.1 });
-    open(0.95);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // New route rendered under the closed curtain: reset scroll, re-measure, open.
-  useEffect(() => {
-    if (!covered.current || !busy.current) return;
+  const toTop = () => {
     lenis?.scrollTo(0, { immediate: true, force: true });
     window.scrollTo(0, 0);
+  };
+
+  // First visit: the page's own entrance plays straight away.
+  useEffect(() => {
+    release();
+  }, []);
+
+
+  // A page change, as the new page commits underneath the cover. Back to the top,
+  // and once the new page has painted, start clearing the cover (on the
+  // compositor). A frame later, with that already moving, the new page's
+  // animation set-ups and entrance run; the cover keeps fading smoothly while
+  // they do. (The heroes and scroll reveals are hidden by CSS until then.)
+  useLayoutEffect(() => {
+    if (!arriving.current) return;
+    arriving.current = false;
+    document.documentElement.classList.remove("is-leaving");
+    toTop();
     requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-      open(0.1);
+      const started = leaving.current?.arrive() ?? Promise.resolve();
+      leaving.current = null;
+      started.then(() => {
+        release(); // entrances play as soon as their own set-up runs
+        runSetups(() => {
+          // One last measure of everything, when the browser has a moment.
+          const idle = window.requestIdleCallback ?? ((fn: () => void) => window.setTimeout(fn, 200));
+          idle(() => ScrollTrigger.refresh(), { timeout: 1200 });
+          window.setTimeout(() => void (busy.current = false), 300);
+        });
+      });
     });
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const navigate = (href: string) => {
+  // The new route has rendered.
+  useEffect(() => {
+    // Through the portal: reset, re-measure, and open it.
+    if (!viaPortal.current || !busy.current) return;
+    toTop();
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      viaPortal.current = false;
+      runSetups(); // under the portal, so the world is ready when it opens
+      gsap.delayedCall(0.25, release);
+      gsap
+        .timeline({ delay: 0.1, onComplete: () => void (busy.current = false) })
+        .to(portal.current!.querySelector(".portal-icon"), { scale: 0.6, autoAlpha: 0, duration: 0.35, ease: "power2.in" })
+        .to(portal.current, { autoAlpha: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+        .set(portal.current, { display: "none" });
+    });
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const navigate: Navigate = (href, via) => {
     if (href === pathname) {
       lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
-    if (!motionOk()) return router.push(href);
     if (busy.current) return;
+    if (!motionOk()) return router.push(href);
+    if (via) {
+      busy.current = true;
+      holding = true; // the next page's entrance waits for the portal to open
+      const el = portal.current!;
+      const img = el.querySelector<HTMLElement>(".portal-icon")!;
+      const r = via.from;
+      const inset = (t: number, rt: number, b: number, l: number, round: number) => `inset(${t}px ${rt}px ${b}px ${l}px round ${round}px)`;
+      img.style.backgroundImage = via.icon ? `url("${via.icon}")` : "none";
+      gsap
+        .timeline()
+        .set(el, { display: "grid", autoAlpha: 1, background: via.color, clipPath: inset(r.top, innerWidth - r.right, innerHeight - r.bottom, r.left, 28) })
+        .set(img, { autoAlpha: via.icon ? 1 : 0, scale: 0.5 })
+        .to(el, { clipPath: inset(0, 0, 0, 0, 0), duration: 0.75, ease: "expo.inOut" })
+        .to(img, { scale: 1, duration: 0.6, ease: "back.out(1.8)" }, 0.25)
+        .add(() => {
+          viaPortal.current = true;
+          holdSetups();
+          router.push(href, { scroll: false });
+        });
+      return;
+    }
+    // The click answers at once: a copy of this page lifts away (pageLeave.ts),
+    // a loading bar runs if the next page takes a moment, and the new page is
+    // put together underneath.
     busy.current = true;
-    const { layers, sig } = parts();
-    holding = true; // the next page's entrance animations wait for the curtain
-    gsap
-      .timeline()
-      .set(root.current, { pointerEvents: "auto" })
-      .set(layers, { yPercent: 100 })
-      .set(sig, { autoAlpha: 1, y: 0, clipPath: "inset(0 100% 0 0)" })
-      .to(layers, { yPercent: 0, duration: 0.65, ease: "expo.inOut", stagger: 0.09 })
-      .to(sig, { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power2.inOut" }, "-=0.25")
-      .add(() => {
-        covered.current = true;
-        router.push(href, { scroll: false });
-      });
+    holding = true;
+    arriving.current = true;
+    const html = document.documentElement;
+    html.classList.add("is-leaving");
+    leaving.current = leavePage();
+    holdSetups();
+    // Swap only once the lift is running on its own (see pageLeave.ts).
+    const go = () => router.push(href, { scroll: false });
+    if (leaving.current) leaving.current.ready.then(go, go);
+    else go();
+    window.setTimeout(() => {
+      // If the route never arrives (a failed load), put everything back.
+      if (!arriving.current) return;
+      arriving.current = false;
+      busy.current = false;
+      html.classList.remove("is-leaving");
+      leaving.current?.cancel();
+      leaving.current = null;
+      release();
+      runSetups();
+    }, 8000);
   };
 
   return (
     <NavigateContext.Provider value={navigate}>
       {children}
-      <div className="curtain" ref={root} aria-hidden="true">
-        <div className="curtain-layer curtain-layer--sky" />
-        <div className="curtain-layer curtain-layer--navy">
-          <span className="curtain-sig">Rajendra Pandey</span>
-        </div>
+      <div className="nav-loading" aria-hidden="true" />
+      <div className="portal" ref={portal} aria-hidden="true">
+        {/* the app's icon, set when a portal opens (a span, so no empty <img> sits on every page) */}
+        <span className="portal-icon" />
       </div>
     </NavigateContext.Provider>
   );
 }
 
-/** Internal link that plays the curtain transition. Modifier-clicks still open new tabs. */
+/** The page navigation itself, for code that plays its own exit first (the app launcher). */
+export const useNavigate = () => useContext(NavigateContext);
+
+/** Internal link that plays the page transition. Modifier-clicks still open new tabs. */
 export function TransitionLink({ href, onClick, ...rest }: ComponentProps<typeof Link> & { href: string }) {
   const navigate = useContext(NavigateContext);
   const handle = (e: MouseEvent<HTMLAnchorElement>) => {
