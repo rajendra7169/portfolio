@@ -222,6 +222,62 @@ export const schoolStop: PathStop | null = {
   stamp: ["Passed SLC", "2014"],
   scene: "school",
 };
+// The story between the stops, in order: each moment follows the stop whose
+// scene is `after`, and draws itself on the path (components/edu/Moments.tsx).
+export type PathMoment = {
+  after: PathStop["scene"];
+  scene: "kathmandu" | "english" | "visa" | "bbs" | "project" | "convocation" | "now";
+  title: string;
+  line: string;
+  year?: number;
+  link?: { label: string; href: string };
+};
+export const pathMoments: PathMoment[] = [
+  {
+    after: "school",
+    scene: "kathmandu",
+    title: "Village to Kathmandu",
+    line: "Every subject at my village's government school was taught in Nepali. After the SLC I came to Kathmandu: a new city, new people, new challenges.",
+  },
+  {
+    after: "school",
+    scene: "english",
+    title: "Learning in English",
+    line: "+2 was taught in English, and I had only ever studied in Nepali. Some people laughed at me. I kept a notebook of words and learned them one by one.",
+  },
+  {
+    after: "ledger",
+    scene: "visa",
+    title: "Visa refused",
+    line: "After +2 I applied to study abroad. The visa was refused, and the money I had spent on it was gone.",
+  },
+  {
+    after: "ledger",
+    scene: "bbs",
+    title: "Lost, then a direction",
+    line: "I joined BBS and left it. Stressed and confused, I didn't know what came next, until computers caught my interest.",
+  },
+  {
+    after: "stack",
+    scene: "project",
+    title: "The final-year project",
+    line: "It failed. Then it was rejected. I rebuilt it until it passed.",
+  },
+  {
+    after: "paper",
+    scene: "convocation",
+    title: "Convocation",
+    line: "The bachelor's gave me far more than a degree: programming, data structures, databases and AI. Then a cap to throw.",
+  },
+  {
+    after: "paper",
+    scene: "now",
+    title: "Here now",
+    line: "Since 2025 I've worked at Matrika Technology, and the job has taught me more than any classroom. That's how I got here.",
+    year: 2025,
+    link: { label: "See my experience", href: "/experience" },
+  },
+];
 export const journey = [
   { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"], scene: "ledger" },
   { year: 2021, degree: degrees[0], stamp: ["Graduated", "2024"], scene: "stack" },

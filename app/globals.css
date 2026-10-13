@@ -2699,6 +2699,7 @@ main {
    pinned horizontal journey with a wave path, a rider and a year counter. */
 .ep {
   --card-w: min(1000px, 68vw);
+  --moment-w: min(1120px, 72vw);
   position: relative;
   padding-top: clamp(64px, 10vh, 120px);
 }
@@ -2721,8 +2722,7 @@ main {
   position: relative;
 }
 .ep-year,
-.ep-line,
-.ep-end {
+.ep-line {
   display: none;
 }
 .ep-track {
@@ -2905,11 +2905,12 @@ main {
   align-items: flex-start;
   width: max-content;
   height: 100%;
-  padding: calc(var(--header-h) - 4px) 0 0 calc(50vw - var(--card-w) / 2);
+  /* the first card and the last moment can each sit in the middle */
+  padding: calc(var(--header-h) - 4px) calc(50vw - var(--moment-w) / 2) 0 calc(50vw - var(--card-w) / 2);
 }
 .ep.is-rail .ep-stops {
   display: flex;
-  gap: 22vw;
+  gap: 8vw;
   padding: 0;
 }
 .ep.is-rail .ep-stop::before,
@@ -3008,24 +3009,86 @@ main {
   -webkit-text-stroke: 2px rgb(0 28 85 / 0.08);
   pointer-events: none;
 }
-.ep.is-rail .ep-end {
+/* The story between the stops (components/edu/Moments.tsx): no card, just
+   the words and a scene drawn straight onto the sky. */
+.ep-moment {
+  position: relative;
+}
+.ep-moment-text {
+  max-width: 62ch;
+}
+.ep-moment-title {
+  font-size: clamp(22px, 2vw, 34px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.ep-moment-line {
+  margin-top: 8px;
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.55;
+  color: #2f4f80;
+}
+.ep-moment-link {
+  margin-top: 14px;
+}
+.ep-moment .ep-scene {
+  margin-top: 16px;
+  border-radius: 0;
+  background: none;
+}
+.ep.is-rail .ep-moment {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 40vw;
-  height: 70%;
-  padding-left: 10vw;
+  width: var(--moment-w);
+  height: calc(78svh - var(--header-h));
 }
-.ep-end span {
-  font: 500 13px var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #2f7fc1;
+.ep.is-rail .ep-moment .ep-scene {
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
 }
-.ep-end b {
-  font-size: clamp(32px, 3.4vw, 56px);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.ep.is-rail .ep-moment .ep-scene svg {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+
+/* The pen that travels the path: placed by EduPathMotion at its tip, which is
+   each tool's 0,0. Hidden unless the motion runs. */
+.ep-pen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 90;
+  display: none;
+  pointer-events: none;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 10px 10px rgb(0 28 85 / 0.28));
+}
+.ep.is-pen .ep-pen {
+  display: block;
+}
+.ep-pen-tool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform-origin: 0 0;
+}
+.ep-pen-tool svg {
+  position: absolute;
+  display: block;
+  overflow: visible;
+}
+.ep-pen.is-idle [data-tool="cursor"] svg {
+  animation: ep-blink 1s steps(1) infinite;
+}
+@keyframes ep-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ── Experience: hero with the lanyard badge ──────────────────────────────
@@ -6223,6 +6286,19 @@ a.xh-co:hover {
     width: 165%;
     max-width: none;
     max-height: none;
+  }
+  .ep-moment .ep-scene svg {
+    width: 200%;
+  }
+  .ep-moment::before {
+    content: "";
+    position: absolute;
+    left: -34px;
+    top: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2f7fc1;
   }
   .ep-stamp {
     width: 96px;
