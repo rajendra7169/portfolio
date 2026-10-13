@@ -48,12 +48,15 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     };
     const scrollTo = instance.scrollTo.bind(instance);
     instance.scrollTo = (...args: Parameters<Lenis["scrollTo"]>) => {
+      // The glide starts first: waking a sleeping ticker runs a frame right away,
+      // and that frame, finding nothing gliding yet, would take Lenis straight off.
+      const out = scrollTo(...args);
       if (!awake) {
         awake = true;
         fresh = true;
         gsap.ticker.add(raf);
       }
-      return scrollTo(...args);
+      return out;
     };
     gsap.ticker.lagSmoothing(0);
     setLenis(instance);
