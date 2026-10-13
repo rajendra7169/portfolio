@@ -196,7 +196,7 @@ export default function Hero() {
               <div className="hx-chip">
                 <span className="hx-chip-icon" aria-hidden="true">💼</span>
                 <span>
-                  <b>Software Developer</b>
+                  <b>Software Engineer</b>
                   <small>@ Matrika Technology</small>
                 </span>
               </div>

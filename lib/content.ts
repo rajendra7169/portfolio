@@ -229,29 +229,7 @@ export const paperStop = {
 
 export const experience = {
   intro:
-    "I work as a software developer at Matrika Technology in Kathmandu, which makes IRD-certified jewellery billing and management software for Nepali jewellers. Outside work I build and maintain Blazify, a free and open-source music player for Android, iPhone and desktop.",
-  roles: [
-    {
-      title: "Software Developer",
-      company: "Matrika Technology",
-      where: "Kathmandu, Nepal",
-      when: "Present",
-      points: [
-        "Building IRD-certified billing and management software for Nepali jewellers",
-      ],
-    },
-    {
-      title: "Creator & Maintainer",
-      company: "Blazify",
-      where: "Open source",
-      when: "2026",
-      points: [
-        "Native apps for Android (Kotlin), iPhone (SwiftUI) and desktop (Linux & Windows)",
-        "Runs Blazify's own Listen Together server, written in Go on Docker",
-        "Free and open source: no ads, no tracking, no account needed",
-      ],
-    },
-  ],
+    "I work as a software engineer at Matrika Technology in Kathmandu, which makes IRD-certified jewellery billing and management software for Nepali jewellers. Outside work I build and maintain Blazify, a free and open-source music player for Android, iPhone and desktop.",
 };
 
 // His work history, newest first: the Experience page's positions (as git
@@ -382,6 +360,14 @@ export type Commit = {
 };
 export const careerLog: Commit[] = [
   {
+    date: "2024-05-01",
+    lane: "main",
+    type: "work",
+    scope: "yarsa",
+    title: "game developer intern at Yarsa Games",
+    body: "Small game projects in Unity and C++, and the basics of 3D modelling in Blender, over the summer.",
+  },
+  {
     date: "2024-09-20",
     lane: "main",
     type: "feat",
@@ -397,6 +383,23 @@ export const careerLog: Commit[] = [
     title: "publish the final-year paper",
     body: "Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB — published December 20, 2024.",
     tag: "BSc. IT",
+  },
+  {
+    date: "2025-02-16",
+    lane: "main",
+    type: "work",
+    scope: "matrika",
+    title: "software engineering intern at Matrika Technology",
+    body: "Features and fixes across J-Jewellery's mobile app, web app and .NET back end: IRD-certified billing and management software for Nepali jewellers.",
+  },
+  {
+    date: "2025-05-18",
+    lane: "main",
+    type: "merge",
+    scope: "matrika",
+    title: "promoted to software engineer",
+    body: "Taken on as a software engineer after three months as an intern.",
+    tag: "promoted",
   },
   {
     date: "2026-05-04",
@@ -486,8 +489,8 @@ export const careerLog: Commit[] = [
     date: "now",
     lane: "main",
     type: "work",
-    title: "Software Developer at Matrika Technology",
-    body: "IRD-certified jewellery billing and management software for Nepali jewellers, in Kathmandu.",
+    title: "Software Engineer at Matrika Technology",
+    body: "J-Jewellery end to end: the Android and iOS app in Flutter, the C# and ASP.NET Core back end, React web apps, and services on Linux, Supabase, Cloudflare and Firebase.",
     tag: "HEAD",
   },
 ];

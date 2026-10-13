@@ -101,19 +101,25 @@ export default function ExpLogMotion({ children }: { children: ReactNode }) {
           }),
         );
 
-        // Branch cards rise in; each branch name decodes.
-        gsap.from(q(".xg-branch"), {
-          y: 60,
-          autoAlpha: 0,
+        // Positions: HEAD rises in and lays out its four areas, then the other
+        // branches follow; every branch name decodes as it lands.
+        const decode = (refs: Element[]) =>
+          refs.forEach((b, i) =>
+            gsap.to(b, { scrambleText: { text: b.textContent ?? "", chars: "abcdefghijklmnopqrstuvwxyz-/", speed: 0.6 }, duration: 0.9, delay: i * 0.12 }),
+          );
+        const head = gsap.timeline({ scrollTrigger: { trigger: q(".xp-now")[0], start: "top 82%", once: true } });
+        head
+          .fromTo(q(".xp-now"), { y: 60, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, ease: "power3.out", onStart: () => decode(q(".xp-now .xp-ref b")) })
+          .fromTo(q(".xp-area"), { y: 26, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.09, ease: "power3.out" }, 0.35)
+          .fromTo(q(".xp-merge"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.6 }, 0.8);
+        gsap.fromTo(q(".xp-card"), { y: 60, autoAlpha: 0 }, {
+          y: 0,
+          autoAlpha: 1,
           duration: 1,
-          stagger: 0.15,
+          stagger: 0.14,
           ease: "power3.out",
-          scrollTrigger: { trigger: q(".xg-branches")[0], start: "top 80%", once: true },
-          onStart() {
-            q(".xg-branch-ref b").forEach((b, i) =>
-              gsap.to(b, { scrambleText: { text: b.textContent ?? "", chars: "abcdefghijklmnopqrstuvwxyz-", speed: 0.6 }, duration: 0.9, delay: i * 0.15 }),
-            );
-          },
+          scrollTrigger: { trigger: q(".xp-others")[0], start: "top 84%", once: true },
+          onStart: () => decode(q(".xp-card .xp-ref b")),
         });
 
         // The graph draws itself as you scroll, with HEAD riding the edge.

@@ -1,11 +1,51 @@
-// Experience body: positions as `git branch`, then the work as `git log --graph`
-// with a sticky terminal (desktop) running `git show` for the commit in view.
+// Experience body: positions as `git branch` (the current job checked out as
+// HEAD, the rest as branches that are active, merged or done), then the work as
+// `git log --graph` with a sticky terminal (desktop) running `git show` for the
+// commit in view.
+import Icon from "@/components/Icon";
 import { Chars } from "@/components/Motion";
-import { careerLog, experience, type Commit } from "@/lib/content";
+import { careerLog, span, work, type Commit, type Position, type Tech } from "@/lib/content";
 import ExpLogMotion from "./ExpLogMotion";
+import Tenure from "./Tenure";
 
 const LANE_NAME: Record<Commit["lane"], string> = { main: "main", side: "side-projects", blazify: "blazify" };
-const BRANCHES = ["main", "blazify"] as const; // one per role, in order
+const STATUS: Record<Position["status"], string> = { head: "HEAD", active: "active", merged: "merged", done: "completed" };
+
+/** Whole months between two ISO dates, rounded: "3 months". */
+function months(p: Position) {
+  const [a, b] = [new Date(`${p.start}T00:00:00Z`), new Date(`${p.end}T00:00:00Z`)];
+  const n = Math.max(1, Math.round((b.getTime() - a.getTime()) / (30.44 * 864e5)));
+  return `${n} month${n === 1 ? "" : "s"}`;
+}
+const host = (url: string) => url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+function Stack({ techs }: { techs: Tech[] }) {
+  return (
+    <ul className="xp-stack" aria-label="Built with">
+      {techs.map((t) => (
+        <li key={t.name}>
+          <Icon icon={t.icon} color={t.color} />
+          {t.name}
+        </li>
+      ))}
+    </ul>
+  );
+}
+function Org({ p }: { p: Position }) {
+  return (
+    <p className="xp-org">
+      {p.website ? (
+        <a href={p.website} target="_blank" rel="noreferrer" className="xg-branch-site">
+          {p.org}
+        </a>
+      ) : (
+        p.org
+      )}
+      <span aria-hidden="true"> · </span>
+      {p.where}
+    </p>
+  );
+}
 
 /** "2026-07-15" → "Wed Jul 15 2026" (git's date style); "now" stays "now". */
 function gitDate(iso: string) {
@@ -21,6 +61,9 @@ const repoPath = (url?: string) => url?.replace("https://github.com/", "") ?? "l
 
 export default function ExpLog() {
   const last = careerLog.length - 1;
+  const now = work.find((p) => p.status === "head")!;
+  const merged = work.find((p) => p.status === "merged");
+  const others = work.filter((p) => p !== now);
 
   return (
     <ExpLogMotion>
@@ -31,25 +74,90 @@ export default function ExpLog() {
             <Chars text="Positions" />
           </h2>
         </header>
-        <ul className="xg-branches">
-          {experience.roles.map((r, i) => (
-            <li className={`xg-branch xg-branch--${BRANCHES[i]}`} key={r.company}>
-              <div className="xg-branch-in">
-                <p className="xg-branch-ref">
-                  <span aria-hidden="true">{i === 0 ? "*" : " "}</span>
-                  <b>{BRANCHES[i]}</b>
-                  <small>{r.when}</small>
-                </p>
-                <h3 className="xg-branch-title">{r.title}</h3>
-                <p className="xg-branch-org">
-                  {r.company} · {r.where}
-                </p>
-                <ul className="points points--dark xg-branch-points">
-                  {r.points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
+        {/* The job checked out right now: HEAD. */}
+        <article className="xp-now" aria-labelledby="xp-now-title">
+          <div className="xp-now-in">
+            <p className="xp-ref">
+              <span className="xp-star" aria-hidden="true">
+                *
+              </span>
+              <b>{now.branch}</b>
+              <span className="xp-pill xp-pill--head">HEAD</span>
+              <span className="xp-live">
+                <i aria-hidden="true" /> current
+              </span>
+            </p>
+            <div className="xp-now-top">
+              <div>
+                <h3 className="xp-title" id="xp-now-title">
+                  {now.title}
+                </h3>
+                <Org p={now} />
               </div>
+              <p className="xp-tenure">
+                <Tenure start={now.start} />
+                <time>
+                  {span(now)}
+                  {now.website && (
+                    <a href={now.website} target="_blank" rel="noreferrer" className="xg-branch-url">
+                      {host(now.website)}
+                    </a>
+                  )}
+                </time>
+              </p>
+            </div>
+            <p className="xp-summary">{now.summary}</p>
+            <ul className="xp-areas">
+              {(now.areas ?? []).map((a) => (
+                <li className="xp-area" key={a.name}>
+                  <span className="xp-area-icons" aria-hidden="true">
+                    {a.stack.map((t) => (
+                      <Icon key={t.name} icon={t.icon} color={t.color} />
+                    ))}
+                  </span>
+                  <h4>{a.name}</h4>
+                  <p>{a.text}</p>
+                </li>
+              ))}
+            </ul>
+            {merged && (
+              <p className="xp-merge">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm0 2.122a2.25 2.25 0 1 0-1.5 0v5.256a2.25 2.25 0 1 0 1.5 0V9.4A3.98 3.98 0 0 0 8 10.75h1.878a2.25 2.25 0 1 0 0-1.5H8A2.5 2.5 0 0 1 5.5 6.75v-.128A2.25 2.25 0 0 0 5 5.372ZM4.25 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm7.5-3.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
+                </svg>
+                <span>
+                  Started here as an intern: <a href={`#${merged.branch.replace("/", "-")}`}>{merged.branch}</a>, merged into this branch on{" "}
+                  {new Date(`${merged.end}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" })}.
+                </span>
+              </p>
+            )}
+          </div>
+        </article>
+
+        {/* Everything else: active, merged or done. */}
+        <ul className="xp-others">
+          {others.map((p) => (
+            <li className={`xp-card xp-card--${p.status}`} id={p.branch.replace("/", "-")} key={p.branch}>
+              <p className="xp-ref">
+                <span className="xp-star" aria-hidden="true" />
+                <b>{p.branch}</b>
+                <span className={`xp-pill xp-pill--${p.status}`}>{STATUS[p.status]}</span>
+              </p>
+              <h3 className="xp-title xp-title--card">{p.title}</h3>
+              <Org p={p} />
+              <p className="xp-when">
+                <time>{span(p)}</time>
+                <span aria-hidden="true"> · </span>
+                {p.end ? months(p) : <Tenure start={p.start} />}
+              </p>
+              <p className="xp-card-summary">{p.summary}</p>
+              <ul className="points points--dark xp-points">
+                {p.points.map((pt) => (
+                  <li key={pt}>{pt}</li>
+                ))}
+              </ul>
+              <Stack techs={p.stack} />
+              {p.merged && <p className="xp-merged">{p.merged}</p>}
             </li>
           ))}
         </ul>
