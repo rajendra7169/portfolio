@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Figtree, Google_Sans_Code } from "next/font/google";
+import { Figtree, Google_Sans_Code, Literata, Martel } from "next/font/google";
 import localFont from "next/font/local";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -14,6 +14,10 @@ import { Footer } from "@/components/Bits";
 const body = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
 const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", display: "swap" });
 // Logo: Agustina, the signature font of the original rajendrapandey.info.np logo.
+// Stories (and the welcome into it): Martel for Devanagari, Literata for reading.
+// Neither is preloaded; each downloads only when its text is on screen.
+const devanagari = Martel({ subsets: ["devanagari"], weight: ["400", "700", "800"], variable: "--font-martel", display: "swap", preload: false });
+const reading = Literata({ subsets: ["latin", "latin-ext"], style: ["normal", "italic"], axes: ["opsz"], variable: "--font-literata", display: "swap", preload: false });
 const logo = localFont({ src: "./fonts/Agustina.woff", weight: "400", variable: "--font-agustina", display: "swap" });
 
 export const metadata: Metadata = {
@@ -31,7 +35,7 @@ const motionFlag = `if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${body.variable} ${mono.variable} ${logo.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${body.variable} ${mono.variable} ${logo.variable} ${devanagari.variable} ${reading.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: motionFlag }} />
       </head>

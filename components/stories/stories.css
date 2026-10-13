@@ -1,0 +1,2000 @@
+/* ── Stories ────────────────────────────────────────────────────────────────
+   The other side of the site: ink on white paper instead of sky and navy.
+   Literata for reading, Martel for Devanagari (each fills in the script the
+   other lacks), Figtree for the interface. One accent, the crimson of lali
+   gurans (rhododendron), used sparingly. The one bold thing is the masthead,
+   whose words hang from a long ink bar the way Devanagari letters hang from
+   the shirorekha. */
+
+.st-root {
+  --paper: #fbfbf9;
+  --white: #ffffff;
+  --ink: #16171b;
+  --ink-2: #3a3b42;
+  --muted: #66676e;
+  --rule: #e4e4df;
+  --rule-2: #cfcfc8;
+  --wash: #f2f2ee;
+  --accent: #b4153e;
+  --accent-wash: #fbe8ed;
+  --ok: #1f6b3e;
+  --t-blog: #2b3f8c;
+  --t-story: #2f6b4f;
+  --t-gajal: #b4153e;
+  --t-kabita: #b45309;
+  --read: var(--font-literata), var(--font-martel), Georgia, serif;
+  --deva: var(--font-martel), var(--font-literata), serif;
+  --ui: var(--font-figtree), var(--font-martel), system-ui, sans-serif;
+  --st-gutter: clamp(16px, 4vw, 72px);
+  --measure: 700px; /* the reading column */
+  --rail: clamp(290px, 23vw, 380px);
+  --st-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --top-h: 64px;
+  --head-h: 112px; /* the header with its row of kinds */
+
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper-grain), var(--paper);
+  color: var(--ink);
+  font-family: var(--ui);
+  font-size: 16px;
+  line-height: 1.55;
+}
+.st-root ::selection {
+  background: var(--accent);
+  color: #fff;
+}
+.st-root :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.st-root :lang(ne) {
+  line-height: 1.6;
+}
+.st-root .st-mast-title {
+  line-height: 1.6; /* the welcome overlay (globals.css) matches this, so its words land exactly here */
+}
+
+/* The portfolio's own frame steps aside while Stories is open (only the live
+   page: a copy of it lifting away during a page change doesn't count). */
+:root:has(#main > .st-root),
+:root:has(#main > .st-root) body {
+  background: #fbfbf9;
+  color: #16171b;
+}
+:root:has(#main > .st-root) .header:not(.is-copy),
+:root:has(#main > .st-root) .footer,
+:root:has(#main > .st-root) .progress,
+:root:has(#main > .st-root) .to-top,
+:root:has(#main > .st-root) .cursor {
+  display: none !important;
+}
+
+.st-wrap {
+  width: min(1800px, 100% - 2 * var(--st-gutter));
+  margin-inline: auto;
+}
+.st-narrow {
+  width: min(640px, 100% - 2 * var(--st-gutter));
+}
+.st-page {
+  flex: 1;
+  padding-bottom: 96px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-page {
+    animation: st-in 0.5s var(--st-ease) both;
+  }
+}
+@keyframes st-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+/* ── Buttons and fields ─────────────────────────────────────────────────── */
+.st-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 14px/1 var(--ui);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+.st-btn:hover {
+  background: #000;
+}
+.st-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.st-btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-2);
+}
+.st-btn--ghost:hover {
+  background: var(--wash);
+  border-color: var(--ink);
+}
+.st-btn--quiet {
+  background: none;
+  border-color: transparent;
+  color: var(--muted);
+  padding: 0 8px;
+}
+.st-btn--quiet:hover {
+  background: none;
+  color: var(--ink);
+  text-decoration: underline;
+}
+.st-btn--danger {
+  background: none;
+  color: var(--accent);
+  border-color: #e7b9c5;
+}
+.st-btn--danger:hover {
+  background: var(--accent-wash);
+}
+.st-btn--wide {
+  width: 100%;
+}
+
+.st-form {
+  display: grid;
+  gap: 16px;
+}
+.st-field {
+  display: grid;
+  gap: 6px;
+}
+.st-field > span {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.st-field input,
+.st-field textarea,
+.st-field select,
+.st-composer textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--rule-2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: 16px/1.5 var(--ui);
+}
+.st-field input:focus,
+.st-field textarea:focus,
+.st-composer textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgb(22 23 27 / 0.08);
+}
+.st-field small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.st-form-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.st-error {
+  margin: 0;
+  color: var(--accent);
+  font-size: 14px;
+}
+.st-ok {
+  margin: 0;
+  color: var(--ok);
+  font-size: 14px;
+}
+.st-note {
+  color: var(--muted);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.st-top {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgb(251 251 249 / 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.st-top-in {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  width: min(1800px, 100% - 2 * var(--st-gutter));
+  height: var(--top-h);
+  margin-inline: auto;
+}
+.st-back {
+  justify-self: start;
+  display: inline-flex;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.st-back:hover {
+  color: var(--ink);
+}
+.st-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--ink);
+}
+.st-brand span {
+  font: 800 25px/1 var(--deva);
+}
+.st-brand small {
+  font: 600 13px/1 var(--ui);
+  color: var(--muted);
+}
+.st-top-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.st-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.st-search-icon {
+  position: absolute;
+  left: 10px;
+  display: grid;
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  cursor: text;
+}
+.st-search svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+.st-search input {
+  width: 190px;
+  height: 38px;
+  padding: 0 12px 0 36px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--wash);
+  font: 14px var(--ui);
+  color: var(--ink);
+  transition:
+    width 0.25s var(--st-ease),
+    background 0.15s;
+}
+.st-search input:focus {
+  outline: none;
+  background: var(--white);
+  border-color: var(--rule-2);
+}
+.st-account {
+  position: relative;
+}
+.st-account-btn {
+  display: grid;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.st-account-wait {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--wash);
+}
+.st-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 50;
+  display: grid;
+  min-width: 210px;
+  padding: 6px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--white);
+  box-shadow: 0 16px 40px -12px rgb(22 23 27 / 0.22);
+}
+.st-menu-who {
+  display: grid;
+  margin: 0;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 4px;
+}
+.st-menu-who small {
+  color: var(--muted);
+}
+.st-menu a,
+.st-menu button {
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  font: 500 14px var(--ui);
+  text-align: left;
+  cursor: pointer;
+}
+.st-menu a:hover,
+.st-menu button:hover {
+  background: var(--wash);
+}
+
+.st-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  width: min(1800px, 100% - 2 * var(--st-gutter));
+  min-height: 46px;
+  margin-inline: auto;
+  padding-bottom: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.st-tabs a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.st-tabs a span {
+  font-family: var(--deva);
+  font-weight: 700;
+}
+.st-tabs a:hover {
+  background: var(--wash);
+}
+.st-tabs a[aria-current="page"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* ── Shared bits ────────────────────────────────────────────────────────── */
+.st-avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  object-fit: cover;
+  background: hsl(var(--h) 45% 88%);
+  color: hsl(var(--h) 45% 28%);
+  font-family: var(--ui);
+  font-weight: 700;
+  line-height: 1;
+}
+.st-type {
+  --c: var(--ink-2);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--c);
+  font: 600 13px/1.2 var(--ui);
+}
+.st-type::before {
+  content: "";
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.st-type [lang="ne"] {
+  font-family: var(--deva);
+  font-weight: 700;
+}
+.st-type--blog {
+  --c: var(--t-blog);
+}
+.st-type--story {
+  --c: var(--t-story);
+}
+.st-type--gajal {
+  --c: var(--t-gajal);
+}
+.st-type--kabita {
+  --c: var(--t-kabita);
+}
+.st-byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-byline-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.st-byline-who:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+.st-byline-stats {
+  display: inline-flex;
+  gap: 10px;
+}
+.st-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 72px var(--st-gutter);
+  color: var(--muted);
+  text-align: center;
+}
+.st-empty-title {
+  margin: 0;
+  color: var(--ink);
+  font: 600 26px/1.25 var(--read);
+}
+.st-empty a,
+.st-note a,
+.st-draft-note a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+.st-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 96px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.st-loading-ink {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-loading-ink {
+    animation: st-drip 1s ease-in-out infinite;
+  }
+}
+@keyframes st-drip {
+  50% {
+    translate: 0 8px;
+    scale: 0.7;
+    opacity: 0.4;
+  }
+}
+
+/* ── Layout: writing on the left, the rail on the right ─────────────────── */
+.st-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--rail);
+  gap: clamp(36px, 5vw, 96px);
+}
+.st-main {
+  min-width: 0;
+}
+.st-rail {
+  min-width: 0;
+}
+/* The rail stays in view while the writing scrolls (Rail.tsx sets where it holds). */
+.st-rail-in {
+  position: sticky;
+  top: calc(var(--head-h) + 20px);
+  padding-top: 4px;
+}
+.st-rail-block + .st-rail-block {
+  margin-top: 40px;
+}
+
+/* A heading in two languages: the Nepali word hangs from a bar the width of
+   its column (at 21px, Martel 700's headline stroke sits 0.375em down at this
+   line height, two pixels thick: measured), the English sits beside it. */
+.st-hang {
+  position: relative;
+  margin: 0 0 14px;
+  color: var(--ink);
+  font: 700 21px / 1.6 var(--deva);
+}
+.st-hang::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--hl-top, 0.375em);
+  height: var(--hl-h, 2px);
+  background: currentColor;
+}
+.st-hang small {
+  margin-left: 4px;
+  color: var(--muted);
+  font: 500 13px var(--ui);
+}
+
+/* A link whose whole card is its target; anything that is its own link sits above. */
+.st-stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.st-entry .st-byline,
+.st-mini small,
+.st-lead .st-byline {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── The masthead ───────────────────────────────────────────────────────── */
+.st-mast {
+  --mast: clamp(42px, 12vw, 240px);
+  --mast-pad: clamp(18px, 2.6vw, 44px);
+  position: relative;
+  padding: var(--mast-pad) 0 clamp(28px, 3.4vw, 56px);
+}
+.st-mast-title {
+  position: relative;
+  margin: 0;
+  color: var(--ink);
+  font: 800 var(--mast) / 1.6 var(--deva);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.st-root .st-mast-title {
+  line-height: 1.6; /* the welcome (globals.css) lays its words out the same, so they land exactly here */
+}
+/* The bar runs the whole width of the window, through the tops of the words
+   (0.409em down the title's line and 0.104em thick: Martel 800's headline, measured). */
+.st-mast-bar {
+  position: absolute;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  top: var(--bar-top, calc(var(--mast-pad) + 0.409 * var(--mast)));
+  height: var(--bar-h, calc(0.104 * var(--mast)));
+  background: var(--ink);
+}
+/* A zero-size mark on the text's baseline, for measuring from (headline.ts). */
+.st-base {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: baseline;
+}
+.st-mast-word {
+  position: relative;
+  display: inline-block;
+}
+/* Each word's meaning, for readers who don't read Nepali. */
+@media (hover: hover) {
+  .st-mast-word::after {
+    content: attr(data-gloss);
+    position: absolute;
+    left: 0.06em;
+    top: 74%; /* just under the letters (the word's box is the title's tall line) */
+    color: var(--accent);
+    font: italic 400 max(15px, 0.1em) / 1 var(--read);
+    letter-spacing: 0;
+    opacity: 0;
+    translate: 0 -6px;
+    transition:
+      opacity 0.25s,
+      translate 0.25s var(--st-ease);
+    pointer-events: none;
+  }
+  .st-mast-word:hover::after {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+/* The ear: hangs from the same bar at the far end of the page. */
+.st-mast-ear {
+  position: absolute;
+  right: 0;
+  top: calc(var(--mast-pad) + 0.513 * var(--mast) - 9.4px);
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  margin: 0;
+  text-align: right;
+}
+.st-mast-ear [lang="ne"] {
+  font: 700 20px / 1.6 var(--deva);
+}
+.st-mast-ear small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-mast-dek {
+  max-width: 36em;
+  margin: calc(-0.2 * var(--mast)) 0 0; /* the title's line keeps room under the letters that the dek can use */
+  color: var(--ink-2);
+  font: 400 clamp(18px, 1.5vw, 22px) / 1.55 var(--read);
+}
+
+/* ── Pictures: covers, and poems' slips of paper ────────────────────────── */
+.st-face {
+  display: block;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--wash);
+}
+.st-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.7s var(--st-ease);
+}
+.st-lead:hover .st-face img,
+.st-entry:hover .st-face img {
+  scale: 1.03;
+}
+.st-slip {
+  --c: var(--t-gajal);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.15em;
+  padding: 7% 8%;
+  border-top: 3px solid var(--c);
+  background: var(--paper-grain), var(--wash);
+  color: var(--ink);
+  font: 400 clamp(19px, 1.9vw, 27px) / 1.8 var(--deva);
+  text-align: center;
+}
+.st-slip--kabita {
+  --c: var(--t-kabita);
+}
+.st-slip-end {
+  margin-top: 0.3em;
+  color: var(--c);
+  font-weight: 700;
+}
+
+/* ── The lead ───────────────────────────────────────────────────────────── */
+.st-lead {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 3vw, 52px);
+  padding-bottom: clamp(36px, 4vw, 56px);
+}
+.st-lead.is-bare {
+  grid-template-columns: minmax(0, 1fr);
+}
+.st-lead-face {
+  display: block;
+}
+.st-lead .st-face {
+  aspect-ratio: 4 / 3;
+}
+.st-lead-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+.st-lead-title {
+  color: var(--ink);
+  font: 700 clamp(32px, 3.4vw, 56px) / 1.08 var(--read);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.st-lead-title:lang(ne) {
+  font-family: var(--deva);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+.st-lead-title:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+.st-lead-dek {
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 clamp(17px, 1.3vw, 19px) / 1.6 var(--read);
+}
+
+/* ── The feed ───────────────────────────────────────────────────────────── */
+.st-feed {
+  padding-top: 8px;
+}
+.st-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 44px);
+  padding: 28px 0 30px;
+  border-bottom: 1px solid var(--rule);
+}
+.st-entry.has-face {
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 30%, 300px);
+}
+.st-entry-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  min-width: 0;
+}
+.st-entry-title {
+  color: var(--ink);
+  font: 650 clamp(22px, 1.9vw, 30px) / 1.22 var(--read);
+  text-wrap: balance;
+}
+.st-entry-title:lang(ne) {
+  font-family: var(--deva);
+  font-weight: 800;
+  line-height: 1.5;
+}
+.st-entry:hover .st-entry-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.st-entry-dek {
+  margin: 0;
+  color: var(--ink-2);
+  font: 400 17px/1.6 var(--read);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* A poem shows its opening sher, set as verse. */
+.st-entry-sher {
+  display: grid;
+  margin: 2px 0 0;
+  padding-left: 18px;
+  border-left: 3px solid var(--t-gajal);
+  color: var(--ink);
+  font: 400 clamp(18px, 1.45vw, 21px) / 1.85 var(--deva);
+}
+.st-entry:has(.st-type--kabita) .st-entry-sher {
+  border-left-color: var(--t-kabita);
+}
+.st-entry-face .st-face {
+  aspect-ratio: 3 / 2;
+}
+
+/* ── The rail ───────────────────────────────────────────────────────────── */
+.st-minis {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-mini {
+  position: relative;
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+}
+.st-mini-face {
+  --c: var(--ink-2);
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--c) 10%, var(--paper));
+  color: var(--c);
+  font: 700 13px/1.3 var(--deva);
+  text-align: center;
+}
+.st-mini-face.st-type--blog {
+  --c: var(--t-blog);
+}
+.st-mini-face.st-type--story {
+  --c: var(--t-story);
+}
+.st-mini-face.st-type--gajal {
+  --c: var(--t-gajal);
+}
+.st-mini-face.st-type--kabita {
+  --c: var(--t-kabita);
+}
+.st-mini-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.st-mini-text {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.st-mini-title {
+  overflow: hidden;
+  color: var(--ink);
+  font: 600 16px/1.35 var(--read);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.st-mini-title:lang(ne) {
+  font-family: var(--deva);
+  font-weight: 700;
+  line-height: 1.55;
+}
+.st-mini:hover .st-mini-title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.st-mini small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.st-mini small [lang="ne"] {
+  font-family: var(--deva);
+}
+.st-rank {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  color: #b5b5ae;
+  font: 800 34px/1 var(--deva);
+}
+.st-mini:hover .st-rank {
+  color: var(--accent);
+}
+
+/* One sher at a time. */
+.st-sher blockquote {
+  margin: 0;
+  padding: 6px 0 4px;
+  color: var(--ink);
+  font: 400 clamp(19px, 1.5vw, 22px) / 1.9 var(--deva);
+}
+.st-sher blockquote p {
+  margin: 0;
+}
+.st-sher blockquote p:last-child::after {
+  content: " ॥";
+  color: var(--accent);
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-sher blockquote {
+    animation: st-ink 0.7s var(--st-ease) both;
+  }
+}
+@keyframes st-ink {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.4;
+  }
+}
+.st-sher-from {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-sher-from a {
+  color: var(--ink-2);
+  font-family: var(--deva);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.st-sher-next {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 7px 14px;
+  border: 1px solid var(--rule-2);
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-2);
+  font: 500 13px var(--ui);
+  cursor: pointer;
+}
+.st-sher-next [lang="ne"] {
+  color: var(--ink);
+  font: 700 15px var(--deva);
+}
+.st-sher-next:hover {
+  border-color: var(--ink);
+  background: var(--white);
+}
+
+.st-writers {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-writers a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+.st-writers a > span {
+  display: grid;
+}
+.st-writers b {
+  font: 600 16px/1.3 var(--read);
+}
+.st-writers small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.st-writers small [lang="ne"] {
+  font-family: var(--deva);
+}
+.st-writers a:hover b {
+  text-decoration: underline;
+}
+.st-rail .st-tags small {
+  margin-left: 5px;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+.st-writer-who {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.st-writer-who > span {
+  display: grid;
+}
+.st-writer-who b {
+  font: 600 19px/1.3 var(--read);
+}
+.st-writer-who small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-writer-who small [lang="ne"] {
+  font-family: var(--deva);
+}
+.st-writer-who:hover b {
+  text-decoration: underline;
+}
+.st-writer-bio {
+  margin: 12px 0 0;
+  color: var(--ink-2);
+  font: 400 15.5px/1.6 var(--read);
+}
+
+/* ── A filtered list ────────────────────────────────────────────────────── */
+.st-list-head {
+  margin: clamp(32px, 4vw, 56px) auto 28px;
+}
+.st-list-head h1 {
+  margin: 0;
+  font: 700 clamp(36px, 5vw, 64px) / 1.2 var(--read);
+}
+.st-list-head h1 span {
+  font-family: var(--deva);
+  font-weight: 800;
+}
+.st-list-head p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font: 400 18px/1.5 var(--read);
+}
+
+/* ── A post ─────────────────────────────────────────────────────────────── */
+.st-draft-note {
+  margin-top: 20px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fbf3dc;
+  color: #6b4a00;
+  font-size: 14px;
+}
+.st-post-head {
+  max-width: 680px;
+  padding-top: clamp(40px, 6vw, 80px);
+}
+.st-post--side .st-post-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  max-width: 1180px;
+}
+.is-verse .st-post-head {
+  text-align: center;
+}
+.st-post-title {
+  margin: 14px 0 0;
+  font: 700 clamp(38px, 5.6vw, 66px) / 1.1 var(--read);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.st-post-title:lang(ne),
+[lang="ne"] .st-post-title {
+  font-family: var(--deva);
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+.st-post-dek {
+  margin: 16px 0 0;
+  color: var(--ink-2);
+  font: italic 400 clamp(19px, 2vw, 23px) / 1.45 var(--read);
+}
+.st-post-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+}
+.is-verse .st-post-meta {
+  justify-content: center;
+}
+.st-post-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+.st-post-who b {
+  display: block;
+  font-size: 15px;
+}
+.st-post-who small {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+.st-post-who:hover b {
+  text-decoration: underline;
+}
+.st-post-cover {
+  margin: 0;
+}
+.st-post-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.st-post-cover--full {
+  width: min(1180px, 100% - 2 * var(--st-gutter));
+  margin: clamp(32px, 5vw, 56px) auto 0;
+  aspect-ratio: 16 / 8;
+}
+.st-post-cover--side {
+  aspect-ratio: 4 / 5;
+  max-height: 72svh;
+}
+
+/* The writing itself. */
+.st-prose {
+  width: min(680px, 100% - 2 * var(--st-gutter));
+  margin: clamp(36px, 5vw, 56px) auto 0;
+  color: var(--ink);
+  font: 400 20px/1.78 var(--read);
+  font-optical-sizing: auto;
+  overflow-wrap: break-word;
+}
+.st-prose::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.st-prose > * {
+  margin: 0 0 1.1em;
+}
+.st-prose p:empty {
+  min-height: 1em;
+}
+.st-prose h2,
+.st-prose h3 {
+  clear: both;
+  margin: 1.8em 0 0.6em;
+  font-weight: 650;
+  line-height: 1.25;
+}
+.st-prose h2 {
+  font-size: 1.5em;
+}
+.st-prose h3 {
+  font-size: 1.22em;
+}
+.st-prose a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.st-prose a:hover {
+  color: var(--accent);
+}
+.st-prose blockquote {
+  margin: 1.6em 0;
+  padding: 0.1em 0 0.1em 1.1em;
+  border-left: 3px solid var(--accent);
+  color: var(--ink-2);
+  font-size: 1.1em;
+  font-style: italic;
+}
+.st-prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+.st-prose ul,
+.st-prose ol {
+  padding-left: 1.3em;
+}
+.st-prose li > p {
+  margin: 0 0 0.3em;
+}
+.st-prose mark {
+  padding: 0.04em 0.18em;
+  border-radius: 3px;
+  background: #fff1a8;
+  color: inherit;
+}
+/* The break between sections: a double danda, as a Nepali text ends a verse. */
+.st-prose hr {
+  clear: both;
+  height: auto;
+  margin: 2.2em 0;
+  border: 0;
+  text-align: center;
+}
+.st-prose hr::after {
+  content: "॥";
+  color: var(--accent);
+  font: 700 1.2em/1 var(--deva);
+}
+.st-prose code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--wash);
+  font: 0.85em var(--font-mono);
+}
+/* Fonts and sizes an author picked are stored as plain names; these point them at the loaded fonts. */
+.st-prose [style*="font-family: Literata"] {
+  font-family: var(--read) !important;
+}
+.st-prose [style*="font-family: Figtree"] {
+  font-family: var(--ui) !important;
+}
+.st-prose [style*="font-family: Martel"] {
+  font-family: var(--deva) !important;
+}
+.st-prose [style*="font-family: monospace"] {
+  font-family: var(--font-mono) !important;
+}
+
+/* Verse: centred, roomier, a stanza break where a blank line was left. */
+.st-prose.is-verse {
+  font-size: 22px;
+  line-height: 2;
+  text-align: center;
+}
+.st-prose.is-verse p {
+  margin: 0;
+}
+.st-prose.is-verse p:empty {
+  min-height: 1.2em;
+}
+
+/* Photos in the writing: left or right with text wrapping, centred at any
+   width, wide past the column, or edge to edge. */
+.st-fig {
+  width: var(--fig-w, 100%);
+  margin: 2em auto;
+}
+.st-fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.st-fig figcaption {
+  margin-top: 0.7em;
+  color: var(--muted);
+  font: 400 14px/1.5 var(--ui);
+  text-align: center;
+}
+.st-fig[data-align="left"] {
+  float: left;
+  width: min(var(--fig-w, 50%), 62%);
+  margin: 0.35em 1.6em 1em 0;
+}
+.st-fig[data-align="right"] {
+  float: right;
+  width: min(var(--fig-w, 50%), 62%);
+  margin: 0.35em 0 1em 1.6em;
+}
+.st-fig[data-align="left"] figcaption,
+.st-fig[data-align="right"] figcaption {
+  text-align: left;
+}
+.st-fig[data-align="wide"] {
+  clear: both;
+  width: min(1040px, 100vw - 2 * var(--st-gutter));
+  margin-left: 50%;
+  translate: -50% 0;
+}
+.st-fig[data-align="full"] {
+  clear: both;
+  width: 100vw;
+  margin-left: 50%;
+  translate: -50% 0;
+}
+.st-fig[data-align="full"] img {
+  border-radius: 0;
+}
+@media (max-width: 640px) {
+  .st-fig[data-align="left"],
+  .st-fig[data-align="right"] {
+    float: none;
+    width: 100%;
+    margin: 1.6em 0;
+  }
+}
+
+.st-post-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(680px, 100% - 2 * var(--st-gutter));
+  margin: 48px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.st-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-tags a {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--wash);
+  color: var(--ink-2);
+  font-size: 13.5px;
+}
+.st-tags a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Reactions. */
+.st-react {
+  text-align: center;
+}
+.st-react-h {
+  margin: 0 0 18px;
+  font: italic 400 22px/1.3 var(--read);
+}
+.st-react-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.st-react-btn {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 1px solid var(--rule-2);
+  border-radius: 50%;
+  background: var(--white);
+  cursor: pointer;
+  transition:
+    scale 0.2s var(--st-ease),
+    border-color 0.15s,
+    background 0.15s;
+}
+.st-react-btn:hover {
+  scale: 1.08;
+  border-color: var(--ink);
+}
+.st-react-btn.is-on {
+  border: 2px solid var(--accent);
+  background: var(--accent-wash);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .st-react-btn.is-on .st-react-emoji {
+    animation: st-pop 0.45s var(--st-ease);
+  }
+}
+@keyframes st-pop {
+  40% {
+    scale: 1.45;
+    rotate: -10deg;
+  }
+}
+.st-react-emoji {
+  display: block;
+  font-size: 26px;
+  line-height: 1;
+}
+.st-react-n {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: 700 11.5px/1.3 var(--ui);
+}
+.st-react-note {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+
+/* Comments. */
+.st-join {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-radius: 12px;
+  background: var(--wash);
+}
+.st-join p {
+  margin: 0;
+  max-width: 34em;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.st-join div {
+  display: flex;
+  gap: 8px;
+}
+.st-composer-wrap {
+  display: flex;
+  gap: 14px;
+}
+.st-composer {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+}
+.st-composer textarea {
+  resize: vertical;
+  min-height: 52px;
+}
+.st-composer-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.st-composer-row .st-error {
+  margin-right: auto;
+}
+.st-comment-list,
+.st-replies {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-comment {
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+}
+.st-replies {
+  margin: 16px 0 0 15px;
+  padding-left: 22px;
+  border-left: 2px solid var(--rule);
+}
+.st-replies .st-comment {
+  padding: 14px 0 4px;
+  border-top: 0;
+}
+.st-comment.is-hidden {
+  opacity: 0.55;
+}
+.st-comment-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 14px;
+}
+.st-comment-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.st-comment-head time {
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-comment-badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.st-comment-badge--hidden {
+  background: #fbf3dc;
+  color: #6b4a00;
+}
+.st-comment-body {
+  margin: 8px 0 0 40px;
+  color: var(--ink);
+  font: 400 17px/1.65 var(--read);
+  white-space: pre-wrap;
+}
+.st-comment-actions {
+  display: flex;
+  gap: 4px;
+  margin: 6px 0 0 34px;
+}
+.st-comment-actions button {
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font: 600 13px var(--ui);
+  cursor: pointer;
+}
+.st-comment-actions button:hover {
+  background: var(--wash);
+  color: var(--ink);
+}
+
+/* ── A post in the left column: header and text on the reading measure ──── */
+.st-readline {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  height: 3px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+.st-cols--post {
+  grid-template-areas:
+    "main rail"
+    "after rail";
+  align-items: start;
+}
+.st-cols--post > .st-main {
+  grid-area: main;
+}
+.st-cols--post > .st-rail {
+  grid-area: rail;
+  align-self: stretch;
+  padding-top: clamp(28px, 4vw, 64px); /* level with the article's first line */
+}
+.st-cols--post > .st-after {
+  grid-area: after;
+  min-width: 0;
+}
+.st-post .st-draft-note,
+.st-post .st-post-head,
+.st-post .st-post-foot,
+.st-post .st-react,
+.st-after .st-comments {
+  max-width: var(--measure);
+  margin-inline: auto;
+}
+.st-post .st-post-head {
+  padding-top: clamp(28px, 4vw, 64px);
+}
+.st-post--side .st-post-head {
+  max-width: none;
+}
+.st-post .st-post-title {
+  font-size: clamp(36px, 4.4vw, 72px);
+}
+.st-post .st-post-cover--full {
+  width: 100%;
+  margin: clamp(28px, 4vw, 48px) 0 0;
+  aspect-ratio: 16 / 9;
+}
+.st-post .st-prose {
+  width: 100%;
+  margin: clamp(32px, 4vw, 52px) 0 0;
+}
+.st-post .st-prose > * {
+  max-width: var(--measure);
+  margin-left: auto;
+  margin-right: auto;
+}
+/* Photos, measured against the reading column: centred and floated ones take
+   their share of it, wide ones the whole left column, full ones run out to the
+   window's left edge too. */
+.st-post .st-prose > .st-fig {
+  max-width: none;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+.st-post .st-prose > .st-fig[data-align="center"] {
+  width: calc(min(100%, var(--measure)) * var(--fig-n, 1));
+}
+.st-post .st-prose > .st-fig[data-align="left"],
+.st-post .st-prose > .st-fig[data-align="right"] {
+  width: calc(min(100%, var(--measure)) * min(var(--fig-n, 0.5), 0.62));
+}
+.st-post .st-prose > .st-fig[data-align="left"] {
+  margin: 0.35em 1.6em 1em max(0px, (100% - var(--measure)) / 2);
+}
+.st-post .st-prose > .st-fig[data-align="right"] {
+  margin: 0.35em max(0px, (100% - var(--measure)) / 2) 1em 1.6em;
+}
+.st-post .st-prose > .st-fig[data-align="wide"] {
+  width: 100%;
+  margin-left: 0;
+  translate: none;
+}
+.st-post .st-prose > .st-fig[data-align="full"] {
+  width: calc(100% + var(--st-gutter));
+  margin-left: calc(-1 * var(--st-gutter));
+  translate: none;
+}
+.st-post .st-react,
+.st-after {
+  margin-top: 64px;
+}
+
+/* ── A writer's page ────────────────────────────────────────────────────── */
+.st-banner {
+  height: clamp(150px, 24vw, 300px);
+  background: var(--wash) center / cover no-repeat;
+}
+.st-banner.is-plain {
+  background-image: repeating-linear-gradient(135deg, transparent 0 18px, rgb(22 23 27 / 0.035) 18px 19px);
+}
+.st-author-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px 28px;
+  align-items: end;
+  margin-top: -64px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.st-author-head > .st-avatar {
+  border: 5px solid var(--paper);
+  font-size: 44px !important;
+}
+.st-author-text {
+  padding-top: 64px;
+}
+.st-author-text h1 {
+  margin: 0;
+  font: 700 clamp(30px, 4vw, 44px) / 1.15 var(--read);
+}
+.st-author-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.st-author-bio {
+  max-width: 38em;
+  margin: 14px 0 0;
+  color: var(--ink-2);
+  font: 400 18px/1.6 var(--read);
+}
+.st-author-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 14px;
+}
+.st-author-counts b {
+  color: var(--ink);
+}
+.st-author-counts [lang="ne"] {
+  font-family: var(--deva);
+}
+.st-author-edit {
+  align-self: start;
+  margin-top: 72px;
+}
+.st-page-h {
+  margin: 48px 0 24px;
+  font: 700 36px/1.2 var(--read);
+}
+.st-profile-banner-edit {
+  display: flex;
+  align-items: flex-end;
+  min-height: 180px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--wash) center / cover no-repeat;
+}
+.st-profile-banner-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgb(251 251 249 / 0.92);
+}
+.st-banner-pick {
+  width: 54px;
+  height: 34px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  background: center / cover;
+  cursor: pointer;
+}
+.st-banner-pick.is-on {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.st-profile-photo-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Sign in ────────────────────────────────────────────────────────────── */
+.st-auth {
+  display: grid;
+  place-items: center;
+  padding-top: clamp(32px, 6vw, 72px);
+}
+.st-auth-card {
+  width: min(440px, 100%);
+}
+.st-auth-mark {
+  margin: 0;
+  color: var(--accent);
+  font: 800 44px/1.3 var(--deva);
+}
+.st-auth-card h1 {
+  margin: 4px 0 0;
+  font: 700 36px/1.2 var(--read);
+}
+.st-auth-dek {
+  margin: 8px 0 24px;
+  color: var(--ink-2);
+}
+.st-auth-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 20px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--wash);
+}
+.st-auth-switch button {
+  padding: 9px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-2);
+  font: 600 14px var(--ui);
+  cursor: pointer;
+}
+.st-auth-switch [aria-selected="true"] {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgb(22 23 27 / 0.12);
+}
+.st-auth-link {
+  justify-self: start;
+  margin-top: -6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  font: 500 13.5px var(--ui);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.st-auth-link:hover {
+  color: var(--ink);
+}
+.st-auth-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.st-auth-or::before,
+.st-auth-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.st-google svg {
+  width: 18px;
+  height: 18px;
+}
+.st-auth-demo {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px dashed var(--rule-2);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.st-auth-demo p {
+  margin: 0;
+}
+.st-auth-back {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+.st-auth-back a {
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+.st-foot {
+  padding: 32px var(--st-gutter) 40px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+.st-foot p {
+  margin: 0;
+}
+.st-foot [lang="ne"] {
+  font-family: var(--deva);
+  font-weight: 800;
+  color: var(--ink);
+}
+.st-foot a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.st-demo-note {
+  max-width: 640px;
+  margin: 12px auto 0 !important;
+  font-size: 13px;
+}
+.st-demo-note code {
+  font-size: 12px;
+}
+
+/* ── Smaller screens ────────────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .st-mast-ear {
+    position: static;
+    justify-items: start;
+    margin: calc(-0.2 * var(--mast)) 0 10px;
+    text-align: left;
+  }
+  .st-mast-dek {
+    margin-top: 0;
+  }
+  .st-mast-ear [lang="ne"] {
+    font-size: 17px;
+  }
+}
+@media (max-width: 1080px) {
+  .st-cols,
+  .st-cols--post {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+    gap: 56px;
+  }
+  .st-cols--post > .st-main,
+  .st-cols--post > .st-rail,
+  .st-cols--post > .st-after {
+    grid-area: auto;
+  }
+  .st-cols--post > .st-rail {
+    padding-top: 0;
+  }
+  .st-rail-in {
+    position: static;
+    padding: 0;
+  }
+  .st-rail-in {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 40px 48px;
+  }
+  .st-rail-block + .st-rail-block {
+    margin-top: 0;
+  }
+  .st-cols--post > .st-after {
+    margin-top: 0;
+  }
+  .st-post .st-prose > .st-fig[data-align="full"] {
+    width: calc(100% + 2 * var(--st-gutter));
+    margin-left: calc(-1 * var(--st-gutter));
+  }
+}
+@media (max-width: 860px) {
+  .st-lead,
+  .st-post--side .st-post-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .st-post-cover--side {
+    order: -1;
+    aspect-ratio: 3 / 2;
+  }
+  .st-author-head {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .st-author-text {
+    padding-top: 0;
+  }
+  .st-author-edit {
+    margin-top: 0;
+    justify-self: start;
+  }
+}
+@media (max-width: 700px) {
+  .st-root {
+    --top-h: 56px;
+    --head-h: 104px;
+  }
+  .st-top-in {
+    gap: 8px;
+  }
+  .st-brand small {
+    display: none;
+  }
+  .st-back-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .st-back {
+    font-size: 20px;
+  }
+  .st-search input {
+    width: 38px;
+    padding: 0 0 0 36px;
+    background: transparent;
+    border-color: transparent;
+    cursor: pointer;
+  }
+  .st-search input:focus {
+    position: fixed;
+    top: 9px;
+    left: var(--st-gutter);
+    right: var(--st-gutter);
+    z-index: 60;
+    width: auto;
+    padding-left: 36px;
+    background: var(--white);
+    border-color: var(--rule-2);
+    cursor: text;
+  }
+  .st-search:focus-within .st-search-icon {
+    position: fixed;
+    top: 19px;
+    left: calc(var(--st-gutter) + 10px);
+    z-index: 61;
+  }
+  .st-top-actions {
+    gap: 6px;
+  }
+  .st-top-actions .st-btn {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  .st-tabs {
+    justify-content: flex-start;
+  }
+  .st-entry.has-face {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    gap: 16px;
+  }
+  .st-entry-face .st-face {
+    aspect-ratio: 1;
+  }
+  .st-entry .st-byline {
+    grid-column: 1 / -1;
+  }
+  .st-prose {
+    font-size: 18px;
+    line-height: 1.72;
+  }
+  .st-prose.is-verse {
+    font-size: 19px;
+  }
+  .st-post .st-prose > .st-fig[data-align="left"],
+  .st-post .st-prose > .st-fig[data-align="right"] {
+    float: none;
+    width: 100%;
+    margin: 1.6em 0;
+  }
+  .st-comment-body {
+    margin-left: 0;
+  }
+  .st-comment-actions {
+    margin-left: -6px;
+  }
+  .st-composer-wrap > .st-avatar {
+    display: none;
+  }
+  .st-join div {
+    width: 100%;
+  }
+}

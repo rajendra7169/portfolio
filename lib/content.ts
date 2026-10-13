@@ -43,12 +43,12 @@ export const hero = {
   ] as Tech[],
 };
 
-export const nav = [
+export const nav: { label: string; href: string; external?: boolean }[] = [
   { label: "Home", href: "/" },
   { label: "Education", href: "/education" },
   { label: "Experience", href: "/experience" },
   { label: "Projects", href: "/projects" },
-  { label: "Stories", href: "https://blog.rajendrapandey.info.np/", external: true },
+  { label: "Stories", href: "/stories" },
   { label: "Contact Me", href: "/contact" },
 ];
 
