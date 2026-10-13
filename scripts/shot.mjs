@@ -66,6 +66,8 @@ for (const vp of VIEWPORTS) {
     hasTouch: vp.hasTouch ?? false,
   });
   await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: BASE });
+  // Stories runs on its in-browser demo during tests, whatever .env.local connects it to.
+  await context.addInitScript(() => localStorage.setItem("stories-demo", "1"));
 
   for (const pg of PAGES) {
     const scope = `${vp.name} ${pg.path}`;
