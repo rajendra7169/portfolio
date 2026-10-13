@@ -34,7 +34,7 @@ export const DESKTOP = "(min-width: 900px)";
  * all of that is time the old page sits frozen on screen.
  */
 let holdingSetups = false;
-const heldSetups: (() => void)[] = [];
+const heldSetups: { context: gsap.Context; run: () => void }[] = [];
 export function holdSetups() {
   holdingSetups = true;
 }
@@ -48,9 +48,9 @@ export function runSetups(done?: () => void) {
   holdingSetups = false;
   const list = heldSetups.splice(0);
   const next = () => {
-    const fn = list.shift();
-    if (!fn) return done?.();
-    fn();
+    const job = list.shift();
+    if (!job) return done?.();
+    job.run();
     window.setTimeout(next, 0);
   };
   next();
@@ -65,9 +65,19 @@ export const useGSAP = ((callback?: unknown, config?: unknown) => {
     if (!holdingSetups) return run(context, contextSafe);
     // Later, inside the same context, so whatever it makes (and any cleanup it
     // returns) still reverts with the component; skipped if that already happened.
-    heldSetups.push(() => {
-      if (!(context as gsap.Context & { isReverted?: boolean }).isReverted) context.add(() => run(context, contextSafe));
-    });
+    // One per component: React's development mode mounts every component twice
+    // (mount, unmount, mount again) on the same context, and running both held
+    // set-ups built every ScrollTrigger twice (the hero's doubled pin pushed it
+    // 75% of the screen down after any page change back to Home).
+    const job = {
+      context,
+      run: () => {
+        if (!(context as gsap.Context & { isReverted?: boolean }).isReverted) context.add(() => run(context, contextSafe));
+      },
+    };
+    const i = heldSetups.findIndex((h) => h.context === context);
+    if (i >= 0) heldSetups[i] = job;
+    else heldSetups.push(job);
   }, config);
 }) as typeof useGSAPBase;
 
