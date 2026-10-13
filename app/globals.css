@@ -631,8 +631,17 @@ main {
 .hx-floor-grid {
   position: absolute;
   inset: 0 0 -60% 0;
+  overflow: hidden;
   transform: rotateX(62deg);
   transform-origin: 50% 0%;
+}
+/* The grid itself, one cell taller than the plane, slides one cell toward the
+   viewer and starts again: the same roll as moving the background, but on the
+   GPU (moving a background repainted the whole floor every frame). */
+.hx-floor-grid::before {
+  content: "";
+  position: absolute;
+  inset: -72px 0 0;
   background-image:
     linear-gradient(rgb(0 28 85 / 0.14) 1.5px, transparent 1.5px),
     linear-gradient(90deg, rgb(0 28 85 / 0.14) 1.5px, transparent 1.5px);
@@ -640,7 +649,7 @@ main {
   animation: floor-roll 2.2s linear infinite;
 }
 @keyframes floor-roll {
-  to { background-position: 0 72px; }
+  to { translate: 0 72px; }
 }
 .hx-spot {
   position: absolute;
@@ -941,16 +950,25 @@ main {
 .hx-scan {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   pointer-events: none;
   mask: url("/images/hero-800.webp") center / 100% 100% no-repeat;
-  background:
-    linear-gradient(to bottom, transparent, rgb(124 200 240 / 0.15) 35%, rgb(124 200 240 / 0.75) 49%, rgb(255 255 255 / 0.9) 50%, transparent 58%) 0 0 / 100% 36% no-repeat,
-    repeating-linear-gradient(to bottom, rgb(74 168 224 / 0.12) 0 2px, transparent 2px 6px);
+  background: repeating-linear-gradient(to bottom, rgb(74 168 224 / 0.12) 0 2px, transparent 2px 6px);
+}
+/* The bright band, a third of the photo tall, sweeps down it: the same path as
+   the background position it used to move (-80% to 180% of the free space), as
+   a transform, so it runs on the GPU instead of repainting the photo each frame. */
+.hx-scan::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 36%;
+  background: linear-gradient(to bottom, transparent, rgb(124 200 240 / 0.15) 35%, rgb(124 200 240 / 0.75) 49%, rgb(255 255 255 / 0.9) 50%, transparent 58%);
   animation: scan 5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 @keyframes scan {
-  0% { background-position: 0 -80%, 0 0; }
-  60%, 100% { background-position: 0 180%, 0 0; }
+  0% { translate: 0 -142.222%; }
+  60%, 100% { translate: 0 320%; }
 }
 /* Cyber reveal: lens + 2s trail painted on a canvas over the photo. */
 .hx-cyber {
