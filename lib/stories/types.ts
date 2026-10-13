@@ -110,6 +110,8 @@ export interface StoriesStore {
   signIn(email: string, password: string): Promise<void>;
   signUp(name: string, email: string, password: string): Promise<void>;
   signInWithGoogle(): Promise<void>;
+  /** Which ways of signing in are switched on (Google needs setting up in Supabase first). */
+  authOptions(): Promise<{ google: boolean; email: boolean }>;
   signOut(): Promise<void>;
   /** Email a link for choosing a new password; the link opens /stories/signin?mode=reset signed in. */
   resetPassword(email: string): Promise<void>;

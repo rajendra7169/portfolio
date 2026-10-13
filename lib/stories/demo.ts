@@ -221,6 +221,9 @@ export function demoStore(): StoriesStore {
       signedIn(d, id);
       await save();
     },
+    async authOptions() {
+      return { google: false, email: true };
+    },
     async signInWithGoogle() {
       throw new Error("Google sign-in works once Supabase is connected. In the demo, create an account with an email.");
     },

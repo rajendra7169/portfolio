@@ -225,6 +225,14 @@ export function supabaseStore(url: string, key: string): StoriesStore {
       fail(error);
       if (!data.session) throw new Error("Almost there: check your email and follow the link to confirm your account.");
     },
+    async authOptions() {
+      try {
+        const d = await (await fetch(`${url}/auth/v1/settings`, { headers: { apikey: key } })).json();
+        return { google: Boolean(d.external?.google), email: Boolean(d.external?.email) };
+      } catch {
+        return { google: false, email: true };
+      }
+    },
     async signInWithGoogle() {
       fail((await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: `${location.origin}/stories` } })).error);
     },

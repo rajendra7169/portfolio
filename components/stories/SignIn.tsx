@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { stories, useDemo, useMe } from "@/lib/stories/store";
+import { stories, useDemo, useMe, useStories } from "@/lib/stories/store";
 import { Loading } from "./ui";
 
 type Mode = "signin" | "signup" | "forgot" | "reset";
@@ -32,6 +32,8 @@ export default function SignIn() {
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
   const demo = useDemo();
+  // Only offer Google once it's switched on in Supabase (Authentication → Sign In / Providers).
+  const { data: options } = useStories((s) => s.authOptions(), []);
 
   // Signed in already (or just now): back to where they came from, unless they're here to change the password.
   useEffect(() => {
@@ -152,7 +154,7 @@ export default function SignIn() {
           </form>
         )}
 
-        {(mode === "signin" || mode === "signup") && (
+        {(mode === "signin" || mode === "signup") && options?.google && (
           <>
             <div className="st-auth-or">
               <span>or</span>
