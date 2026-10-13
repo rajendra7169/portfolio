@@ -171,7 +171,7 @@ export const codingProfiles: (Tech & { href: string; handle: string })[] = [
 export const degrees = [
   {
     school: "Sunway International Business School",
-    logo: "/logos/sunway.png",
+    logo: "/logos/sunway.webp",
     degree: "BSc. in Information Technology",
     duration: "2021 - 2024",
     url: "https://sunway.edu.np/",
@@ -183,7 +183,7 @@ export const degrees = [
   },
   {
     school: "St. Lawrence College",
-    logo: "/logos/lawrence.png",
+    logo: "/logos/lawrence.webp",
     degree: "+2 in Business Studies",
     duration: "2015 - 2017",
     url: "https://www.stlawrence.edu.np/",
@@ -287,7 +287,7 @@ export const paperStop: PathStop = {
   title: "Paper published",
   subtitle: "Laundry Recommendation System",
   duration: "Dec 20, 2024",
-  logo: "/logos/sunway.png",
+  logo: "/logos/sunway.webp",
   points: [
     "A MERN stack laundry management and recommendation web app, built as my final year project at Sunway College Kathmandu.",
     "Its documentation — Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB — was published on December 20, 2024.",

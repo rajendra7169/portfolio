@@ -19,3 +19,20 @@
   for = "/blazify/*.json"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Photos, logos and illustrations: their names don't change
+# with their content, so browsers keep them a day and then, while checking in
+# the background for a new one, keep showing the copy they have for a week.
+# (Netlify's default made every visit ask the server about each image again.)
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+[[headers]]
+  for = "/logos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+[[headers]]
+  for = "/illustrations/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
