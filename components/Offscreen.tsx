@@ -5,7 +5,11 @@
 // still kept the browser restyling and re-compositing every frame. Paused
 // through the animations themselves (not a CSS rule on the section, which
 // restyled every element in it each time it came or went), and SVG's own
-// animations (<animateMotion> and friends) through their svg.
+// animations (<animateMotion> and friends) through their svg. A CSS animation
+// is held at playback rate 0 rather than paused: once a script has paused or
+// played one, the browser stops listening to its animation-play-state, and
+// some pages pause their loops through CSS (What I Do, for the modules not
+// in view).
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -14,21 +18,27 @@ const WATCH = "section, footer";
 export default function Offscreen() {
   const path = usePathname();
   useEffect(() => {
-    const held = new WeakMap<Element, Animation[]>();
-    const smil = (el: Element, off: boolean) =>
-      el.querySelectorAll("svg").forEach((svg) => {
-        if (svg.querySelector("animate, animateMotion, animateTransform, set")) (off ? svg.pauseAnimations() : svg.unpauseAnimations());
-      });
+    type Held = { anims: { a: Animation; rate: number }[]; svgs: SVGSVGElement[] };
+    const held = new WeakMap<Element, Held>();
     const toggle = (el: Element, off: boolean) => {
       if (off) {
-        const running = el.getAnimations({ subtree: true }).filter((a) => a.playState === "running" && a.effect?.getComputedTiming().iterations === Infinity);
-        running.forEach((a) => a.pause());
-        held.set(el, running);
+        if (held.has(el)) return;
+        const anims = el
+          .getAnimations({ subtree: true })
+          .filter((a) => a.playState === "running" && a.playbackRate !== 0 && a.effect?.getComputedTiming().iterations === Infinity)
+          .map((a) => ({ a, rate: a.playbackRate }));
+        anims.forEach(({ a }) => (a instanceof CSSAnimation ? a.updatePlaybackRate(0) : a.pause()));
+        // Only the svgs running now: one already paused is someone else's to resume.
+        const svgs = [...el.querySelectorAll("svg")].filter((svg) => !svg.animationsPaused() && svg.querySelector("animate, animateMotion, animateTransform, set"));
+        svgs.forEach((svg) => svg.pauseAnimations());
+        held.set(el, { anims, svgs });
       } else {
-        held.get(el)?.forEach((a) => a.playState === "paused" && a.play());
+        const h = held.get(el);
+        if (!h) return;
         held.delete(el);
+        h.anims.forEach(({ a, rate }) => (a instanceof CSSAnimation ? a.updatePlaybackRate(rate) : a.playState === "paused" && a.play()));
+        h.svgs.forEach((svg) => svg.unpauseAnimations());
       }
-      smil(el, off);
     };
     // Exactly the screen: a section just below it (What I Do, under the home hero)
     // still counts as off screen, and its loops wait until it scrolls in.
