@@ -111,9 +111,11 @@ main {
 .chars-word:not(:last-child) {
   margin-right: 0.26em;
 }
+/* No will-change here: GSAP lifts each letter onto its own layer while it moves
+   and drops it after. Kept permanently, every heading's letters were layers the
+   browser re-composited on every frame of anything else (79 on Home alone). */
 .char {
   display: inline-block;
-  will-change: transform;
 }
 
 /* ── Buttons ────────────────────────────────────────────────────────────── */
