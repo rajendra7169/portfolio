@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useRef, type Com
 import { gsap, ScrollTrigger, holdSetups, runSetups } from "@/lib/gsap";
 import { useLenis } from "./SmoothScroll";
 import { leavePage, type Leaving } from "./pageLeave";
+import { startWelcome, warmStoriesFonts, type Welcoming } from "./stories/welcome";
 
 const motionOk = () => !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -43,6 +44,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const viaPortal = useRef(false);
   const arriving = useRef(false);
   const leaving = useRef<Leaving | null>(null);
+  const welcoming = useRef<Welcoming | null>(null);
 
   const toTop = () => {
     lenis?.scrollTo(0, { immediate: true, force: true });
@@ -54,6 +56,16 @@ export function PageTransition({ children }: { children: ReactNode }) {
     release();
   }, []);
 
+  // Pointing at a way into Stories starts the fonts its welcome writes with.
+  useEffect(() => {
+    const warm = (e: Event) => (e.target as Element | null)?.closest?.('a[href^="/stories"]') && warmStoriesFonts();
+    document.addEventListener("pointerover", warm, { passive: true });
+    document.addEventListener("focusin", warm);
+    return () => {
+      document.removeEventListener("pointerover", warm);
+      document.removeEventListener("focusin", warm);
+    };
+  }, []);
 
   // A page change, as the new page commits underneath the cover. Back to the top,
   // and once the new page has painted, start clearing the cover (on the
@@ -78,6 +90,15 @@ export function PageTransition({ children }: { children: ReactNode }) {
         });
       });
     });
+  }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Into Stories: the welcome hands over to the page once it's in.
+  useLayoutEffect(() => {
+    const w = welcoming.current;
+    if (!w) return;
+    welcoming.current = null;
+    toTop();
+    w.arrive().then(() => void (busy.current = false));
   }, [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // The new route has rendered.
@@ -105,6 +126,21 @@ export function PageTransition({ children }: { children: ReactNode }) {
     }
     if (busy.current) return;
     if (!motionOk()) return router.push(href);
+    // Crossing into Stories, the other side of the site, gets its own welcome.
+    if (href.startsWith("/stories") && !pathname.startsWith("/stories")) {
+      busy.current = true;
+      const w = startWelcome();
+      welcoming.current = w;
+      w.covered.then(() => router.push(href, { scroll: false }));
+      window.setTimeout(() => {
+        // If Stories never arrives (a failed load), put everything back.
+        if (welcoming.current !== w) return;
+        welcoming.current = null;
+        busy.current = false;
+        w.cancel();
+      }, 9000);
+      return;
+    }
     if (via) {
       busy.current = true;
       holding = true; // the next page's entrance waits for the portal to open
@@ -134,7 +170,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
     arriving.current = true;
     const html = document.documentElement;
     html.classList.add("is-leaving");
-    leaving.current = leavePage();
+    // Out of Stories, back to the portfolio: its page turns back over the sky.
+    const sky = getComputedStyle(html).getPropertyValue("--color-sky").trim() || "#edf9fe";
+    leaving.current = leavePage(pathname.startsWith("/stories") && !href.startsWith("/stories") ? { turn: true, background: sky } : {});
     holdSetups();
     // Swap only once the lift is running on its own (see pageLeave.ts).
     const go = () => router.push(href, { scroll: false });

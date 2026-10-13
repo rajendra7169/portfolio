@@ -774,6 +774,45 @@ for (const vp of VIEWPORTS) {
       await wait(600);
     }
 
+    if (pg.name === "stories" || pg.name === "story") {
+      // Stories is its own space: the portfolio's header, footer and cursor step aside.
+      const st = await page.evaluate(() => {
+        const shown = (s) => { const e = document.querySelector(s); return !!e && getComputedStyle(e).display !== "none"; };
+        const mast = document.querySelector(".st-mast-title");
+        const bar = document.querySelector(".st-mast-bar")?.getBoundingClientRect();
+        const word = mast?.querySelector(".st-mast-word").getBoundingClientRect();
+        return {
+          own: shown(".st-top") && shown(".st-foot"),
+          portfolio: shown(".header") || shown(".footer") || shown(".cursor"),
+          paper: getComputedStyle(document.body).backgroundColor,
+          // the words hang from the bar: it runs through their top, and on past them
+          hang: mast ? bar.top > word.top && bar.bottom < word.top + word.height * 0.5 && bar.right > word.right : true,
+          words: [...document.querySelectorAll(".st-mast-word")].every((w) => w.getAnimations().length === 0 && getComputedStyle(w).clipPath === "none"),
+        };
+      });
+      check(scope, st.own && !st.portfolio, "Stories shows its own header and footer, not the portfolio's");
+      check(scope, st.paper === "rgb(251, 251, 249)", `the page is paper white (${st.paper})`);
+      if (pg.name === "stories") {
+        check(scope, st.hang, "the masthead words hang from the bar");
+        check(scope, st.words, "the masthead entrance has finished");
+      } else {
+        // reacting needs no account
+        await page.click('.st-react-btn[title="Applause"]');
+        await wait(500);
+        const r = await page.evaluate(() => ({ on: document.querySelector('.st-react-btn[title="Applause"]').getAttribute("aria-pressed"), n: document.querySelector('.st-react-btn[title="Applause"] .st-react-n')?.textContent }));
+        check(scope, r.on === "true" && r.n === "1", `a signed-out reader can react (${r.on}, ${r.n})`);
+        check(scope, await page.isVisible(".st-join"), "commenting asks for an account");
+        // A full-bleed photo runs from the window's left edge across the writing column (the whole screen on phones).
+        const fig = await page.evaluate(() => {
+          const f = document.querySelector('.st-prose .st-fig[data-align="full"]').getBoundingClientRect();
+          const main = document.querySelector(".st-main").getBoundingClientRect();
+          return { l: f.left, r: f.right, mainR: main.right, vw: document.documentElement.clientWidth };
+        });
+        check(scope, Math.abs(fig.l) <= 1 && Math.abs(fig.r - (vp.isMobile ? fig.vw : fig.mainR)) <= 2, `a full-bleed photo runs to the edge (${Math.round(fig.l)}–${Math.round(fig.r)})`);
+        // The rail sits beside the writing on big screens, below it on phones.
+        const rail = await page.evaluate(() => { const r = document.querySelector(".st-rail").getBoundingClientRect(); const m = document.querySelector(".st-main").getBoundingClientRect(); return { beside: r.left >= m.right - 1, below: r.top >= m.bottom - 1 }; });
+        check(scope, vp.width >= 1100 ? rail.beside : rail.below, `the rail sits ${vp.width >= 1100 ? "beside" : "below"} the writing`);
+      }
     }
 
     await scrollThrough(page);
@@ -889,6 +928,63 @@ for (const vp of VIEWPORTS) {
     check(scope, state.scrollY === 0, `starts at the top (${state.scrollY})`);
     check(scope, state.active === "Projects", `nav marks Projects active (${state.active})`);
 
+    // Into Stories: the welcome plays, then hands over to the Stories masthead.
+    if (vp.isMobile) {
+      await page.click(".menu-btn");
+      await wait(700);
+    }
+    await page.click(".nav-list a[href='/stories']");
+    await wait(120);
+    const welcome = await page.evaluate(() => !!document.querySelector(".st-welcome .st-welcome-page .header.is-copy"));
+    await wait(900);
+    await page.screenshot({ path: `${OUT}/${vp.name}-welcome.png` });
+    await page.waitForURL("**/stories", { timeout: 8000 }).catch(() => {});
+    await page.waitForFunction(() => !document.querySelector(".st-welcome"), null, { timeout: 8000 }).catch(() => {});
+    await wait(300);
+    check(scope, welcome, "crossing into Stories turns the portfolio over like a page");
+    check(scope, page.url().endsWith("/stories"), `lands on /stories (${page.url()})`);
+    check(scope, await page.evaluate(() => !document.querySelector(".st-welcome") && !!document.querySelector("#main .st-mast-title")), "the welcome clears to the Stories masthead");
+    check(scope, await page.evaluate(() => getComputedStyle(document.querySelector(".header")).display === "none"), "the portfolio header steps aside in Stories");
+    // and back out
+    await page.click(".st-back");
+    await page.waitForURL(BASE + "/", { timeout: 8000 }).catch(() => {});
+    await wait(2000);
+    check(scope, await page.evaluate(() => getComputedStyle(document.querySelector(".header:not(.is-copy)")).display !== "none" && !document.querySelector(".st-root")), "back on the portfolio, its header returns");
+    check(scope, await pageClear(page), "nothing is left covering the portfolio");
+    // Arriving through a page change, Home's hero is where it belongs (each held
+    // animation set-up runs once: run twice, the hero's scroll pin pushed it down the screen).
+    const hero = await page.evaluate(() => ({ top: Math.round(document.querySelector(".hx").getBoundingClientRect().top), name: document.querySelector(".hx-line--a")?.textContent }));
+    check(scope, Math.abs(hero.top) <= 1 && hero.name === "Rajendra", `Home's hero is in place after the way back (top ${hero.top}, "${hero.name}")`);
+    await page.close();
+  }
+
+  // The writers' side, in the demo store (each browser context starts fresh).
+  if (vp.name === "desktop") {
+    const scope = `${vp.name} stories admin`;
+    console.log(`\n${scope}`);
+    const page = await context.newPage();
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("dialog", (d) => d.accept());
+    await page.goto(BASE + "/stories/signin?next=/stories/admin", { waitUntil: "networkidle" });
+    await page.click("button:has-text('Open the demo as Rajendra')");
+    await page.waitForURL("**/stories/admin", { timeout: 8000 }).catch(() => {});
+    await page.waitForSelector(".sa-tiles", { timeout: 8000 }).catch(() => {});
+    check(scope, await page.isVisible(".sa-tiles"), "the demo owner reaches the admin");
+    await page.goto(BASE + "/stories/admin/write", { waitUntil: "networkidle" });
+    await page.waitForSelector(".se-editor .ProseMirror", { timeout: 15000 });
+    await page.fill(".se-title", "A test of the writer");
+    await page.click(".se-editor .ProseMirror");
+    await page.keyboard.type("Written by the test run.");
+    await page.click("button:has-text('Gajal')");
+    await page.getByRole("button", { name: "Publish", exact: true }).click();
+    await page.waitForSelector(".se-notice.is-ok", { timeout: 8000 }).catch(() => {});
+    check(scope, (await page.textContent(".se-notice").catch(() => "")).startsWith("Published"), "a new post publishes");
+    await page.goto(BASE + "/stories?type=gajal", { waitUntil: "networkidle" });
+    await page.waitForSelector(".st-entry", { timeout: 8000 }).catch(() => {});
+    const titles = await page.evaluate(() => [...document.querySelectorAll(".st-entry-title, .st-lead-title")].map((a) => a.textContent));
+    check(scope, titles.includes("A test of the writer"), `it shows under Gajal (${titles.join(", ")})`);
+    check(scope, errors.length === 0, `no page errors${errors.length ? `: ${errors[0]}` : ""}`);
     await page.close();
   }
   await context.close();

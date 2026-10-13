@@ -300,6 +300,27 @@ main {
 .page-leave-sheet {
   overflow: hidden;
 }
+/* Out of Stories: the page turns back like a book's, about its right edge. */
+.page-leave--turn {
+  z-index: 120; /* over the portfolio's header too: the page being turned is Stories, which has none */
+  perspective: 2600px;
+}
+.page-leave--turn .page-leave-sheet {
+  transform-origin: 100% 50%;
+  backface-visibility: hidden;
+  box-shadow: 0 0 60px rgb(22 23 27 / 0.2);
+}
+/* A copy restarts CSS animations from their first frame; a copied Stories page shows as it was. */
+.page-leave .st-root,
+.page-leave .st-root * {
+  animation: none !important;
+}
+.page-leave-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgb(22 23 27 / 0.06), rgb(22 23 27 / 0.5));
+  opacity: 0;
+}
 /* A thin bar runs along the top if the next page takes a moment. */
 .nav-loading {
   position: fixed;
@@ -7357,4 +7378,116 @@ a.xh-co:hover {
   :root:has([data-tone="dark"]) .nav-indicator {
     background: var(--w-accent);
   }
+}
+
+/* ── Into Stories (components/stories/welcome.ts) ───────────────────────────
+   The portfolio turns away like a page; the words are laid out exactly like the
+   Stories masthead (components/stories/stories.css), so they can land on it. */
+:root {
+  /* Paper grain, shared with the Stories pages. */
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .09 0 0 0 0 .09 0 0 0 0 .1 0 0 0 .09 -.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+.st-welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 170;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  perspective: 2600px;
+  pointer-events: none;
+  color: #16171b;
+}
+:root:has(.st-welcome) .cursor {
+  display: none;
+}
+/* The real masthead waits under the words until they land on it. */
+:root:has(.st-welcome:not(.is-landed)) #main .st-mast-title,
+:root:has(.st-welcome:not(.is-landed)) #main .st-mast-bar {
+  visibility: hidden;
+}
+.st-welcome-paper {
+  position: absolute;
+  inset: 0;
+  background: var(--paper-grain), #fbfbf9;
+}
+.st-welcome-in {
+  position: relative;
+  width: min(1800px, 100% - 2 * clamp(16px, 4vw, 72px));
+  margin-top: -6vh;
+}
+.st-welcome-title {
+  position: relative;
+  margin: 0;
+  font: 800 clamp(42px, 12vw, 240px) / 1.6 var(--font-martel), serif;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.st-welcome-word {
+  display: inline-block;
+  clip-path: inset(0 0 100% 0);
+}
+.st-welcome-base {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: baseline;
+}
+.st-welcome-bar {
+  position: absolute;
+  top: 0.409em;
+  height: 0.104em;
+  background: currentColor;
+  clip-path: inset(0 100% 0 0);
+}
+.st-welcome-nib {
+  position: absolute;
+  top: 0.385em;
+  width: 0.16em;
+  height: 0.16em;
+  margin-left: -0.08em;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+}
+.st-welcome-pen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.st-welcome-en {
+  margin: 0.2em 0 0;
+  color: #3a3b42;
+  font: italic 400 clamp(19px, 1.9vw, 30px) / 1.45 var(--font-literata), Georgia, serif;
+  opacity: 0;
+}
+/* The shadow the turning page casts along its spine. */
+.st-welcome-spine {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 22vw;
+  background: linear-gradient(to right, rgb(22 23 27 / 0.32), rgb(22 23 27 / 0.08) 40%, transparent);
+  opacity: 0;
+}
+.st-welcome-page {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 50%;
+  backface-visibility: hidden;
+  box-shadow: 0 0 60px rgb(0 28 85 / 0.18);
+}
+.st-welcome-sheet {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.st-welcome-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgb(0 18 50 / 0.06), rgb(0 18 50 / 0.55));
+  opacity: 0;
 }
