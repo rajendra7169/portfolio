@@ -486,13 +486,6 @@ export const careerLog: Commit[] = [
 ];
 
 // The apps on the Projects page and their pages live in lib/projects.ts.
-export const publications = [
-  {
-    title: "Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB",
-    note: "Paper published in Google Drive",
-    date: "December 20 2024",
-  },
-];
 
 export const contact = {
   blurb:

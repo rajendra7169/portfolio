@@ -507,13 +507,41 @@ export const nextProject = (slug: string) => projects[(projects.findIndex((p) =>
 /** The app icon image, when there is one. */
 export const iconOf = (p: Project) => (p.tile.glyph ? undefined : shot(`${p.slug}/icon`));
 
-/** Older work, listed under the launcher. */
-export const archive = [
-  {
-    name: "Laundry Recommendation App",
-    text: "A MERN stack laundry management and recommendation web app, built as his final year project at Sunway College Kathmandu.",
-    date: "Sep 20, 2024",
-    href: `${GH}/laundry_recommendation_app`,
-    live: "https://laundry-frontend-pearl.vercel.app",
-  },
-];
+/**
+ * Older work, under the launcher: the final-year project, shown as a washing
+ * machine running the app's own order flow (components/proj/Laundry.tsx). Its
+ * stages and features are the live app's, read from its front end.
+ */
+export const laundry = {
+  name: "Laundry Recommendation App",
+  repo: "laundry_recommendation_app",
+  owner: "rajendra7169",
+  text: "A MERN stack laundry management and recommendation web app: pick a laundry near you, order a wash, and follow it home on a map. My final-year project at Sunway College, Kathmandu.",
+  date: "20 Sep 2024",
+  href: `${GH}/laundry_recommendation_app`,
+  live: "https://laundry-frontend-pearl.vercel.app",
+  stack: [
+    { name: "MongoDB", icon: "logos:mongodb-icon" },
+    { name: "Express", icon: "simple-icons:express", color: "#1d2433" },
+    { name: "React", icon: "logos:react" },
+    { name: "Node.js", icon: "logos:nodejs-icon" },
+    { name: "Stripe", icon: "simple-icons:stripe", color: "#635bff" },
+    { name: "Leaflet", icon: "simple-icons:leaflet", color: "#199900" },
+  ],
+  // The wash cycle is the app's order, start to finish. `lcd` is what the machine's display reads.
+  cycle: [
+    { id: "order", lcd: "ORDER", label: "Order", title: "Order", text: "Choose a laundry and the type of clothes, add them to the cart, and pay cash on delivery or by card with Stripe." },
+    { id: "pickup", lcd: "PICKUP", label: "Pickup", title: "Free pickup", text: "Schedule a pickup when it suits you; the shop collects from your door." },
+    { id: "wash", lcd: "WASH+FOLD", label: "Wash", title: "Wash and fold", text: "Same-day or next-day service, express when you need it, and a free re-wash if you're not happy." },
+    { id: "deliver", lcd: "ON THE WAY", label: "Delivery", title: "Out for delivery", text: "Track the order on a live map: where you are, where the shop is, and the road between." },
+    { id: "done", lcd: "DELIVERED", label: "Done", title: "Delivered", text: "Every order and its status stays in your order history." },
+  ],
+};
+
+/** The paper the project became, printed as the machine's receipt when the cycle ends. */
+export const laundryPaper = {
+  title: "Laundry Recommendation System Web Application using HTML, CSS, JS, NodeJS and MongoDB",
+  where: "Google Drive",
+  date: "20 Dec 2024",
+  school: "Sunway College, Kathmandu",
+};

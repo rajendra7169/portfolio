@@ -9,10 +9,21 @@ const BASE = (process.env.SHOT_URL ?? "http://localhost:3000").replace(/\/$/, ""
 const OUT = "shots";
 const ALL_PAGES = [
   { path: "/", name: "home", h1: "Rajendra Pandey", counts: { ".wd-item": 4, ".social": 7 } },
-  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 6, ".eh-arena-link": 5 } },
-  { path: "/experience", name: "experience", h1: "Experience", counts: { ".xg-branch": 2, ".xg-commit": 12 } },
-  { path: "/projects", name: "projects", h1: "Projects", counts: { ".project": 9 } },
-  { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".ch-row": 3, ".ch-blip": 7, ".cm-topic": 6 } },
+  { path: "/education", name: "education", h1: "Education", counts: { ".ep-stop": 3, ".cv-card": 0, ".eh-arena-link": 5 } },
+  { path: "/experience", name: "experience", h1: "Experience", counts: { ".xp-now": 1, ".xp-area": 4, ".xp-card": 3, ".xg-commit": 15 } },
+  { path: "/projects", name: "projects", h1: "Projects", counts: { ".pl-card": 7, ".pl-dev": 3, ".pl-icons .pl-icon": 6, ".pl-grid .pl-icon": 5, ".pl-lock .pl-media": 1, ".dv-dock": 0, ".lw-leds button": 5, ".lw-stack li": 6, ".lw-cloth": 4 } },
+  // Project pages: each one is its own world, `world` = its data-world. `next` = the world its last link opens.
+  { path: "/projects/blazify", name: "blazify", h1: "Blazify", world: "blazify", next: "fitevo", counts: { ".dv-phone--iphone": 1, ".bz-eq-band": 10, ".bz-eq-chip": 13, ".bz-mini": 1, ".bz-sleeve": 6, ".bz-pshot": 6, ".ln-track": 8, ".bz-room-dev": 2 } },
+  { path: "/projects/fitevo", name: "fitevo", h1: "Fitevo", world: "fitevo", next: "nexterm", counts: { ".fv-medal": 11 } },
+  { path: "/projects/nexterm", name: "nexterm", h1: "NexTerm", world: "nexterm", next: "jarvis", counts: { ".nt-theme": 9, ".nt-block": 7, ".nt-tshot": 6, ".nt-l": 12 } },
+  { path: "/projects/jarvis", name: "jarvis", h1: "Jarvis", world: "jarvis", next: "tally", counts: { ".jv-arc": 6, ".jv-layer": 7, ".jv-call": 12, ".jv-mon": 3, ".jv-stage": 10, ".jv-gate-risk": 4, ".jv-fams li": 20 } },
+  { path: "/projects/tally", name: "tally", h1: "Tally", world: "tally", next: "r-ai", counts: { ".tl-cal li": 28, ".tl-plant-tree": 6, ".tl-tshot": 15, ".tl-tour-caps li": 8, ".tl-feat-list li": 6 } },
+  { path: "/projects/r-ai", name: "r-ai", h1: "R-AI", world: "r-ai", next: "vocabu", counts: { ".ra-tree > li": 5, ".ra-model": 9, ".ra-shot": 2, ".ra-seg": 4 } },
+  { path: "/projects/vocabu", name: "vocabu", h1: "Vocabu", world: "vocabu", next: "blazify", counts: { ".vc-dcard": 11, ".vc-rail li": 5, ".vc-found-list li": 11, ".vc-shot": 4 } },
+  { path: "/contact", name: "contact", h1: "Contact Me", counts: { ".ch-row": 3, ".cc-mark": 7, ".cc-hand": 1, ".cm-topic": 6, ".ib-phone": 1 } },
+  { path: "/resume", name: "resume", h1: "Résumé", counts: { ".rs-page": 2, ".rs-job": 3, ".rs-projects > li": 4, ".rs-contact li": 6, ".rs-certs": 0 } },
+  { path: "/stories", name: "stories", h1: "मेरो अर्को संसार", counts: { ".st-lead": 1, ".st-entry": 5, ".st-sher": 1, ".st-writers li": 3, ".st-tabs a": 5 } },
+  { path: "/stories/the-last-bus-to-mulpani", name: "story", h1: "The last bus to Mulpani", counts: { ".st-prose .st-fig": 1, ".st-react-btn": 5, ".st-comment": 2, ".st-writer": 1, ".st-rail .st-mini": 3 } },
 ];
 const PAGES = ALL_PAGES.filter((p) => !process.env.SHOT_ONLY || p.path.startsWith(process.env.SHOT_ONLY));
 const VIEWPORTS = [
@@ -600,6 +611,44 @@ for (const vp of VIEWPORTS) {
       check(scope, page.url().endsWith(`/projects/${slug}`), `then lands on its page (${page.url()})`);
       await page.goto(BASE + pg.path, { waitUntil: "networkidle" });
       await wait(2600);
+
+      // "Also on GitHub": the washing machine. Scroll it into view (through Lenis,
+      // as a reader would) and it runs the app's order as a wash cycle by itself.
+      for (let i = 0; i < 60; i++) {
+        const top = await page.evaluate(() => document.querySelector(".lw-machine").getBoundingClientRect().top);
+        if (top < vp.height * 0.45) break;
+        await page.mouse.wheel(0, Math.min(600, top - vp.height * 0.35));
+        await wait(220);
+      }
+      await wait(1200);
+      const lw = () =>
+        page.evaluate(() => ({
+          step: document.querySelector(".lw").dataset.step,
+          lcd: document.querySelector(".lw-lcd-text").textContent,
+          note: document.querySelector(".lw-note.is-on .lw-note-title")?.textContent,
+          water: document.querySelector(".lw-level").getBoundingClientRect().top,
+          receipt: document.querySelector(".lw-receipt").getBoundingClientRect().top - document.querySelector(".lw-paper").getBoundingClientRect().top,
+        }));
+      const early = await lw();
+      check(scope, early.step === "0" || early.step === "1", `the machine starts its cycle when it comes into view (stage ${early.step}, "${early.lcd}")`);
+      await page.screenshot({ path: `${OUT}/${vp.name}-projects-laundry.png` });
+      // The lights pick a stage: wash fills the drum.
+      await page.click('.lw-leds button[data-step="2"]');
+      await wait(2200);
+      const wash = await lw();
+      check(scope, wash.step === "2" && wash.lcd === "WASH+FOLD" && wash.note === "Wash and fold", `a stage light shows that stage ("${wash.lcd}", "${wash.note}")`);
+      check(scope, wash.water < early.water - 20, "the drum fills with water for the wash");
+      // Start runs the whole order; at the end the receipt (the paper) prints.
+      if (!vp.isMobile) {
+        await page.click(".lw-start");
+        await page.waitForFunction(() => document.querySelector(".lw").dataset.step === "4", null, { timeout: 16000 }).catch(() => {});
+        await wait(3600);
+        const done = await lw();
+        check(scope, done.step === "4" && done.lcd === "DELIVERED", `Start runs the cycle to the end ("${done.lcd}")`);
+        check(scope, Math.abs(done.receipt) <= 2, `the receipt prints when it ends (offset ${Math.round(done.receipt)}px)`);
+        await page.screenshot({ path: `${OUT}/${vp.name}-projects-receipt.png` });
+      }
+    }
 
     if (pg.world) {
       await wait(2400); // the world's intro

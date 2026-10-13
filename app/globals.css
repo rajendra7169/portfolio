@@ -3979,91 +3979,558 @@ a.xh-co:hover {
   }
 }
 
-/* ── Projects ───────────────────────────────────────────────────────────── */
-.projects {
+/* ── Projects: "Also on GitHub", the washing machine (components/proj/Laundry.tsx) ──
+   The final-year project's order flow run as a wash cycle; its paper prints as
+   the receipt. GSAP moves .lw-body (shake), .lw-door-in (the door), .lw-dial-knob,
+   the drum's SVG groups and .lw-receipt, so none of those carry CSS transforms. */
+.lw-stage {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 16px;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: clamp(36px, 5vw, 96px);
+  margin-top: clamp(32px, 4vw, 56px);
+}
+.lw-left {
+  display: grid;
+  justify-items: center;
+  padding-bottom: 30px;
+}
+.lw-machine {
+  position: relative;
+  width: clamp(280px, 27vw, 390px);
+}
+/* its shadow on the floor */
+.lw-machine::after {
+  content: "";
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: -30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 28 85 / 0.28), transparent);
+}
+.lw-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px 26px;
+  border-radius: 30px 30px 24px 24px;
+  background: linear-gradient(180deg, #ffffff 0%, #f4f9fd 62%, #e3f0f9 100%);
+  box-shadow:
+    inset 0 0 0 1.5px rgb(0 28 85 / 0.1),
+    inset 0 -10px 0 rgb(0 28 85 / 0.05),
+    0 40px 60px -36px rgb(0 28 85 / 0.55);
+}
+.lw-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px solid rgb(0 28 85 / 0.08);
+}
+.lw-lcd {
+  display: grid;
+  align-content: center;
+  min-height: 54px;
+  padding: 6px 12px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-navy);
+  box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.5);
+}
+.lw-lcd-text {
+  color: #7cc8f0;
+  font: 600 15px/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 8px rgb(124 200 240 / 0.7);
+  white-space: nowrap;
+}
+/* On the way: the shop, the road, the rider (moved along it with --p), home. */
+.lw-route {
+  position: relative;
+  display: block;
+  height: 10px;
+  margin-top: 6px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.lw.is-route .lw-route {
+  opacity: 1;
+}
+.lw-route i {
+  position: absolute;
+}
+.lw-route-road {
+  left: 10px;
+  right: 10px;
+  top: 4px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #7cc8f0 0 4px, transparent 4px 7px);
+  opacity: 0.6;
+}
+.lw-route-shop,
+.lw-route-home {
+  top: 1px;
+  width: 8px;
+  height: 8px;
+  background: #7cc8f0;
+}
+.lw-route-shop {
+  left: 0;
+  border-radius: 2px;
+}
+.lw-route-home {
+  right: 0;
+  border-radius: 50% 50% 2px 2px;
+}
+.lw-route-bike {
+  --p: 0;
+  top: -4px;
+  left: calc(6px + var(--p) * (100% - 34px));
+  width: 22px;
+  height: 13px;
+}
+.lw-route-bike svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #f2b134;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.lw-dial {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.lw-dial-ticks i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px;
+  border-radius: 50%;
+  background: rgb(0 28 85 / 0.35);
+  transform: rotate(var(--a)) translateY(-27px);
+}
+.lw-dial-knob {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #dfeaf3 60%, #c3d6e6);
+  box-shadow:
+    0 3px 6px rgb(0 28 85 / 0.25),
+    inset 0 -2px 3px rgb(0 28 85 / 0.15);
+}
+.lw-dial-knob i {
+  position: absolute;
+  left: 50%;
+  top: 5px;
+  width: 4px;
+  height: 13px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--color-navy);
+}
+.lw-start {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f26b38;
+  color: #fff;
+  box-shadow:
+    0 6px 14px -6px rgb(242 107 56 / 0.9),
+    inset 0 -3px 0 rgb(0 0 0 / 0.15);
+  cursor: pointer;
+  transition: scale 0.2s var(--ease);
+}
+.lw-start:hover {
+  scale: 1.07;
+}
+.lw-start:active {
+  scale: 0.94;
+}
+.lw-start svg {
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  fill: currentColor;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lw.is-running .lw-start {
+    animation: lw-pulse 1.2s ease-in-out infinite;
+  }
+}
+@keyframes lw-pulse {
+  50% {
+    box-shadow:
+      0 0 0 8px rgb(242 107 56 / 0.18),
+      inset 0 -3px 0 rgb(0 0 0 / 0.15);
+  }
+}
+/* The program lights: one per stage of the order. */
+.lw-leds {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 10px 0 0;
+  padding: 0;
   list-style: none;
 }
-.project {
+.lw-leds button {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  color: var(--color-muted);
+  font: 600 11.5px var(--font-body);
+  cursor: pointer;
+}
+.lw-leds button:hover,
+.lw-leds .is-on {
+  color: var(--color-navy);
+}
+.lw-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(0 28 85 / 0.15);
+  transition:
+    background 0.3s,
+    box-shadow 0.3s;
+}
+.lw-leds .is-past .lw-led {
+  background: #7cc8f0;
+}
+.lw-leds .is-on .lw-led {
+  background: #f26b38;
+  box-shadow:
+    0 0 0 3px rgb(242 107 56 / 0.2),
+    0 0 10px #f26b38;
+}
+/* The door: a chrome ring, the glass, the drum behind it. */
+.lw-door {
+  width: 80%;
+  margin: 20px auto 0;
+  aspect-ratio: 1;
+}
+.lw-door-in {
   position: relative;
-  grid-column: span 2;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-height: 240px;
-  padding: 30px 30px 26px;
-  background: var(--color-card);
-  box-shadow: 0 12px 24px -16px rgb(0 28 85 / 0.45);
-  transition: box-shadow 0.45s var(--ease), background-color 0.4s;
+  width: 100%;
+  height: 100%;
 }
-.project:hover {
-  background: #b7e7fb;
-  box-shadow: 0 26px 40px -18px rgb(0 28 85 / 0.5);
+.lw-ring {
+  --glow: 0;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 210deg, #f6fbff, #b8cadb, #ffffff, #93a9bd, #eef5fb, #b8cadb, #f6fbff);
+  box-shadow:
+    0 8px 18px -8px rgb(0 28 85 / 0.5),
+    0 0 calc(var(--glow) * 44px) calc(var(--glow) * 10px) rgb(124 200 240 / 0.85);
 }
-.project--wide {
-  grid-column: span 3;
+.lw-glass {
+  position: absolute;
+  inset: 9%;
+  overflow: hidden;
+  border-radius: 50%;
 }
-.project-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 25px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-.project-name--doc {
-  display: block;
-}
-.project-repo-icon {
-  flex: none;
-  font-size: 18px;
-}
-/* The whole card is the repo link. */
-.project-link::after {
+.lw-glass::after {
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 4px rgb(0 28 85 / 0.55),
+    inset 0 12px 26px rgb(0 0 0 / 0.45);
 }
-.project-desc {
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: #1d3366;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.lw-drum-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-.project-foot {
+.lw-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 24%, rgb(255 255 255 / 0.55), transparent 26%),
+    linear-gradient(135deg, rgb(255 255 255 / 0.18), transparent 45%);
+  pointer-events: none;
+}
+.lw-feet {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: -9px;
   display: flex;
-  align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
-  margin-top: auto;
 }
-.project-date {
-  font-size: 15px;
+.lw-feet::before,
+.lw-feet::after {
+  content: "";
+  width: 30px;
+  height: 11px;
+  border-radius: 0 0 7px 7px;
+  background: var(--color-navy);
+}
+
+/* The repository, what the dial is on, and the receipt. */
+.lw-right {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+.lw-repo {
+  padding: clamp(20px, 2vw, 28px);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 28 85 / 0.1),
+    0 20px 40px -28px rgb(0 28 85 / 0.45);
+  backdrop-filter: blur(6px);
+}
+.lw-repo-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--color-navy);
+  font: 500 14px var(--font-mono);
+}
+.lw-repo-mark {
+  font-size: 20px;
+}
+.lw-repo-name span {
   color: var(--color-muted);
 }
-.project-live {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 1;
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: var(--color-navy);
-  color: #fff;
-  font: 600 12px/1.6 var(--font-mono);
-  opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.3s, transform 0.4s var(--ease);
+.lw-repo-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.project:hover .project-live,
-.project-live:focus-visible {
-  opacity: 1;
-  transform: none;
+.lw-repo-pill {
+  padding: 1px 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(0 28 85 / 0.25);
+  color: var(--color-muted);
+  font: 600 11.5px var(--font-body);
+}
+.lw-repo-title {
+  margin: 14px 0 0;
+  color: var(--color-navy);
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.lw-repo-text {
+  max-width: 46em;
+  margin: 10px 0 0;
+  color: #34497a;
+  font-size: 16.5px;
+  line-height: 1.6;
+}
+.lw-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.lw-stack li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(166 223 247 / 0.38);
+  color: var(--color-navy);
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.lw-stack svg {
+  font-size: 16px;
+}
+.lw-repo-meta {
+  margin: 14px 0 0;
+  color: var(--color-muted);
+  font-size: 13.5px;
+}
+.lw-repo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.lw-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  align-items: start;
+  gap: 24px;
+}
+.lw-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lw-note {
+  display: none;
+  gap: 6px;
+  padding: 18px 20px;
+  border-left: 3px solid #f26b38;
+  border-radius: 0 14px 14px 0;
+  background: rgb(255 255 255 / 0.5);
+}
+.lw-note.is-on {
+  display: grid;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lw-note.is-on {
+    animation: lw-note 0.5s var(--ease) both;
+  }
+}
+@keyframes lw-note {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+.lw-note-n {
+  color: #d9541f;
+  font: 600 12.5px var(--font-mono);
+}
+.lw-note-title {
+  color: var(--color-navy);
+  font-size: 22px;
+  font-weight: 700;
+}
+.lw-note-text {
+  color: #34497a;
+  font-size: 16px;
+  line-height: 1.6;
+}
+/* The receipt comes out of a slot, thermal paper with a torn edge. */
+.lw-printer {
+  padding: 4px 4px 0;
+}
+.lw-slot {
+  display: block;
+  height: 12px;
+  border-radius: 8px;
+  background: linear-gradient(#0a2a62, var(--color-navy));
+  box-shadow: inset 0 3px 4px rgb(0 0 0 / 0.5);
+}
+/* Shown under the empty slot until the receipt comes out (only with motion: without it, the receipt is already there). */
+.lw-slot-hint {
+  display: none;
+  margin: 10px 0 -32px;
+  color: var(--color-muted);
+  font: 500 12.5px var(--font-mono);
+  text-align: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lw-slot-hint {
+    display: block;
+  }
+}
+.lw-paper {
+  margin: -6px 10px 0;
+  padding-bottom: 20px;
+  overflow: hidden;
+  filter: drop-shadow(0 10px 12px rgb(0 28 85 / 0.22));
+}
+.lw-receipt {
+  --z: 7px;
+  margin: 0;
+  padding: 20px 18px 30px;
+  background: #fffef9;
+  color: #1d2433;
+  font: 400 12.5px/1.55 var(--font-mono);
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--z)) 100%;
+}
+.lw-receipt p {
+  margin: 0;
+}
+.lw-r-shop {
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: center;
+}
+.lw-r-meta {
+  margin: 2px 0 12px !important;
+  color: #6b7280;
+  text-align: center;
+}
+.lw-r-item {
+  padding-top: 10px;
+  border-top: 1.5px dashed #c4c9d4;
+}
+.lw-r-title {
+  margin: 4px 0 12px !important;
+  font-weight: 700;
+}
+.lw-r-rows {
+  margin: 0;
+  padding: 10px 0;
+  border-block: 1.5px dashed #c4c9d4;
+}
+.lw-r-rows div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.lw-r-rows dt {
+  color: #6b7280;
+}
+.lw-r-rows dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+.lw-r-thanks {
+  margin: 12px 0 10px !important;
+  text-align: center;
+}
+.lw-r-code {
+  display: block;
+  width: 80%;
+  height: 32px;
+  margin: 0 auto;
+  background: repeating-linear-gradient(90deg, #1d2433 0 2px, transparent 2px 4px, #1d2433 4px 5px, transparent 5px 8px, #1d2433 8px 11px, transparent 11px 12px);
+}
+.lw .center {
+  margin-top: clamp(40px, 5vw, 64px);
+}
+@media (max-width: 1000px) {
+  .lw-stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .lw-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lw-printer {
+    width: min(300px, 100%);
+    justify-self: center;
+  }
 }
 
 /* ── Contact: the social clock ─────────────────────────────────────────── */
