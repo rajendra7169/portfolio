@@ -1,4 +1,5 @@
-# Netlify builds the site with its Next.js runtime (picked up automatically).
+# Netlify builds the site with its Next.js runtime, declared below so it always
+# runs (without it, Netlify publishes .next as plain files and every page 404s).
 [build]
   command = "npm run build"
   publish = ".next"
@@ -9,6 +10,9 @@
   # the browser, and the database's row-level security protects the data.
   NEXT_PUBLIC_SUPABASE_URL = "https://ydrnqsbuxgdxxlrmmrze.supabase.co"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_Hx_tflvkn44yZVifuHRKjQ_uXT6a_jN"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # The Blazify apps read these; never cache them for long.
 [[headers]]

@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@iconify/types": "^2.0.0",
+    "@netlify/plugin-nextjs": "5.16.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.4",
     "@types/react": "^19.3.0",
