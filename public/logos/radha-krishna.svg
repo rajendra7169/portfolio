@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Stand-in emblem for Shree Radha Krishna Higher Secondary School: a peacock feather over the initials. -->
+  <circle cx="60" cy="60" r="58" fill="#001c55"/>
+  <circle cx="60" cy="60" r="51" fill="none" stroke="#7cc8f0" stroke-width="2"/>
+  <path d="M60 84V30" stroke="#a6dff7" stroke-width="2" stroke-linecap="round"/>
+  <path d="M60 22c13 6 18 18 14 29-3 8-9 12-14 14-5-2-11-6-14-14-4-11 1-23 14-29Z" fill="#1aa37a"/>
+  <path d="M60 30c8 4 11 12 9 19-2 5-5 8-9 9-4-1-7-4-9-9-2-7 1-15 9-19Z" fill="#f2b33d"/>
+  <path d="M60 37c5 3 6 8 5 12-1 3-3 5-5 6-2-1-4-3-5-6-1-4 0-9 5-12Z" fill="#2f7fc1"/>
+  <ellipse cx="60" cy="47" rx="2.6" ry="4" fill="#001c55"/>
+  <text x="60" y="101" text-anchor="middle" font-family="Figtree, Arial, Helvetica, sans-serif" font-size="15" font-weight="800" letter-spacing="2" fill="#fff">SRK</text>
+</svg>

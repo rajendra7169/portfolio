@@ -209,8 +209,19 @@ export type PathStop = {
   stamp: readonly [string, string];
   scene: "school" | "ledger" | "stack" | "paper";
 };
-// School, before the +2: the path opens here once it's filled in.
-export const schoolStop: PathStop | null = null;
+// School, before the +2: the path opens here. (The start year isn't on record,
+// so its place on the path is the year it ended.)
+export const schoolStop: PathStop | null = {
+  year: 2014,
+  title: "Shree Radha Krishna Higher Secondary School",
+  subtitle: "School Leaving Certificate (SLC)",
+  duration: "Class 1 – 10, till 2014",
+  logo: "/logos/radha-krishna.svg",
+  points: ["I went to school at Shree Radha Krishna Higher Secondary School from Class 1 to Class 10.", "I finished school with the School Leaving Certificate (SLC) in 2014."],
+  links: [],
+  stamp: ["Passed SLC", "2014"],
+  scene: "school",
+};
 export const journey = [
   { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"], scene: "ledger" },
   { year: 2021, degree: degrees[0], stamp: ["Graduated", "2024"], scene: "stack" },
