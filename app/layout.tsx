@@ -19,7 +19,10 @@ const mono = Google_Sans_Code({ subsets: ["latin"], variable: "--font-gsc", disp
 // Neither is preloaded; each downloads only when its text is on screen.
 const devanagari = Martel({ subsets: ["devanagari"], weight: ["400", "700", "800"], variable: "--font-martel", display: "swap", preload: false });
 const reading = Literata({ subsets: ["latin", "latin-ext"], style: ["normal", "italic"], axes: ["opsz"], variable: "--font-literata", display: "swap", preload: false });
-const logo = localFont({ src: "./fonts/Agustina.woff", weight: "400", variable: "--font-agustina", display: "swap" });
+// It only ever sets the name in the logo, so the file holds just those letters (10 KB,
+// from 95): if the name changes, cut it again from the full font with fonttools,
+//   pyftsubset assets/fonts/Agustina.woff --text="<the name>" --layout-features='*' --flavor=woff2
+const logo = localFont({ src: "./fonts/Agustina.woff2", weight: "400", variable: "--font-agustina", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "Rajendra's Portfolio", template: "%s · Rajendra Pandey" },
