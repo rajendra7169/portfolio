@@ -9,7 +9,8 @@
     "start": "next start",
     "images": "node scripts/images.mjs",
     "shot": "node scripts/shot.mjs",
-    "resume": "node scripts/resume.mjs"
+    "resume": "node scripts/resume.mjs",
+    "github": "node scripts/github.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
