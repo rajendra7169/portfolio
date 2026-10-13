@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { useRouter } from "next/navigation";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
 import { afterReveal, useNavigate } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
@@ -9,6 +10,7 @@ const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
 export default function LauncherMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
   const navigate = useNavigate();
+  const router = useRouter();
 
   useGSAP(
     () => {
@@ -49,6 +51,18 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
           .set(q(".pl-boot-win, .pl-boot-tux"), { autoAlpha: 0 });
       };
       os.addEventListener("click", onOs);
+
+      // ── An app's world is fetched once someone shows interest in it.
+      const fetched = new Set<string>();
+      const intent = (e: Event) => {
+        const href = (e.target as Element).closest?.(".pl-app")?.getAttribute("href");
+        if (!href || fetched.has(href)) return;
+        fetched.add(href);
+        router.prefetch(href);
+      };
+      el.addEventListener("pointerover", intent);
+      el.addEventListener("pointerdown", intent);
+      el.addEventListener("focusin", intent);
 
       // ── Open an app out of its icon, then follow it to its page.
       const onClick = (e: MouseEvent) => {
@@ -144,22 +158,30 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
           { box: q(".pl-notifs--desk")[0], first: 5, every: 7, from: { xPercent: 40, scale: 0.96 }, os: true },
           { box: q(".pl-notifs--ios")[0], first: 7.5, every: 11, from: { yPercent: -70, scale: 0.94 } },
         ];
+        // The waits (between notifications, and while one shows) are timers, not
+        // tweens, so GSAP's ticker can sleep through them; and nothing posts while
+        // the devices are off screen.
+        const timers: number[] = [];
+        const later = (s: number, f: () => void) => void timers.push(window.setTimeout(f, s * 1000));
+        const devices = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top" });
         posts.forEach((g) => {
           let i = 0;
           const post = inContext(ctx, () => {
             let items = Array.from(g.box.children) as HTMLElement[];
             if (g.os) items = items.filter((n) => n.dataset[laptop.dataset.os!] !== undefined);
-            if (!items.length || launching || document.hidden) return void gsap.delayedCall(g.every, post);
+            if (!items.length || launching || document.hidden || !devices.isActive) return later(g.every, post);
             const n = items[i++ % items.length];
-            gsap
-              .timeline({ onComplete: () => void gsap.delayedCall(Math.max(1, g.every - 3.6), post) })
-              .fromTo(n, { autoAlpha: 0, ...g.from }, { autoAlpha: 1, xPercent: 0, yPercent: 0, scale: 1, duration: 0.6, ease: "back.out(1.5)" })
-              .to(n, { autoAlpha: 0, yPercent: g.os ? 0 : -40, xPercent: g.os ? 30 : 0, duration: 0.4, ease: "power2.in" }, "+=2.8");
+            gsap.fromTo(n, { autoAlpha: 0, ...g.from }, { autoAlpha: 1, xPercent: 0, yPercent: 0, scale: 1, duration: 0.6, ease: "back.out(1.5)" });
+            later(0.6 + 2.8, inContext(ctx, () => {
+              gsap.to(n, { autoAlpha: 0, yPercent: g.os ? 0 : -40, xPercent: g.os ? 30 : 0, duration: 0.4, ease: "power2.in" });
+              later(0.4 + Math.max(1, g.every - 3.6), post);
+            }));
           });
-          gsap.delayedCall(g.first, post);
+          later(g.first, post);
         });
 
-        if (!fine) return;
+        const stopPosts = () => timers.forEach(clearTimeout);
+        if (!fine) return stopPosts;
 
         // Hover a desktop app: its window peeks open on the laptop.
         const peekOf = (a: Element) => q(`.pl-peek[data-slug="${(a as HTMLElement).dataset.slug}"]`)[0];
@@ -200,6 +222,7 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
         el.addEventListener("pointerleave", leave);
 
         return () => {
+          stopPosts();
           icons.removeEventListener("pointerover", show);
           icons.removeEventListener("pointerout", hide);
           icons.removeEventListener("focusin", show);
@@ -210,6 +233,9 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
       }, el);
 
       return () => {
+        el.removeEventListener("pointerover", intent);
+        el.removeEventListener("pointerdown", intent);
+        el.removeEventListener("focusin", intent);
         os.removeEventListener("click", onOs);
         el.removeEventListener("click", onClick);
         el.removeEventListener("pointerover", twin);

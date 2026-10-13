@@ -18,8 +18,12 @@ const runs = (p: Project) => {
   const l = p.platforms.map((k) => PLATFORMS[k].label);
   return l.length > 1 ? `${l.slice(0, -1).join(", ")} and ${l[l.length - 1]}` : l[0];
 };
+// No prefetch on sight: with every app on screen at once, the Projects page
+// fetched all seven worlds (and their fonts) as it loaded. LauncherMotion
+// prefetches one when it's pointed at, touched or focused.
 const appProps = (p: Project) => ({
   href: href(p),
+  prefetch: false,
   className: "pl-app",
   "data-slug": p.slug,
   "data-name": p.name,
