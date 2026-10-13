@@ -11,7 +11,7 @@
 // px), drives the track, the scenes and the pen. Phones: a vertical timeline,
 // where each scene draws as it passes up the screen and `s` is the page scroll.
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 
 const WAVELENGTH = 820; // px between crests of the path
 const MOVE = 0.7; // px of scroll per px the track travels
@@ -49,10 +49,11 @@ type Panel = {
   card: HTMLElement | null;
   svg: SVGSVGElement;
   vb: { x: number; y: number; w: number; h: number };
-  tl: gsap.core.Timeline;
+  tl: gsap.core.Timeline | null; // built shortly before it's needed (see build)
   D: number;
   segs: Seg[];
   tool: Tool;
+  near: number; // s from which it must be built
   a: number; // s at which its scene starts,
   b: number; // is done,
   c: number; // and the pen, having rested, flies on
@@ -296,22 +297,43 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
         if (rail) el.classList.add("is-rail");
         if (flow) el.classList.add("is-pan");
 
-        // The scenes, read (for the pen) before any of them is touched.
         const undo: (() => void)[] = [];
         const panels: Panel[] = panelEls.map((p) => {
           const svg = p.querySelector<SVGSVGElement>(".ep-scene svg")!;
-          const tool = (svg.dataset.tool as Tool) || "pen";
-          const segs = penSegs(svg, tool);
-          const tl = panelTimeline(p, svg, flow, undo);
           const vb = svg.viewBox.baseVal;
-          return { el: p, card: p.querySelector<HTMLElement>(".ep-card"), svg, vb: { x: vb.x, y: vb.y, w: vb.width, h: vb.height }, tl, D: Math.max(1, tl.duration()), segs, tool, a: 0, b: 1, c: 1, T: -1, shown: false, slammed: false };
+          const tool = (svg.dataset.tool as Tool) || "pen";
+          return { el: p, card: p.querySelector<HTMLElement>(".ep-card"), svg, vb: { x: vb.x, y: vb.y, w: vb.width, h: vb.height }, tl: null, D: 1, segs: [], tool, near: -Infinity, a: 0, b: 1, c: 1, T: -1, shown: false, slammed: false };
         });
+        // A scene is built (where the pen goes read first, before anything in it
+        // moves; then its timeline, which hides what's still to come) a scene or
+        // so before it's on screen, and the rest one at a time while the page is
+        // idle: building all eleven at once froze a slow phone for seconds on load.
+        const buildScene = inContext(ctx, (p: Panel) => {
+          if (p.tl) return;
+          p.segs = penSegs(p.svg, p.tool);
+          p.tl = panelTimeline(p.el, p.svg, flow, undo);
+          p.D = Math.max(1, p.tl.duration());
+          p.T = -1;
+        });
+        let idleTimer = 0;
+        const idleNext = () => {
+          const p = panels.find((x) => !x.tl);
+          if (!p) return;
+          idleTimer = window.setTimeout(() => {
+            buildScene(p);
+            idleNext();
+          }, 120);
+        };
+        undo.push(() => clearTimeout(idleTimer));
 
         const scrubPanel = (p: Panel, s: number, cards: boolean) => {
-          const T = clamp01((s - p.a) / (p.b - p.a)) * p.D;
-          if (Math.abs(T - p.T) > 1e-5) {
-            p.T = T;
-            p.tl.time(T);
+          if (p.tl || s >= p.near) {
+            buildScene(p);
+            const T = clamp01((s - p.a) / (p.b - p.a)) * p.D;
+            if (Math.abs(T - p.T) > 1e-5) {
+              p.T = T;
+              p.tl!.time(T);
+            }
           }
           if (!cards || !p.card) return;
           if (!p.shown && s >= p.a - innerHeight * 0.05) {
@@ -338,6 +360,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
           return [r.left + (r.width - p.vb.w * k) / 2 + (x - p.vb.x) * k, r.top + (r.height - p.vb.h * k) / 2 + (y - p.vb.y) * k];
         };
         const penOf = (p: Panel, T: number): PenAt => {
+          buildScene(p);
           const at = penIn(p.segs, T) ?? { x: p.vb.x + p.vb.w / 2, y: p.vb.y + p.vb.h / 2, lift: 10, from: p.tool, to: p.tool, mix: 0, busy: false };
           const [x, y] = toScreen(p, at.x, at.y);
           return { ...at, x, y };
@@ -406,6 +429,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
               p.a = Math.max(mid - 0.9 * innerHeight, prev + 40);
               p.b = Math.max(p.a + 160, mid - 0.36 * innerHeight);
               p.c = p.b + 0.08 * innerHeight;
+              p.near = p.a - innerHeight;
               prev = p.c;
             });
           };
@@ -432,6 +456,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
             },
           });
           update();
+          idleNext();
           return cleanup;
         }
 
@@ -493,6 +518,8 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
             // A scene starts on its way in and is done most of the way through its hold
             // (the first, already in place, draws as the section arrives).
             p.a = i ? S[i] - 0.45 * M[i] : -0.7 * vh;
+            // Built when the one before starts drawing, while it's still off to the right.
+            p.near = i ? panels[i - 1].a : -Infinity;
             p.b = S[i] + 0.8 * H[i];
             p.c = S[i] + H[i];
             p.el.dataset.hold = String(Math.round(S[i] + 0.92 * H[i])); // for the tests: in place, and done
@@ -563,6 +590,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
         // Before the pin (and after it) the page scroll still moves the first scene and the pen.
         ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onUpdate: update });
         update();
+        idleNext();
 
         return cleanup;
       }, el);
