@@ -1,21 +1,12 @@
 // "Degrees Received" as a journey through time. Desktop: a pinned horizontal
 // track with a wave path, a rider and a year counter. Phones: a vertical timeline.
 import { Chars } from "@/components/Motion";
-import { journey, paperStop } from "@/lib/content";
+import { journey, paperStop, schoolStop, type PathStop } from "@/lib/content";
 import EduPathMotion from "./EduPathMotion";
+import { SCENES } from "./Scenes";
 
-type Stop = {
-  year: number;
-  logo: string;
-  title: string;
-  subtitle: string;
-  duration: string;
-  points: readonly string[];
-  links: readonly { label: string; href: string }[];
-  stamp: readonly [string, string] | readonly string[];
-};
-
-const STOPS: Stop[] = [
+const STOPS: PathStop[] = [
+  ...(schoolStop ? [schoolStop] : []),
   ...journey.map((j) => ({
     year: j.year,
     logo: j.degree.logo,
@@ -25,15 +16,23 @@ const STOPS: Stop[] = [
     points: j.degree.points,
     links: [{ label: "Visit Website", href: j.degree.url }],
     stamp: j.stamp,
+    scene: j.scene,
   })),
   paperStop,
 ];
+
+function Scene({ name }: { name: PathStop["scene"] }) {
+  const Drawn = SCENES[name];
+  return <Drawn />;
+}
 
 export default function EduPath() {
   return (
     <EduPathMotion>
       <header className="ep-head">
-        <p className="wd-eyebrow">✦ The path · 2015 → 2024</p>
+        <p className="wd-eyebrow">
+          ✦ The path · {STOPS[0].year} → {STOPS[STOPS.length - 1].year}
+        </p>
         <h2 className="ep-h2" id="degrees">
           <Chars text="Degrees Received" />
         </h2>
@@ -75,7 +74,10 @@ export default function EduPath() {
                       <p className="ep-degree">{s.subtitle}</p>
                     </div>
                   </header>
-                  <ul className="points points--dark ep-points">
+                  <figure className="ep-scene">
+                    <Scene name={s.scene} />
+                  </figure>
+                  <ul className="sr-only">
                     {s.points.map((p) => (
                       <li key={p.slice(0, 32)}>{p}</li>
                     ))}

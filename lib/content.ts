@@ -195,12 +195,27 @@ export const degrees = [
   },
 ];
 
-// Education page: the stops on "the path", oldest first. `year` drives the year counter.
+// Education page: the stops on "the path", oldest first. `year` drives the year
+// counter; `scene` is the picture drawn in the card (components/edu/Scenes.tsx),
+// which stands in for the points on screen.
+export type PathStop = {
+  year: number;
+  title: string;
+  subtitle: string;
+  duration: string;
+  logo: string;
+  points: readonly string[];
+  links: readonly { label: string; href: string }[];
+  stamp: readonly [string, string];
+  scene: "school" | "ledger" | "stack" | "paper";
+};
+// School, before the +2: the path opens here once it's filled in.
+export const schoolStop: PathStop | null = null;
 export const journey = [
-  { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"] },
-  { year: 2021, degree: degrees[0], stamp: ["Graduated", "2024"] },
+  { year: 2015, degree: degrees[1], stamp: ["Completed", "2017"], scene: "ledger" },
+  { year: 2021, degree: degrees[0], stamp: ["Graduated", "2024"], scene: "stack" },
 ] as const;
-export const paperStop = {
+export const paperStop: PathStop = {
   year: 2024,
   title: "Paper published",
   subtitle: "Laundry Recommendation System",
@@ -215,6 +230,7 @@ export const paperStop = {
     { label: "Source", href: "https://github.com/rajendra7169/laundry_recommendation_app" },
   ],
   stamp: ["Published", "Dec 2024"],
+  scene: "paper",
 };
 
 export const experience = {

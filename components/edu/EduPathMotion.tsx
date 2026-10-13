@@ -5,6 +5,20 @@ import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP } from "@/lib/gsap";
 
 const WAVELENGTH = 820; // px between crests of the path
 
+// A card's scene (Scenes.tsx) as one timeline, 0 to 1: each part comes in the way
+// its data-v says, at its data-at. Scrubbed by the card's place on the screen.
+const sceneTimeline = (scene: Element) => {
+  const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.out" } });
+  scene.querySelectorAll<SVGElement>("[data-v]").forEach((p) => {
+    const at = Number(p.dataset.at);
+    if (p.dataset.v === "draw") tl.fromTo(p, { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.14, ease: "power1.inOut" }, at);
+    else if (p.dataset.v === "pop") tl.fromTo(p, { scale: 0, transformOrigin: "50% 50%" }, { scale: 1, duration: 0.09, ease: "back.out(2.4)" }, at);
+    else if (p.dataset.v === "grow") tl.fromTo(p, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.12 }, at);
+    else tl.fromTo(p, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.08 }, at);
+  });
+  return tl;
+};
+
 export default function EduPathMotion({ children }: { children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
 
@@ -18,15 +32,16 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
 
       // Plain functions: they only make short one-off tweens. (Inside matchMedia
       // callbacks, wrap with inContext, never useGSAP's contextSafe; see lib/gsap.)
-      // A card's content builds in: logo pops, text rises, points follow.
+      // A card's head builds in: logo pops, text rises, links follow. (Its scene
+      // is scrubbed separately, below.)
       const reveal = (card: HTMLElement) => {
         const c = gsap.utils.selector(card);
-        gsap
+        const links = c(".ep-links > *"); // the school has none
+        const tl = gsap
           .timeline()
           .to(c(".ep-logo"), { scale: 1, rotation: 0, duration: 0.8, ease: "back.out(2.2)" })
-          .to(c(".ep-when, .ep-school, .ep-degree"), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" }, 0.1)
-          .to(c(".ep-points li"), { autoAlpha: 1, x: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, 0.25)
-          .to(c(".ep-links > *"), { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "back.out(2)" }, 0.45);
+          .to(c(".ep-when, .ep-school, .ep-degree"), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" }, 0.1);
+        if (links.length) tl.to(links, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "back.out(2)" }, 0.45);
       };
       // The stamp slams down, kicks up a ring of dust and shakes the card.
       const slam = (card: HTMLElement) => {
@@ -41,7 +56,6 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
       const hideContent = () => {
         gsap.set(q(".ep-logo"), { scale: 0, rotation: -90 });
         gsap.set(q(".ep-when, .ep-school, .ep-degree"), { autoAlpha: 0, y: 18 });
-        gsap.set(q(".ep-points li"), { autoAlpha: 0, x: 30 });
         gsap.set(q(".ep-links > *"), { autoAlpha: 0, y: 14 });
       };
 
@@ -61,11 +75,18 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
         if (flow) {
           // Phones: a vertical line fills as you read; stamps land as each card arrives.
           gsap.fromTo(q(".ep-vfill"), { scaleY: 0 }, { scaleY: 1, ease: "none", scrollTrigger: { trigger: q(".ep-stops")[0], start: "top 70%", end: "bottom 60%", scrub: true } });
+          el.classList.add("is-pan");
           cards.forEach((card) => {
+            const scene = card.querySelector<HTMLElement>(".ep-scene")!;
+            const tl = sceneTimeline(scene);
+            // The scene is wider than the card: the view follows the drawing across.
+            const svg = scene.querySelector("svg")!;
+            tl.fromTo(svg, { x: 0 }, { x: () => scene.clientWidth - parseFloat(getComputedStyle(svg).width), duration: 0.8, ease: "power1.inOut" }, 0.12);
             ScrollTrigger.create({ trigger: card, start: "top 85%", once: true, onEnter: () => reveal(card) });
+            ScrollTrigger.create({ trigger: scene, start: "top 90%", end: "bottom 40%", scrub: 0.5, invalidateOnRefresh: true, animation: tl });
             ScrollTrigger.create({ trigger: card, start: "top 45%", onEnter: () => slam(card), onLeaveBack: () => unslam(card) });
           });
-          return;
+          return () => el.classList.remove("is-pan");
         }
         if (!rail) return;
 
@@ -151,6 +172,13 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
         update();
 
         cards.forEach((card, i) => {
+          // Each scene draws as its card slides in, finishing as it reaches the
+          // middle, just before the stamp lands; the first, as the section arrives.
+          ScrollTrigger.create({
+            ...(i === 0 ? { trigger: viewport, start: "top 85%", end: "top 38%" } : { trigger: stops[i], containerAnimation: slide, start: "left 95%", end: "center 62%" }),
+            scrub: 0.5,
+            animation: sceneTimeline(card.querySelector(".ep-scene")!),
+          });
           // The first card is on screen before the pin starts, so it reveals on arrival.
           if (i === 0) ScrollTrigger.create({ trigger: viewport, start: "top 70%", once: true, onEnter: () => reveal(card) });
           else ScrollTrigger.create({ trigger: stops[i], containerAnimation: slide, start: "left 85%", once: true, onEnter: () => reveal(card) });
