@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2147"/><stop offset=".55" stop-color="#8c4a5c"/><stop offset="1" stop-color="#f0a46a"/></linearGradient>
+    <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe2b0"/><stop offset=".6" stop-color="#ffb46b"/><stop offset="1" stop-color="#ff9a5a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1080" cy="560" r="220" fill="url(#sun)"/>
+  <path d="M0 520 L180 430 L300 470 L470 360 L620 440 L760 380 L900 300 L1050 410 L1220 340 L1380 420 L1600 360 V900 H0Z" fill="#5a3b5f" opacity=".75"/>
+  <path d="M900 300 L870 330 L895 326 L915 345 L935 322Z M470 360 L445 388 L468 383 L486 398 L500 380Z" fill="#f3dfe7" opacity=".7"/>
+  <path d="M0 640 C200 560 360 620 560 580 C760 540 920 610 1120 570 C1320 530 1460 590 1600 560 V900 H0Z" fill="#3a2747"/>
+  <path d="M0 760 C240 700 420 740 640 710 C860 680 1040 735 1260 705 C1420 685 1520 700 1600 690 V900 H0Z" fill="#221a33"/>
+  <g fill="#ffd28a" opacity=".85"><circle cx="300" cy="790" r="3"/><circle cx="330" cy="800" r="2.5"/><circle cx="700" cy="770" r="3"/><circle cx="725" cy="782" r="2"/><circle cx="1120" cy="760" r="3"/><circle cx="1150" cy="772" r="2.5"/><circle cx="1400" cy="745" r="2.5"/></g>
+</svg>

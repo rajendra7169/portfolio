@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f1a2c"/><stop offset="1" stop-color="#253a57"/></linearGradient>
+    <filter id="b"><feGaussianBlur stdDeviation="14"/></filter>
+  </defs>
+  <rect width="900" height="1100" fill="url(#g)"/>
+  <g filter="url(#b)" opacity=".8">
+    <circle cx="180" cy="760" r="46" fill="#ffb347"/><circle cx="320" cy="820" r="30" fill="#ff6f61"/><circle cx="560" cy="700" r="52" fill="#ffd36e"/>
+    <circle cx="700" cy="860" r="38" fill="#7ec8ff"/><circle cx="420" cy="930" r="26" fill="#ffe0a3"/><circle cx="110" cy="980" r="34" fill="#ff8f6b"/>
+  </g>
+  <g stroke="#cfe3ff" stroke-linecap="round" opacity=".35">
+    <path d="M120 80 l-14 60M260 40 l-14 60M420 120 l-14 60M600 60 l-14 60M780 140 l-14 60M200 300 l-14 60M520 340 l-14 60M700 420 l-14 60M90 520 l-14 60M360 560 l-14 60M640 600 l-14 60M820 660 l-14 60" stroke-width="3"/>
+  </g>
+  <g fill="#e9f3ff" opacity=".55">
+    <ellipse cx="240" cy="220" rx="7" ry="9"/><ellipse cx="610" cy="300" rx="6" ry="8"/><ellipse cx="470" cy="500" rx="8" ry="10"/><ellipse cx="150" cy="640" rx="5" ry="7"/><ellipse cx="760" cy="560" rx="7" ry="9"/>
+  </g>
+  <rect x="0" y="0" width="900" height="1100" fill="none" stroke="#0a0f1a" stroke-width="40"/>
+  <rect x="440" y="0" width="20" height="1100" fill="#0a0f1a"/>
+</svg>

@@ -4,3 +4,7 @@ out/
 next-env.d.ts
 *.tsbuildinfo
 shots/
+
+# Local settings (Supabase keys for Stories); .env.example is the template
+.env
+.env*.local
