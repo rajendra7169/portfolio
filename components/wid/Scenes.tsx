@@ -261,26 +261,31 @@ export function VideoScene() {
     <div className="wd-video" aria-hidden="true">
       <div className="wd-viewer">
         <div className="wd-footage">
-          <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice" className="wd-land">
-            <defs>
-              <linearGradient id="wd-sky" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#8fd0f2" />
-                <stop offset="1" stopColor="#eaf7fe" />
-              </linearGradient>
-            </defs>
-            <rect width="400" height="225" fill="url(#wd-sky)" />
-            <circle cx="300" cy="62" r="20" fill="#fff" opacity="0.85" className="wd-sun" />
-            <g className="wd-range wd-range--far">
+          {/* One picture in layers (sky, sun, three ranges), each panning on its own. */}
+          <div className="wd-land">
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice">
+              <defs>
+                <linearGradient id="wd-sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stopColor="#8fd0f2" />
+                  <stop offset="1" stopColor="#eaf7fe" />
+                </linearGradient>
+              </defs>
+              <rect width="400" height="225" fill="url(#wd-sky)" />
+            </svg>
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice" className="wd-sun">
+              <circle cx="300" cy="62" r="20" fill="#fff" opacity="0.85" />
+            </svg>
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice" className="wd-range wd-range--far">
               <path d="M-60 160 L10 92 L52 120 L104 64 L150 110 L196 76 L250 118 L300 70 L352 112 L410 80 L470 130 L470 225 L-60 225Z" fill="#a9c8e4" />
               <path d="M104 64 L118 78 L110 80 L98 74Z M300 70 L314 84 L304 86Z" fill="#ffffff" />
-            </g>
-            <g className="wd-range wd-range--mid">
+            </svg>
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice" className="wd-range wd-range--mid">
               <path d="M-60 180 L30 128 L80 158 L140 112 L200 156 L262 120 L320 160 L380 130 L470 170 L470 225 L-60 225Z" fill="#5b86b8" />
-            </g>
-            <g className="wd-range wd-range--near">
+            </svg>
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMax slice" className="wd-range wd-range--near">
               <path d="M-60 205 L40 170 L120 196 L200 168 L290 198 L370 176 L470 200 L470 225 L-60 225Z" fill="#1e3f73" />
-            </g>
-          </svg>
+            </svg>
+          </div>
           <span className="wd-rec">
             <i /> REC
           </span>
@@ -331,7 +336,9 @@ export function VideoScene() {
             </span>
           </div>
         </div>
-        <span className="wd-playhead" />
+        <span className="wd-playhead-run">
+          <span className="wd-playhead" />
+        </span>
       </div>
     </div>
   );

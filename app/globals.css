@@ -2249,20 +2249,33 @@ main {
   border-radius: 0.7em;
   background: #bfe6fb;
 }
+/* The landscape is one 400 × 225 picture sliced to the frame, drawn as a stack
+   of layers so each part pans on the GPU (shapes moving inside a single svg
+   repainted it every frame). Each layer is the whole picture, and slides by
+   18 of its units either way: --u is one unit in pixels, from the frame's size.
+   (The layers draw past their box; the frame clips them, as the one svg did.) */
 .wd-land {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+}
+.wd-land svg {
+  --u: max(100cqw / 400, 100cqh / 225);
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 .wd-range {
   animation: pan 14s ease-in-out infinite alternate;
 }
 .wd-range--mid { animation-duration: 10s; }
 .wd-range--near { animation-duration: 7s; }
+/* (transform, not translate: an svg element only moves on the GPU by transform.) */
 @keyframes pan {
-  from { translate: -18px 0; }
-  to { translate: 18px 0; }
+  from { transform: translateX(calc(-18 * var(--u))); }
+  to { transform: translateX(calc(18 * var(--u))); }
 }
 .wd-sun {
   animation: pan 20s ease-in-out infinite alternate;
@@ -2403,15 +2416,26 @@ main {
   border-radius: 1px;
   background: #2f7fc1;
 }
-.wd-playhead {
+/* The playhead travels from 3.6em in to 0.9em short of the end: its run spans
+   exactly that, carries it at its right edge, and slides by its own width. The
+   same path as moving its left edge, but on the GPU (left repainted every frame). */
+.wd-playhead-run {
   position: absolute;
   top: 0.4em;
   bottom: 0.4em;
   left: 3.6em;
+  right: 0.9em;
+  pointer-events: none;
+  animation: playhead 7s linear infinite;
+}
+.wd-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
   width: 2px;
   background: #f26b38;
   box-shadow: 0 0 10px rgb(242 107 56 / 0.7);
-  animation: playhead 7s linear infinite;
 }
 .wd-playhead::before {
   content: "";
@@ -2422,8 +2446,8 @@ main {
   border-top-color: #f26b38;
 }
 @keyframes playhead {
-  from { left: 3.6em; }
-  to { left: calc(100% - 0.9em); }
+  from { translate: -100% 0; }
+  to { translate: 0 0; }
 }
 
 /* ── Inner pages: heading ───────────────────────────────────────────────── */

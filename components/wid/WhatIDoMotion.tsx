@@ -128,8 +128,8 @@ function videoScene(q: Q) {
     .to(q(".wd-apps span"), { scale: 1, duration: 0.45, stagger: 0.08, ease: "back.out(2.5)" }, 0.3)
     .to(q(".wd-clip:not(.wd-clip--audio)"), { xPercent: 0, autoAlpha: 1, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.5)
     .to(q(".wd-wave i"), { scaleY: 1, duration: 0.5, stagger: 0.008, ease: "back.out(2)" }, 0.7)
-    // Real-time 25 fps timecode while the module is live.
-    .fromTo(clock, { f: 0 }, { f: 25 * 600, duration: 600, ease: "none", onUpdate: () => void (tc.textContent = fmt(clock.f)) }, 0);
+    // Real-time 25 fps timecode while the module is live (written only when a frame turns over).
+    .fromTo(clock, { f: 0 }, { f: 25 * 600, duration: 600, ease: "none", onUpdate: () => void (fmt(clock.f) !== tc.textContent && (tc.textContent = fmt(clock.f))) }, 0);
   return tl;
 }
 
@@ -152,6 +152,10 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
       const play = (i: number) => scenes[i].invalidate().restart();
       const mark = (i: number) =>
         btns.forEach((b, k) => (k === i ? b.setAttribute("aria-current", "step") : b.removeAttribute("aria-current")));
+      // SVG's own animations (the cloud map's packets) don't stop for CSS: they run
+      // only while their window can be seen, instead of all the time.
+      const smil = (item: Element, run: boolean) =>
+        item.querySelectorAll("svg").forEach((s) => void (s.querySelector("animateMotion") && (run ? s.unpauseAnimations() : s.pauseAnimations())));
 
       const mm = gsap.matchMedia();
       mm.add(
@@ -177,6 +181,12 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
           // Phones: modules stack; each plays while it's on screen.
           if (flow) {
             const started = items.map(() => false);
+            items
+              .filter((item) => item.querySelector("animateMotion"))
+              .forEach((item) => {
+                smil(item, false);
+                ScrollTrigger.create({ trigger: item.querySelector(".wd-win"), start: "top bottom", end: "bottom top", onToggle: (self) => smil(item, self.isActive) });
+              });
             items.forEach((item, i) =>
               ScrollTrigger.create({
                 trigger: item.querySelector(".wd-win"),
@@ -193,7 +203,11 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
                 },
               }),
             );
-            return () => items.forEach((it) => it.classList.remove("is-live"));
+            return () =>
+              items.forEach((it) => {
+                it.classList.remove("is-live");
+                smil(it, true);
+              });
           }
 
           if (!deck) return;
@@ -203,6 +217,7 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
           const panels = items.map((it) => it.querySelector<HTMLElement>(".wd-panel")!);
           const wins = items.map((it) => it.querySelector<HTMLElement>(".wd-win")!);
           gsap.set([...panels, ...wins], { autoAlpha: 0 });
+          items.forEach((it) => smil(it, false));
 
           let current = -1;
           let swap: gsap.core.Timeline | null = null;
@@ -214,6 +229,7 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
             const dir = prev < 0 || i > prev ? 1 : -1;
             swap?.progress(1).kill(); // land any half-finished switch first
             items.forEach((it, k) => it.classList.toggle("is-live", k === i));
+            smil(items[i], true);
             mark(i);
             gsap.to(bignum, { duration: 0.6, scrambleText: { text: pad(i + 1), chars: "0123456789", speed: 0.8 } });
 
@@ -228,7 +244,8 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
                 .to(outQ(".wd-fade, .wd-ic"), { autoAlpha: 0, y: -16 * dir, duration: 0.3, stagger: 0.012, ease: "power2.in" }, 0)
                 .set(panels[prev], { autoAlpha: 0 }, 0.45)
                 .set(wins[prev], { zIndex: 1 }, 0)
-                .set(wins[prev], { autoAlpha: 0 }, 1.05);
+                .set(wins[prev], { autoAlpha: 0 }, 1.05)
+                .add(() => smil(items[prev], false), 1.05);
             }
             swap
               .set(panels[i], { autoAlpha: 1 }, t0)
@@ -275,7 +292,10 @@ export default function WhatIDoMotion({ children }: { children: ReactNode }) {
           return () => {
             btns.forEach((b) => b.removeEventListener("click", onRail));
             el.classList.remove("is-deck");
-            items.forEach((it) => it.classList.remove("is-live"));
+            items.forEach((it) => {
+              it.classList.remove("is-live");
+              smil(it, true);
+            });
             scenes.forEach((s) => s.pause());
           };
         },
