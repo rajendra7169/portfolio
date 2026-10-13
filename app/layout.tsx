@@ -8,6 +8,7 @@ import { PageTransition } from "@/components/PageTransition";
 import Header from "@/components/Header";
 import ScrollUI from "@/components/ScrollUI";
 import Cursor from "@/components/Cursor";
+import Offscreen from "@/components/Offscreen";
 import { Footer } from "@/components/Bits";
 
 // Body: Figtree is the closest open match to the original's Google Sans.
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
             <ScrollUI />
             <Cursor />
+            <Offscreen />
           </PageTransition>
         </SmoothScroll>
       </body>
