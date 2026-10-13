@@ -6,6 +6,7 @@ import { SectionTitle } from "@/components/Bits";
 import { TransitionLink } from "@/components/PageTransition";
 import Launcher from "@/components/proj/Launcher";
 import Laundry from "@/components/proj/Laundry";
+import Commits from "@/components/proj/Commits";
 import { AppTile } from "@/components/proj/Devices";
 import { PLATFORMS, projects } from "@/lib/projects";
 
@@ -50,6 +51,7 @@ export default function Projects() {
       </section>
 
       <Laundry />
+      <Commits />
     </Motion>
   );
 }

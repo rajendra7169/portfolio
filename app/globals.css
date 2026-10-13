@@ -4515,9 +4515,6 @@ a.xh-co:hover {
   margin: 0 auto;
   background: repeating-linear-gradient(90deg, #1d2433 0 2px, transparent 2px 4px, #1d2433 4px 5px, transparent 5px 8px, #1d2433 8px 11px, transparent 11px 12px);
 }
-.lw .center {
-  margin-top: clamp(40px, 5vw, 64px);
-}
 @media (max-width: 1000px) {
   .lw-stage {
     grid-template-columns: minmax(0, 1fr);
@@ -4530,6 +4527,248 @@ a.xh-co:hover {
   .lw-printer {
     width: min(300px, 100%);
     justify-self: center;
+  }
+}
+
+/* ── Projects: a year of commits (components/proj/Commits.tsx) ─────────────
+   The GitHub calendar in the site's own blues. CommitsMotion fills the weeks in
+   (.is-armed hides what hasn't arrived) and moves HEAD with --at. */
+.gc-card {
+  --cell: 13px;
+  --gap: 3px;
+  --gc-0: rgb(0 28 85 / 0.07);
+  --gc-1: #b9e3f7;
+  --gc-2: #7cc8f0;
+  --gc-3: #2f7fc1;
+  --gc-4: var(--color-navy);
+  position: relative;
+  width: min(100%, 980px);
+  margin: clamp(28px, 4vw, 44px) auto 0;
+  padding: clamp(18px, 2.4vw, 30px);
+  border-radius: 20px;
+  background: rgb(255 255 255 / 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 28 85 / 0.1),
+    0 24px 50px -32px rgb(0 28 85 / 0.5);
+}
+.gc-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+.gc-cal {
+  --at: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px max-content;
+  grid-template-rows: 46px auto;
+  width: max-content;
+  margin: 0 auto;
+}
+.gc-months {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  height: 18px;
+  color: var(--color-muted);
+  font: 500 12px var(--font-mono);
+}
+.gc-months span {
+  position: absolute;
+  left: calc(var(--w) * (var(--cell) + var(--gap)));
+  bottom: 0;
+}
+.gc-wdays {
+  grid-column: 1;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: var(--gap);
+  color: var(--color-muted);
+  font: 500 11px/1 var(--font-mono);
+}
+.gc-wdays span:nth-child(1) {
+  grid-row: 2;
+}
+.gc-wdays span:nth-child(2) {
+  grid-row: 4;
+}
+.gc-wdays span:nth-child(3) {
+  grid-row: 6;
+}
+.gc-wdays span {
+  align-self: center;
+}
+.gc-grid {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  gap: var(--gap);
+}
+.gc-week {
+  display: grid;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: var(--gap);
+}
+.gc-week i,
+.gc-legend i {
+  display: block;
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: 3px;
+  background: var(--gc-0);
+  transition:
+    background-color 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+.gc-week i.is-blank {
+  background: none;
+}
+[data-l="1"] {
+  background: var(--gc-1) !important;
+}
+[data-l="2"] {
+  background: var(--gc-2) !important;
+}
+[data-l="3"] {
+  background: var(--gc-3) !important;
+}
+[data-l="4"] {
+  background: var(--gc-4) !important;
+}
+.gc-week i[data-d]:hover {
+  transform: scale(1.35);
+  outline: 2px solid var(--color-navy);
+  outline-offset: 1px;
+}
+/* The busiest day of the year wears a ring. */
+.gc-week i.is-top {
+  box-shadow: 0 0 0 2px #f26b38;
+}
+/* Weeks that haven't come in yet stay blank. */
+.gc-cal.is-armed .gc-week:not(.is-on) i[data-d] {
+  background: var(--gc-0) !important;
+  box-shadow: none;
+  transform: scale(0.6);
+}
+/* HEAD: rides along the top with the date it has reached. */
+.gc-head {
+  position: absolute;
+  top: 0;
+  left: calc(34px + var(--at) * (var(--cell) + var(--gap)) + var(--cell) / 2);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 600 11px/1.2 var(--font-mono);
+  white-space: nowrap;
+  translate: -50% 0;
+  transition: left 0.18s linear;
+}
+.gc-head b {
+  color: #7cc8f0;
+  font-weight: 700;
+}
+.gc-head::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 2px;
+  height: 26px;
+  margin-left: -1px;
+  background: linear-gradient(var(--color-navy), transparent);
+}
+/* Near the end of the year the label hangs to the left of its line, inside the card. */
+.gc-cal.is-end .gc-head {
+  translate: calc(-100% + 9px) 0;
+}
+.gc-cal.is-end .gc-head::after {
+  left: calc(100% - 9px);
+}
+.gc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 28px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgb(0 28 85 / 0.08);
+}
+.gc-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-muted);
+  font: 500 12px var(--font-mono);
+}
+.gc-legend i {
+  margin: 0 1px;
+}
+.gc-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 30px;
+  margin: 0;
+}
+.gc-stats div {
+  display: grid;
+  gap: 2px;
+}
+.gc-stats dt {
+  color: var(--color-muted);
+  font-size: 12.5px;
+}
+.gc-stats dd {
+  margin: 0;
+  color: var(--color-navy);
+  font-size: 15px;
+}
+.gc-stats b {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.gc-stats small {
+  display: block;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+.gc-tip {
+  position: absolute;
+  left: var(--x, 0);
+  top: var(--y, 0);
+  z-index: 3;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--color-navy);
+  color: #fff;
+  font: 500 12.5px var(--font-body);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  translate: -50% calc(-100% - 10px);
+  transition: opacity 0.15s;
+}
+.gc-tip.is-on {
+  opacity: 1;
+}
+.gc .center {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+@media (max-width: 719px) {
+  .gc-card {
+    --cell: 11px;
+    --gap: 3px;
+  }
+  .gc-cal {
+    margin: 0;
   }
 }
 

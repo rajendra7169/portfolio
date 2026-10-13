@@ -6,7 +6,6 @@
 import type { CSSProperties } from "react";
 import Icon from "@/components/Icon";
 import { SectionTitle } from "@/components/Bits";
-import { socials } from "@/lib/content";
 import { laundry, laundryPaper } from "@/lib/projects";
 import LaundryMotion from "./LaundryMotion";
 
@@ -213,12 +212,6 @@ export default function Laundry() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="center" data-anim="up">
-        <a className="btn" href={socials[0].href} target="_blank" rel="noreferrer" data-magnetic>
-          More on GitHub
-        </a>
       </div>
     </LaundryMotion>
   );
