@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";
@@ -19,11 +19,15 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
         const { motion, fine } = ctx.conditions as Record<string, boolean>;
         if (!motion) return;
 
-        // The seal turns slowly; its text ring turns the other way.
-        const spins = [
-          gsap.to(q(".eh-seal-text"), { rotation: 360, svgOrigin: "300 300", duration: 40, ease: "none", repeat: -1 }),
-          gsap.to(q(".eh-rosette"), { rotation: -360, svgOrigin: "300 300", duration: 90, ease: "none", repeat: -1 }),
-        ];
+        // The seal turns slowly; its text ring turns the other way. (Web Animations of
+        // transform on the svg layers: run by the browser on the GPU, nothing to do
+        // per frame. On svg elements only transform goes to the GPU, not rotate.)
+        const turn = (sel: string, turns: number, seconds: number) =>
+          q(sel).map((n) => n.animate([{ transform: "rotate(0deg)" }, { transform: `rotate(${turns * 360}deg)` }], { duration: seconds * 1000, iterations: Infinity }));
+        const spins = [...turn(".eh-seal-layer--text", 1, 40), ...turn(".eh-seal-layer--rosette", -1, 90)];
+        const rate = { v: 1 };
+        // Off screen, they rest.
+        ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top", onToggle: (self) => spins.forEach((a) => (self.isActive ? a.play() : a.pause())) });
 
         // Confetti: every piece launches from the cap with its own velocity and angle.
         const burst = inContext(ctx, () => {
@@ -53,7 +57,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
             .to(cap, { scaleY: 0.9, scaleX: 1.06, duration: 0.1, ease: "power1.out" }, 0.9)
             .to(cap, { scaleY: 1, scaleX: 1, rotation: 360, duration: 0.6, ease: "elastic.out(1, 0.4)" })
             .set(cap, { rotation: 0 });
-          spins.forEach((t) => gsap.to(t, { timeScale: 5, duration: 0.3, yoyo: true, repeat: 1, repeatDelay: 0.4 }));
+          gsap.to(rate, { v: 5, duration: 0.3, yoyo: true, repeat: 1, repeatDelay: 0.4, overwrite: true, onUpdate: () => spins.forEach((a) => a.updatePlaybackRate(rate.v)) });
         });
         const tossBtn = q(".eh-toss")[0];
         tossBtn.addEventListener("click", toss);
@@ -107,6 +111,7 @@ export default function EduHeroMotion({ children }: { children: ReactNode }) {
         gsap.to(q(".eh-stage"), { yPercent: -10, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true } });
 
         return () => {
+          spins.forEach((a) => a.cancel());
           tossBtn.removeEventListener("click", toss);
           if (onMove) el.removeEventListener("pointermove", onMove);
         };

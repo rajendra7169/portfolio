@@ -77,35 +77,43 @@ export default function EduHero() {
             </div>
 
             <div className="eh-depth" data-depth="0.4">
-              <svg className="eh-seal" viewBox="0 0 600 600" aria-hidden="true">
-                <defs>
-                  <radialGradient id="eh-disc" cx="0.38" cy="0.32" r="0.75">
-                    <stop offset="0" stopColor="#ffffff" />
-                    <stop offset="0.35" stopColor="#d3f0fd" />
-                    <stop offset="0.8" stopColor="#93d3f3" />
-                    <stop offset="1" stopColor="#5fb4e6" />
-                  </radialGradient>
-                  <path id="eh-ring" d="M300,300 m-232,0 a232,232 0 1,1 464,0 a232,232 0 1,1 -464,0" />
-                </defs>
-                {/* Scalloped rosette edge */}
-                <g className="eh-rosette">
-                  {Array.from({ length: 40 }, (_, i) => {
-                    const a = (i / 40) * Math.PI * 2;
-                    return <circle key={i} cx={300 + Math.cos(a) * 270} cy={300 + Math.sin(a) * 270} r="22" className="eh-scallop" />;
-                  })}
-                  <circle cx="300" cy="300" r="270" className="eh-scallop" />
-                </g>
-                <circle cx="300" cy="300" r="262" fill="url(#eh-disc)" className="eh-disc" />
-                <circle cx="300" cy="300" r="256" className="eh-seal-edge" />
-                <circle cx="300" cy="300" r="204" className="eh-seal-inner" />
-                <g className="eh-seal-text">
-                  <text>
-                    <textPath href="#eh-ring" textLength="1450" lengthAdjust="spacing">
-                      {SEAL_TEXT}
-                    </textPath>
-                  </text>
-                </g>
-              </svg>
+              {/* Three stacked layers, so the rosette and the text ring each turn on the
+                  GPU instead of the whole seal (and its shadow) repainting every frame. */}
+              <div className="eh-seal" aria-hidden="true">
+                <svg className="eh-seal-layer eh-seal-layer--rosette" viewBox="0 0 600 600">
+                  {/* Scalloped rosette edge */}
+                  <g className="eh-rosette">
+                    {Array.from({ length: 40 }, (_, i) => {
+                      const a = (i / 40) * Math.PI * 2;
+                      return <circle key={i} cx={300 + Math.cos(a) * 270} cy={300 + Math.sin(a) * 270} r="22" className="eh-scallop" />;
+                    })}
+                    <circle cx="300" cy="300" r="270" className="eh-scallop" />
+                  </g>
+                </svg>
+                <svg className="eh-seal-layer" viewBox="0 0 600 600">
+                  <defs>
+                    <radialGradient id="eh-disc" cx="0.38" cy="0.32" r="0.75">
+                      <stop offset="0" stopColor="#ffffff" />
+                      <stop offset="0.35" stopColor="#d3f0fd" />
+                      <stop offset="0.8" stopColor="#93d3f3" />
+                      <stop offset="1" stopColor="#5fb4e6" />
+                    </radialGradient>
+                    <path id="eh-ring" d="M300,300 m-232,0 a232,232 0 1,1 464,0 a232,232 0 1,1 -464,0" />
+                  </defs>
+                  <circle cx="300" cy="300" r="262" fill="url(#eh-disc)" className="eh-disc" />
+                  <circle cx="300" cy="300" r="256" className="eh-seal-edge" />
+                  <circle cx="300" cy="300" r="204" className="eh-seal-inner" />
+                </svg>
+                <svg className="eh-seal-layer eh-seal-layer--text" viewBox="0 0 600 600">
+                  <g className="eh-seal-text">
+                    <text>
+                      <textPath href="#eh-ring" textLength="1450" lengthAdjust="spacing">
+                        {SEAL_TEXT}
+                      </textPath>
+                    </text>
+                  </g>
+                </svg>
+              </div>
             </div>
 
             <div className="eh-cap-depth" data-depth="0.9">

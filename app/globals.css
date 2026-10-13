@@ -2612,10 +2612,17 @@ main {
   inset: 0;
 }
 .eh-seal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 40px 50px rgb(0 28 85 / 0.22));
+}
+.eh-seal-layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 40px 50px rgb(0 28 85 / 0.22));
 }
 .eh-scallop {
   fill: #a6dff7;
