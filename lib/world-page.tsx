@@ -5,6 +5,7 @@
 import type { Metadata } from "next";
 import type { ComponentType } from "react";
 import Motion from "@/components/Motion";
+import RootFlags from "@/components/RootFlags";
 import { projectBySlug, type Project } from "@/lib/projects";
 
 export function worldPage(slug: string, World: ComponentType<{ p: Project }>) {
@@ -14,6 +15,7 @@ export function worldPage(slug: string, World: ComponentType<{ p: Project }>) {
     return (
       <Motion>
         <World p={p} />
+        <RootFlags />
       </Motion>
     );
   }

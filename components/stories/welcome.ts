@@ -10,6 +10,7 @@
 //
 // The page turn is a Web Animation on transform only, so it runs on the
 // compositor while the main thread swaps the page in underneath.
+import { syncRoot } from "@/lib/rootFlags";
 import { running, snapshotPage } from "../pageLeave";
 import { fontOf, headline } from "./headline";
 
@@ -78,6 +79,7 @@ export function startWelcome(): Welcoming {
   shade.className = "st-welcome-shade";
   page.appendChild(shade);
   document.body.appendChild(root);
+  syncRoot();
   snap?.settle();
 
   // The page lifts at its free edge, hangs a moment, then swings over.
@@ -178,6 +180,7 @@ export function startWelcome(): Welcoming {
   const remove = () => {
     gone = true;
     root.remove();
+    syncRoot();
   };
 
   return {
@@ -207,6 +210,7 @@ export function startWelcome(): Welcoming {
         paper.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 620, delay: 380, easing: "ease-in-out", fill: "both" });
         await glide.finished.catch(() => {});
         root.classList.add("is-landed"); // the real masthead shows again, right under the words
+        syncRoot();
         await root.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "ease-out", fill: "both" }).finished.catch(() => {});
       } else {
         // Anywhere else in Stories: the words lift away as the page shows.

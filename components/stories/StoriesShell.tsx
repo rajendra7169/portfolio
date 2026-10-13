@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { TransitionLink } from "@/components/PageTransition";
+import RootFlags from "@/components/RootFlags";
 import { isWriter, stories, useDemo, useMe } from "@/lib/stories/store";
 import { POST_TYPES } from "@/lib/stories/types";
 import { Avatar } from "./ui";
@@ -107,7 +108,13 @@ export default function StoriesShell({ children, className = "" }: { children: R
   const pathname = usePathname();
   const me = useMe();
   const demo = useDemo();
-  if (pathname.startsWith("/stories/admin")) return <div className={`st-root st-root--admin ${className}`}>{children}</div>;
+  if (pathname.startsWith("/stories/admin"))
+    return (
+      <div className={`st-root st-root--admin ${className}`}>
+        {children}
+        <RootFlags />
+      </div>
+    );
 
   return (
     <div className={`st-root ${className}`}>
@@ -151,6 +158,7 @@ export default function StoriesShell({ children, className = "" }: { children: R
           </p>
         )}
       </footer>
+      <RootFlags />
     </div>
   );
 }

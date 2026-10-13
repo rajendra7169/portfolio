@@ -8147,71 +8147,71 @@ a.xh-co:hover {
 /* ══ Project worlds: each project page is its own world ══════════════════════
    The site chrome (header, cursor, progress, footer) takes the world's colours.
    The values sit here, not in the worlds' own stylesheets, so they apply from
-   the first paint. */
-:root:has([data-world="blazify"]) { --w-bg: #0b0a09; --w-fg: #fff4e6; --w-accent: #ffa726; }
-:root:has([data-world="fitevo"]) { --w-bg: #12100e; --w-fg: #f4ecdd; --w-accent: #e8702c; }
-:root:has([data-world="nexterm"]) { --w-bg: #1a1b26; --w-fg: #c0caf5; --w-accent: #7aa2f7; }
-:root:has([data-world="jarvis"]) { --w-bg: #040507; --w-fg: #edf3fa; --w-accent: #ff8a1a; }
-:root:has([data-world="tally"]) { --w-bg: #e6f4ff; --w-fg: #09090b; --w-accent: #10b981; }
-:root:has([data-world="r-ai"]) { --w-bg: #171717; --w-fg: #ececec; --w-accent: #9b72cb; }
-:root:has([data-world="vocabu"]) { --w-bg: #f6f8fb; --w-fg: #0f1724; --w-accent: #2d8464; }
-:root:has([data-world]),
-:root:has([data-world]) body {
+   the first paint. The page states are attributes on <html> (lib/rootFlags.ts). */
+:root[data-worlds~="blazify"] { --w-bg: #0b0a09; --w-fg: #fff4e6; --w-accent: #ffa726; }
+:root[data-worlds~="fitevo"] { --w-bg: #12100e; --w-fg: #f4ecdd; --w-accent: #e8702c; }
+:root[data-worlds~="nexterm"] { --w-bg: #1a1b26; --w-fg: #c0caf5; --w-accent: #7aa2f7; }
+:root[data-worlds~="jarvis"] { --w-bg: #040507; --w-fg: #edf3fa; --w-accent: #ff8a1a; }
+:root[data-worlds~="tally"] { --w-bg: #e6f4ff; --w-fg: #09090b; --w-accent: #10b981; }
+:root[data-worlds~="r-ai"] { --w-bg: #171717; --w-fg: #ececec; --w-accent: #9b72cb; }
+:root[data-worlds~="vocabu"] { --w-bg: #f6f8fb; --w-fg: #0f1724; --w-accent: #2d8464; }
+:root[data-worlds],
+:root[data-worlds] body {
   background: var(--w-bg);
 }
-:root:has([data-world]) ::selection {
+:root[data-worlds] ::selection {
   background: var(--w-accent);
   color: var(--w-bg);
 }
-:root:has([data-world]) .header.is-scrolled {
+:root[data-worlds] .header.is-scrolled {
   background: color-mix(in srgb, var(--w-bg) 80%, transparent);
 }
-:root:has([data-world]) .progress-bar {
+:root[data-worlds] .progress-bar {
   background: var(--w-accent);
 }
-:root:has([data-world]) .to-top {
+:root[data-worlds] .to-top {
   background: var(--w-accent);
   color: var(--w-bg);
 }
-:root:has([data-tone="dark"]) body {
+:root[data-tones~="dark"] body {
   color: var(--w-fg);
 }
-:root:has([data-tone="dark"]) .logo {
+:root[data-tones~="dark"] .logo {
   color: var(--w-fg);
 }
-:root:has([data-tone="dark"]) .header:not(.is-open) .menu-btn span {
+:root[data-tones~="dark"] .header:not(.is-open) .menu-btn span {
   background: var(--w-fg);
 }
-:root:has([data-tone="dark"]) .header.is-scrolled {
+:root[data-tones~="dark"] .header.is-scrolled {
   box-shadow: 0 1px 0 rgb(255 255 255 / 0.08);
 }
-:root:has([data-tone="dark"]) .footer {
+:root[data-tones~="dark"] .footer {
   color: color-mix(in srgb, var(--w-fg) 55%, transparent);
 }
-:root:has([data-tone="dark"]) .cursor-dot {
+:root[data-tones~="dark"] .cursor-dot {
   background: var(--w-accent);
 }
-:root:has([data-tone="dark"]) .cursor-ring-in {
+:root[data-tones~="dark"] .cursor-ring-in {
   border-color: color-mix(in srgb, var(--w-fg) 45%, transparent);
 }
-:root:has([data-tone="dark"]) .cursor.has-label .cursor-ring-in {
+:root[data-tones~="dark"] .cursor.has-label .cursor-ring-in {
   background: var(--w-accent);
 }
-:root:has([data-tone="dark"]) .cursor-label {
+:root[data-tones~="dark"] .cursor-label {
   color: var(--w-bg);
 }
-:root:has([data-tone="dark"]) .to-top-ring {
+:root[data-tones~="dark"] .to-top-ring {
   stroke: color-mix(in srgb, var(--w-fg) 35%, transparent);
 }
 @media (min-width: 900px) {
-  :root:has([data-tone="dark"]) .nav-list a {
+  :root[data-tones~="dark"] .nav-list a {
     color: color-mix(in srgb, var(--w-fg) 78%, transparent);
   }
-  :root:has([data-tone="dark"]) .nav-list a:hover,
-  :root:has([data-tone="dark"]) .nav-list a[aria-current="page"] {
+  :root[data-tones~="dark"] .nav-list a:hover,
+  :root[data-tones~="dark"] .nav-list a[aria-current="page"] {
     color: var(--w-fg);
   }
-  :root:has([data-tone="dark"]) .nav-indicator {
+  :root[data-tones~="dark"] .nav-indicator {
     background: var(--w-accent);
   }
 }
@@ -8234,12 +8234,12 @@ a.xh-co:hover {
   pointer-events: none;
   color: #16171b;
 }
-:root:has(.st-welcome) .cursor {
+:root[data-welcome] .cursor {
   display: none;
 }
 /* The real masthead waits under the words until they land on it. */
-:root:has(.st-welcome:not(.is-landed)) #main .st-mast-title,
-:root:has(.st-welcome:not(.is-landed)) #main .st-mast-bar {
+:root[data-welcome="on"] #main .st-mast-title,
+:root[data-welcome="on"] #main .st-mast-bar {
   visibility: hidden;
 }
 .st-welcome-paper {

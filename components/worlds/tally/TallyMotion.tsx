@@ -4,6 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 import { matchStatus } from "@/components/proj/light";
+import { syncRoot } from "@/lib/rootFlags";
 import { healthLabel, healthOf, hhmm, kathmandu, seasonOf, skyAt, weatherOf, type Kind } from "./forest";
 
 const PHASE = { night: "Night", dawn: "Dawn", day: "Day", dusk: "Dusk" };
@@ -43,6 +44,7 @@ export default function TallyMotion({ className, month, slots, children }: { cla
         const dark = s.moon.o > 0.5;
         el.dataset.phase = s.phase;
         el.dataset.tone = dark ? "dark" : "light";
+        syncRoot();
         html.style.setProperty("--w-bg", s.top);
         html.style.setProperty("--w-fg", dark ? "#e8f1ff" : "#0d2818");
         dialTime.textContent = hhmm(min);

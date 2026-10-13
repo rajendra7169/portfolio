@@ -10,6 +10,7 @@ import ScrollUI from "@/components/ScrollUI";
 import Cursor from "@/components/Cursor";
 import Offscreen from "@/components/Offscreen";
 import { Footer } from "@/components/Bits";
+import { rootFlagsScript } from "@/lib/rootFlags";
 
 // Body: Figtree is the closest open match to the original's Google Sans.
 const body = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" });
@@ -41,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${body.variable} ${mono.variable} ${logo.variable} ${devanagari.variable} ${reading.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: motionFlag }} />
+        <script dangerouslySetInnerHTML={{ __html: `${motionFlag};${rootFlagsScript}` }} />
       </head>
       <body>
         <SmoothScroll>

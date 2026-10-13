@@ -7,6 +7,7 @@
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import HeroField from "@/components/hero/HeroField";
+import RootFlags from "@/components/RootFlags";
 import { iconOf, PLATFORMS, projects, projectsPage, shot, type Project } from "@/lib/projects";
 import { AppTile, DesktopShell, Laptop, OsWindow, Phone, Shot } from "./Devices";
 import DeviceClock from "./DeviceClock";
@@ -266,6 +267,7 @@ export default function Launcher() {
           </div>
         </div>
       </div>
+      <RootFlags />
     </LauncherMotion>
   );
 }

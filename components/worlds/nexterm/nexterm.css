@@ -600,7 +600,7 @@
   margin-left: auto;
   padding-right: 64px;
 }
-:root:has(.w-nx) .to-top {
+:root[data-worlds~="nexterm"] .to-top {
   bottom: 52px;
 }
 

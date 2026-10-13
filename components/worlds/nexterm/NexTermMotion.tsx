@@ -3,6 +3,7 @@
 import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
+import { syncRoot } from "@/lib/rootFlags";
 import { THEMES } from "./themes";
 
 const KEY = "nexterm-theme";
@@ -25,6 +26,7 @@ export default function NexTermMotion({ className, children }: { className: stri
         html.style.setProperty("--w-fg", t.fg);
         html.style.setProperty("--w-accent", t.acc);
         el.dataset.tone = t.light ? "light" : "dark";
+        syncRoot();
         q(".nt-theme").forEach((b) => b.setAttribute("aria-checked", String((b as HTMLElement).dataset.theme === t.id)));
       };
       let saved: string | null = null;

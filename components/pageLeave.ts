@@ -9,6 +9,8 @@
 // Leaving Stories for the portfolio, the copy turns away like a book page
 // instead (`turn`), over the portfolio's own sky (`background`).
 
+import { syncRoot } from "@/lib/rootFlags";
+
 const TITLES = ".hx-name, .eh-title, .pl-title, .ch-title, .rs-h1, .xh-copy:not(.xh-ink) .xh-title";
 // An animation is running on the compositor once it is ready and a frame
 // carrying it has been drawn: wait for the next frame, then for a task after
@@ -167,6 +169,7 @@ export function leavePage(style: LeaveStyle = {}): Leaving | null {
   layer.append(bg, sheet);
   if (title) layer.append(title);
   document.body.appendChild(layer);
+  syncRoot();
   fixSticky(main, copy);
 
   // A lift: quick off the mark, so the click visibly answers at once, then
@@ -190,6 +193,7 @@ export function leavePage(style: LeaveStyle = {}): Leaving | null {
     if (gone) return;
     gone = true;
     layer.remove();
+    syncRoot();
   };
 
   return {

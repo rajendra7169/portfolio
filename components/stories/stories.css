@@ -58,17 +58,18 @@
 }
 
 /* The portfolio's own frame steps aside while Stories is open (only the live
-   page: a copy of it lifting away during a page change doesn't count). */
-:root:has(#main > .st-root),
-:root:has(#main > .st-root) body {
+   page: a copy of it lifting away during a page change doesn't count; see
+   lib/rootFlags.ts). */
+:root[data-stories],
+:root[data-stories] body {
   background: #fbfbf9;
   color: #16171b;
 }
-:root:has(#main > .st-root) .header:not(.is-copy),
-:root:has(#main > .st-root) .footer,
-:root:has(#main > .st-root) .progress,
-:root:has(#main > .st-root) .to-top,
-:root:has(#main > .st-root) .cursor {
+:root[data-stories] .header:not(.is-copy),
+:root[data-stories] .footer,
+:root[data-stories] .progress,
+:root[data-stories] .to-top,
+:root[data-stories] .cursor {
   display: none !important;
 }
 

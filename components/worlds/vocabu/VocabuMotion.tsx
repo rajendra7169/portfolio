@@ -4,6 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
 import { afterReveal } from "@/components/PageTransition";
 import { matchStatus } from "@/components/proj/light";
+import { syncRoot } from "@/lib/rootFlags";
 
 type Word = { w: string; pos: string; def: string; ex: string };
 const KEY = "vocabu-theme";
@@ -35,6 +36,7 @@ export default function VocabuMotion({ className, words, children }: { className
       const apply = (t: "light" | "dark") => {
         el.dataset.theme = t;
         el.dataset.tone = t;
+        syncRoot();
         const c = THEME[t];
         html.style.setProperty("--w-bg", c.bg);
         html.style.setProperty("--w-fg", c.fg);
