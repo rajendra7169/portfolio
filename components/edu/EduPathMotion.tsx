@@ -21,7 +21,7 @@ type Tool = "pencil" | "pen" | "cursor" | "cap";
 const TOOLS: Tool[] = ["pencil", "pen", "cursor", "cap"];
 
 // How long each kind of part takes, as a share of its scene.
-const DUR: Record<string, number> = { draw: 0.14, fade: 0.08, pop: 0.09, grow: 0.12, slam: 0.07, drop: 0.12, fly: 0.16, ride: 0.18, toss: 0.2, trace: 0.2 };
+const DUR: Record<string, number> = { draw: 0.14, fade: 0.08, pop: 0.09, grow: 0.12, slam: 0.07, drop: 0.12, fly: 0.16, ride: 0.18, toss: 0.2, trace: 0.2, spin: 0.24 };
 type Part = HTMLElement | SVGGraphicsElement;
 const partDur = (p: Part) => {
   const d = Number(p.dataset.d);
@@ -31,6 +31,10 @@ const partDur = (p: Part) => {
 };
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+// True while GSAP is rewinding animations to their natural state (ScrollTrigger
+// does that around every refresh). Scenes mustn't be moved then: moving them
+// mid-rewind wipes out the starting states of parts whose time hasn't come.
+const reverting = () => (gsap.core as unknown as { reverting?: () => boolean }).reverting?.() ?? false;
 const smooth = (v: number) => {
   const u = clamp01(v);
   return u * u * (3 - 2 * u);
@@ -187,23 +191,39 @@ function panelTimeline(panel: HTMLElement, svg: SVGSVGElement, pan: boolean, und
         break;
       }
       case "ride": {
-        // Along the path whose data-track matches, turning with it.
-        const path = svg.querySelector<SVGGeometryElement>(`[data-track="${p.dataset.on}"]`)!;
-        const L = path.getTotalLength();
+        // Along the path whose data-track matches (or several, one after another),
+        // turning with it unless it keeps upright.
+        const legs = (p.dataset.route ?? `${p.dataset.on}@${at}:${d}`).split(" ").map((leg) => {
+          const [name, when] = leg.split("@");
+          const [start, length] = when.split(":").map(Number);
+          return { path: svg.querySelector<SVGGeometryElement>(`[data-track="${name}"]`)!, start, length };
+        });
+        const upright = p.hasAttribute("data-upright");
         const was = p.getAttribute("transform");
-        const o = { u: 0 };
-        const place = () => {
-          const l = L * o.u;
-          const a = path.getPointAtLength(Math.max(0, Math.min(L - 2, l - 1)));
-          const c = path.getPointAtLength(Math.max(2, Math.min(L, l + 1)));
-          const at = path.getPointAtLength(l);
-          p.setAttribute("transform", `translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${((Math.atan2(c.y - a.y, c.x - a.x) * 180) / Math.PI).toFixed(1)})`);
-        };
         undo.push(() => (was ? p.setAttribute("transform", was) : p.removeAttribute("transform")));
-        place();
-        tl.to(o, { u: 1, duration: d, ease: "power1.inOut", onUpdate: place }, at);
+        legs.forEach(({ path, start, length }, k) => {
+          const L = path.getTotalLength();
+          const o = { u: 0 };
+          const place = () => {
+            const l = L * o.u;
+            const pt = path.getPointAtLength(l);
+            let deg = 0;
+            if (!upright) {
+              const a = path.getPointAtLength(Math.max(0, Math.min(L - 2, l - 1)));
+              const c = path.getPointAtLength(Math.max(2, Math.min(L, l + 1)));
+              deg = (Math.atan2(c.y - a.y, c.x - a.x) * 180) / Math.PI;
+            }
+            p.setAttribute("transform", `translate(${pt.x.toFixed(1)} ${pt.y.toFixed(1)}) rotate(${deg.toFixed(1)})`);
+          };
+          if (!k) place();
+          tl.to(o, { u: 1, duration: length, ease: "power1.inOut", onUpdate: place }, start);
+        });
         break;
       }
+      case "spin":
+        gsap.set(p, { svgOrigin: p.dataset.o });
+        tl.fromTo(p, { rotation: 0 }, { rotation: Number(p.dataset.r) || 360, duration: d, ease: "power1.inOut" }, at);
+        break;
       case "trace":
         tl.to({}, { duration: d }, at);
         break;
@@ -289,9 +309,6 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
 
         const scrubPanel = (p: Panel, s: number, cards: boolean) => {
           const T = clamp01((s - p.a) / (p.b - p.a)) * p.D;
-          // The first time through, play it to the end and back: that writes every
-          // part's starting state, including parts whose time hasn't come yet.
-          if (p.T < 0) p.tl.progress(1);
           if (Math.abs(T - p.T) > 1e-5) {
             p.T = T;
             p.tl.time(T);
@@ -393,6 +410,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
             });
           };
           const update = () => {
+            if (reverting()) return;
             const s = scrollY;
             panels.forEach((p) => scrubPanel(p, s, false));
             penAt(s);
@@ -501,6 +519,7 @@ export default function EduPathMotion({ children }: { children: ReactNode }) {
         const prog = { p: 0 };
         let pinStart = 0;
         const update = () => {
+          if (reverting()) return;
           const sPin = prog.p * total;
           const s = sPin + Math.min(0, scrollY - pinStart);
           const xT = xAt(sPin);
