@@ -5,6 +5,7 @@
 // strap; see ExpHeroMotion).
 // Layers: .xh-drop (intro drop) > .xh-swing (pendulum rotation) > .xh-badge-tilt
 // (cursor tilt) > button > .xh-badge-inner (CSS flip).
+import { preload } from "react-dom";
 import HeroField from "@/components/hero/HeroField";
 import KtmClock from "@/components/hero/KtmClock";
 import { TransitionLink } from "@/components/PageTransition";
@@ -12,6 +13,10 @@ import { careerLog, contact, experience, work } from "@/lib/content";
 import { projects } from "@/lib/projects";
 import { AppTile } from "@/components/proj/Devices";
 import ExpHeroMotion from "./ExpHeroMotion";
+
+// The staff card on the badge: light (it's 240 to 290 px on screen), and fetched
+// first thing, since the badge drops in as soon as the page starts.
+const CARD = { src: "/images/idcard-800.webp", srcSet: "/images/idcard-600.webp 600w, /images/idcard-800.webp 800w", sizes: "(max-width: 899px) 240px, 290px" };
 
 // The back's after-hours list: the four "What I Do" disciplines.
 const AFTER_HOURS = [
@@ -24,6 +29,7 @@ const AFTER_HOURS = [
 const built = projects.filter((p) => p.featured);
 
 export default function ExpHero() {
+  preload(CARD.src, { as: "image", imageSrcSet: CARD.srcSet, imageSizes: CARD.sizes, fetchPriority: "high" });
   const releases2026 = careerLog.filter((c) => c.date.startsWith("2026")).length;
   const stats = [
     { value: work.length, label: "roles" },
@@ -63,9 +69,10 @@ export default function ExpHero() {
                       {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
                       <img
                         className="xh-card"
-                        src="/images/idcard-800.webp"
-                        srcSet="/images/idcard-800.webp 800w, /images/idcard-1600.webp 1182w"
-                        sizes="(max-width: 899px) 240px, 290px"
+                        src={CARD.src}
+                        srcSet={CARD.srcSet}
+                        sizes={CARD.sizes}
+                        fetchPriority="high"
                         width={1182}
                         height={2007}
                         alt="Matrika Technology staff ID card: Rajendra Pandey, Software Engineer, J-Jewellery Software"

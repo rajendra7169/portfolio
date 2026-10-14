@@ -22,18 +22,22 @@ let failed = 0;
   const SRC = "assets/source";
   const OUT = "public/images";
   const WIDTHS = [800, 1600];
+  // Photos shown small get their own sizes and a lighter encoding: the ID card on
+  // the Experience badge is 240 to 290 px on screen and drops in at once.
+  const OWN = { idcard: { widths: [600, 800], quality: 62 } };
   const files = (await readdir(SRC).catch(() => [])).filter((f) => IMAGE.test(f));
   if (files.length === 0) console.log(`No photos found in ${SRC}/.`);
   await mkdir(OUT, { recursive: true });
   for (const file of files) {
     const { name } = parse(file);
-    for (const width of WIDTHS) {
+    const own = OWN[name];
+    for (const width of own?.widths ?? WIDTHS) {
       const dest = join(OUT, `${name}-${width}.webp`);
       try {
         const info = await sharp(join(SRC, file))
           .rotate() // respect EXIF orientation
           .resize({ width, withoutEnlargement: true })
-          .webp({ quality: 82, effort: 6 })
+          .webp({ quality: own?.quality ?? 82, effort: 6 })
           .toFile(dest);
         console.log(`✓ ${dest}  ${info.width}×${info.height}  ${(info.size / 1024).toFixed(0)} KB`);
       } catch (err) {

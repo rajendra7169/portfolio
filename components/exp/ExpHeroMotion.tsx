@@ -180,7 +180,11 @@ export default function ExpHeroMotion({ children }: { children: ReactNode }) {
           .from(q(".xh-count"), { textContent: 0, snap: { textContent: 1 }, duration: 1.4, ease: "power2.out", stagger: 0.12 }, 1.15)
           .from(q(".xh-ctas > *"), { y: 24, autoAlpha: 0, duration: 0.8, stagger: 0.1 }, 1.3)
           .from(q(".xh-hint"), { autoAlpha: 0, y: 10, duration: 0.8 }, 1.8);
-        afterReveal(() => intro.play());
+        // The badge drops with its card on it: the photo is fetched first thing (ExpHero
+        // preloads it) and the entrance waits until it's decoded, though never for long.
+        const card = q(".xh-card")[0] as HTMLImageElement;
+        const photo = Promise.race([card.decode().catch(() => {}), new Promise((r) => window.setTimeout(r, 1200))]);
+        afterReveal(() => void photo.then(inContext(ctx, () => intro.play())));
 
         // Mouse: the badge leans toward the cursor; the foil follows it.
         let onMove: ((e: PointerEvent) => void) | null = null;
