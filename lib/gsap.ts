@@ -4,8 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { Physics2DPlugin } from "gsap/Physics2DPlugin";
-import { Draggable } from "gsap/Draggable";
 import { useGSAP as useGSAPBase } from "@gsap/react";
 
 if (typeof window !== "undefined") {
@@ -24,7 +22,8 @@ if (typeof window !== "undefined") {
     }
     return raf.call(window, cb);
   };
-  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, Physics2DPlugin, Draggable, useGSAPBase);
+  // (Draggable and Physics2D register where they're used: lib/gsap-drag, lib/gsap-physics.)
+  gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin, DrawSVGPlugin, useGSAPBase);
   starting = false;
   window.requestAnimationFrame = raf;
   // With nothing animating, GSAP's ticker stops asking for frames, but only checks
@@ -131,4 +130,4 @@ export const useGSAP = ((callback?: unknown, config?: unknown) => {
   }, config);
 }) as typeof useGSAPBase;
 
-export { gsap, ScrollTrigger, Draggable };
+export { gsap, ScrollTrigger };

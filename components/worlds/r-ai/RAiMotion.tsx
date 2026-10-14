@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, inContext } from "@/lib/gsap";
+import { Draggable } from "@/lib/gsap-drag";
 import { afterReveal } from "@/components/PageTransition";
 
 const OUT = 150; // how far the stick sits from the port when unplugged, px

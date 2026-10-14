@@ -2,6 +2,7 @@
 
 import { useRef, type ReactNode } from "react";
 import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext } from "@/lib/gsap";
+import "@/lib/gsap-physics";
 import { afterReveal } from "@/components/PageTransition";
 import { DAYS, statsOn } from "./journey";
 

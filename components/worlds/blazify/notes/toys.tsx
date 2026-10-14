@@ -8,6 +8,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { gsap } from "@/lib/gsap";
+import "@/lib/gsap-physics";
 import { BLAZE, PALETTE, loadLook, paint, saveLook, tones, type Look } from "./paint";
 import { QR_PATH, QR_SIZE } from "./qr";
 

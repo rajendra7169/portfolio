@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, ScrollTrigger, Draggable, useGSAP, MOTION_OK, DESKTOP, inContext, pauseOffscreen } from "@/lib/gsap";
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, DESKTOP, inContext, pauseOffscreen } from "@/lib/gsap";
+import { Draggable } from "@/lib/gsap-drag";
 import { afterReveal } from "@/components/PageTransition";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/#*";

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { gsap, useGSAP, MOTION_OK } from "@/lib/gsap";
+import "@/lib/gsap-physics";
 import { Floaties } from "@/components/Floaties";
 import { useLenis } from "@/components/SmoothScroll";
 import Inbox, { subjectOf, type Arrival } from "./Inbox";
