@@ -52,10 +52,22 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
       };
       os.addEventListener("click", onOs);
 
+      // ── The screens apps open onto (Launcher's Opening) download a moment after
+      // the page, or at once for an app someone points at.
+      const screensOf = (slug?: string) => q(slug ? `.pl-open[data-slug="${slug}"] img[data-src], .pl-peek[data-slug="${slug}"] img[data-src]` : "img[data-src]") as HTMLImageElement[];
+      const loadScreens = (slug?: string) =>
+        screensOf(slug).forEach((img) => {
+          img.src = img.dataset.src!;
+          img.removeAttribute("data-src");
+        });
+      const screensSoon = window.setTimeout(() => loadScreens(), 3000);
+
       // ── An app's world is fetched once someone shows interest in it.
       const fetched = new Set<string>();
       const intent = (e: Event) => {
-        const href = (e.target as Element).closest?.(".pl-app")?.getAttribute("href");
+        const app = (e.target as Element).closest?.<HTMLElement>(".pl-app");
+        if (app) loadScreens(app.dataset.slug);
+        const href = app?.getAttribute("href");
         if (!href || fetched.has(href)) return;
         fetched.add(href);
         router.prefetch(href);
@@ -85,10 +97,15 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
         q(".pl-peek").forEach((p) => p !== layer && gsap.to(p, { autoAlpha: 0, duration: 0.2 }));
         gsap.killTweensOf(layer);
         layer.classList.add("is-max");
+        // It opens onto its screen, which is usually long since downloaded. If it
+        // isn't yet, the icon still answers the press at once, and the screen opens
+        // as soon as it's there (never waiting more than a moment for it).
+        loadScreens(slug);
+        const screen = layer.querySelector("img");
+        const there = !screen || (screen.complete && screen.naturalWidth > 0);
+        const tl = gsap.timeline({ paused: !there, onComplete: () => navigate(href, { from: box.getBoundingClientRect(), color: a.dataset.world ?? "#001c55", icon: a.dataset.icon }) });
         // Then the screen becomes a portal into the app's own world.
-        gsap
-          .timeline({ onComplete: () => navigate(href, { from: box.getBoundingClientRect(), color: a.dataset.world ?? "#001c55", icon: a.dataset.icon }) })
-          .to(tile, { scale: 0.86, duration: 0.12, ease: "power2.out" })
+        tl.to(tile, { scale: 0.86, duration: 0.12, ease: "power2.out" })
           .fromTo(
             layer,
             { x: ir.left - br.left, y: ir.top - br.top, scale: ir.width / br.width, autoAlpha: 0, transformOrigin: "0 0" },
@@ -97,6 +114,10 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
           )
           .to(tile, { scale: 1, duration: 0.3 }, 0.2)
           .to({}, { duration: 0.15 });
+        if (!there) {
+          gsap.to(tile, { scale: 0.86, duration: 0.12, ease: "power2.out" });
+          void Promise.race([screen!.decode().catch(() => {}), new Promise((r) => window.setTimeout(r, 600))]).then(() => tl.play(0.05));
+        }
       };
       el.addEventListener("click", onClick);
 
@@ -233,6 +254,7 @@ export default function LauncherMotion({ children }: { children: ReactNode }) {
       }, el);
 
       return () => {
+        clearTimeout(screensSoon);
         el.removeEventListener("pointerover", intent);
         el.removeEventListener("pointerdown", intent);
         el.removeEventListener("focusin", intent);

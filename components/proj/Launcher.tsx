@@ -58,9 +58,11 @@ function Notif({ p, text, className }: { p: Project; text: string; className?: s
   );
 }
 
-/** What an app shows as it opens: its first real screen on that device, or its splash. */
+/** What an app shows as it opens: its first real screen on that device, or its splash.
+ *  The screens stay hidden until then, so they download a moment after the page
+ *  (or as soon as an app is pointed at), not with it: LauncherMotion fills them in. */
 function Opening({ p, screen }: { p: Project; screen?: string }) {
-  if (screen) return <Shot m={shot(screen)} className="pl-open-shot" />;
+  if (screen) return <Shot m={shot(screen)} className="pl-open-shot" deferred />;
   return (
     <span className="pl-splash" style={{ "--accent": p.accent, "--tile": p.tile.bg } as React.CSSProperties}>
       <AppTile p={p} className="pl-splash-tile" />

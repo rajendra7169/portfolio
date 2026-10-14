@@ -9,10 +9,26 @@ import DeviceClock from "./DeviceClock";
 import { isLight } from "./light";
 
 /** A screenshot sized from lib/media.json. */
-export function Shot({ m, alt = "", className, eager = false }: { m: Media; alt?: string; className?: string; eager?: boolean }) {
+/**
+ * A screenshot. `deferred` ones start without a source (`data-src` holds it) and
+ * are filled in by their page's script when they're about to be needed: hidden
+ * screens that would otherwise all download with the page (see LauncherMotion).
+ */
+export function Shot({ m, alt = "", className, eager = false, deferred = false }: { m: Media; alt?: string; className?: string; eager?: boolean; deferred?: boolean }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- pre-sized WebP from `npm run images`
-    <img src={m.src} width={m.w} height={m.h} alt={alt} className={className} loading={eager ? "eager" : "lazy"} decoding="async" draggable={false} data-top={m.top} />
+    <img
+      src={deferred ? undefined : m.src}
+      data-src={deferred ? m.src : undefined}
+      width={m.w}
+      height={m.h}
+      alt={alt}
+      className={className}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      draggable={false}
+      data-top={m.top}
+    />
   );
 }
 
