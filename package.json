@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/icons.mjs",
     "build": "next build",
     "start": "next start",
     "images": "node scripts/images.mjs",
+    "icons": "node scripts/icons.mjs",
     "shot": "node scripts/shot.mjs",
     "resume": "node scripts/resume.mjs",
     "github": "node scripts/github.mjs"

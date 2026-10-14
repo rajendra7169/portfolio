@@ -36,3 +36,9 @@
   for = "/illustrations/*"
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+# Icons: each address carries a hash of the file's contents (?v=, see
+# components/Icon.tsx), so browsers can keep them for good.
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
