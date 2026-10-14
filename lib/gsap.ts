@@ -78,9 +78,12 @@ export const DESKTOP = "(min-width: 900px)";
  * mounting waits (`holdSetups`) until the browser has taken its picture of the
  * new page and the view transition is moving (`runSetups`). Set-up measures
  * layout, builds ScrollTriggers and sets inline styles; done inside the swap,
- * all of that is time the old page sits frozen on screen.
+ * all of that is time the old page sits frozen on screen. The first visit holds
+ * them too, until the page has hydrated (PageTransition runs them): otherwise
+ * every section's set-up ran in one block before the hero's entrance could
+ * start, the longest freeze of a slow phone's load.
  */
-let holdingSetups = false;
+let holdingSetups = typeof window !== "undefined";
 const heldSetups: { context: gsap.Context; run: () => void }[] = [];
 export function holdSetups() {
   holdingSetups = true;

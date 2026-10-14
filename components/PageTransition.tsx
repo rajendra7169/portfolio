@@ -51,9 +51,14 @@ export function PageTransition({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
   };
 
-  // First visit: the page's own entrance plays straight away.
+  // First visit: the page's own entrance plays straight away, and the set-ups
+  // run one at a time from the hero down (lib/gsap), then one last measure.
   useEffect(() => {
     release();
+    runSetups(() => {
+      const idle = window.requestIdleCallback ?? ((fn: () => void) => window.setTimeout(fn, 200));
+      idle(() => ScrollTrigger.refresh(), { timeout: 1200 });
+    });
   }, []);
 
   // Pointing at a way into Stories starts the fonts its welcome writes with.
