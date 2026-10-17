@@ -31,6 +31,8 @@ export const metadata: Metadata = {
     "Software developer at Matrika Technology in Kathmandu, and the maker of Blazify — a free, open-source music player for Android, iPhone and desktop.",
   metadataBase: new URL("https://rajendrapandey.info.np"),
   openGraph: { title: "Rajendra Pandey", description: "Software developer in Kathmandu. Maker of Blazify.", type: "website" },
+  // The picture itself is app/opengraph-image.jpg; this asks for it at full width.
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { themeColor: "#edf9fe" };
