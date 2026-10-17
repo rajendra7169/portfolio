@@ -165,6 +165,67 @@
   font-weight: 600;
 }
 
+/* Get it: the running total, then one button per platform with its own count. */
+.bz-get {
+  margin-top: 30px;
+  max-width: 36rem;
+}
+.bz-get-total {
+  color: var(--bz-dim);
+  font-size: 15px;
+}
+.bz-get-total b {
+  margin-right: 6px;
+  font-family: var(--bz-display);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--bz-amber);
+  font-variant-numeric: tabular-nums;
+}
+.bz-get-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  padding: 0;
+  list-style: none;
+}
+.bz-get-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid rgb(255 244 230 / 0.16);
+  border-radius: 16px;
+  color: var(--bz-cream);
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.bz-get-btn:hover,
+.bz-get-btn:focus-visible {
+  border-color: var(--bz-amber);
+  background: rgb(255 167 38 / 0.06);
+}
+.bz-get-ico {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.bz-get-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.bz-get-n {
+  color: var(--bz-dim);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  .bz-get-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* The deck: a record, its sheen, and a tonearm that swings over at the start. */
 .bz-deck {
   position: relative;

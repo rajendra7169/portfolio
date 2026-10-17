@@ -11,6 +11,7 @@ import BzEqualizer from "@/components/proj/sig/BzEqualizer";
 import { hasShot, iconOf, nextProject, PLATFORMS, shot, type Project } from "@/lib/projects";
 import WorldNext from "../WorldNext";
 import BlazifyMotion from "./BlazifyMotion";
+import Get from "./Get";
 import LinerNotes from "./notes/LinerNotes";
 import Room from "./Room";
 import "./blazify.css";
@@ -84,6 +85,7 @@ export default function Blazify({ p }: { p: Project }) {
               </a>
             ))}
           </div>
+          <Get />
         </div>
 
         <div className="bz-deck" aria-hidden="true">

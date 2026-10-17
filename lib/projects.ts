@@ -90,8 +90,8 @@ export const projects: Project[] = [
       { value: 6, label: "player designs" },
     ],
     links: [
+      // The downloads, one per platform with its count, are under these (components/worlds/blazify/Get.tsx).
       { label: "Website", href: "https://rajendra7169.github.io/blazify/", primary: true },
-      { label: "Download for Android", href: "https://apkpure.com/blazify/com.blazify.music" },
       { label: "Source", href: `${GH}/blazify` },
     ],
     credit:

@@ -84,7 +84,7 @@ export default function BlazifyMotion({ className, children }: { className: stri
           .from(q(".bz-np"), { y: 18, autoAlpha: 0, duration: 0.8 }, 0.2)
           .from(q(".bz-letter"), { yPercent: 118, duration: 1.2, stagger: 0.055 }, 0.25)
           .from(q(".bz-word"), { y: 22, autoAlpha: 0, duration: 0.8, stagger: 0.06 }, 0.85)
-          .from(q(".bz-lede, .bz-links > *"), { y: 22, autoAlpha: 0, duration: 0.8, stagger: 0.08 }, 1.05)
+          .from(q(".bz-lede, .bz-links > *, .bz-get-total, .bz-get-list > *"), { y: 22, autoAlpha: 0, duration: 0.8, stagger: 0.08 }, 1.05)
           .from(q(".bz-deck-hint"), { autoAlpha: 0, duration: 0.8 }, 2.2)
           .from(q(".bz-mini"), { yPercent: 170, duration: 1.1 }, 1.5);
         afterReveal(() => intro.play());
