@@ -36,6 +36,8 @@ export const metadata: Metadata = {
   openGraph: { title: "Rajendra Pandey", description: "Software developer in Kathmandu. Maker of Blazify.", type: "website" },
   // The picture itself is app/opengraph-image.jpg; this asks for it at full width.
   twitter: { card: "summary_large_image" },
+  // Proves to Google Search Console that this site is mine.
+  verification: { google: "69dcMISuDM5ybvBzjkPmnvckwH5Qdnm-EMtlFjUVEvE" },
 };
 
 export const viewport: Viewport = { themeColor: "#edf9fe" };
