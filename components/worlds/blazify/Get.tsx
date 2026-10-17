@@ -1,16 +1,17 @@
 // Where to get Blazify, and how many already have. Each button opens the
 // platform's release page, never the file itself: the page says what's new and
-// which file to pick. Windows goes to GitLab, where its installer lives.
+// which file to pick.
 import Icon from "@/components/Icon";
 import { blazifyDownloads } from "@/lib/blazify-downloads";
 import { PLATFORMS } from "@/lib/projects";
 
-const GH = "https://github.com/rajendra7169";
+// Each goes through /dl/<platform> (app/dl/[platform]/route.ts), which sends the
+// click to GitHub, or to GitLab or Codeberg when GitHub doesn't answer.
 const PAGES = [
-  { key: "android", label: "Android", href: `${GH}/blazify/releases/latest` },
-  { key: "ios", label: "iPhone", href: `${GH}/blazify-ios/releases/latest` },
-  { key: "windows", label: "Windows", href: "https://gitlab.com/hackerraja7169/blazify/-/packages?search=blazify-desktop" },
-  { key: "linux", label: "Linux", href: `${GH}/blazify-desktop/releases/latest` },
+  { key: "android", label: "Android", href: "/dl/android" },
+  { key: "ios", label: "iPhone", href: "/dl/iphone" },
+  { key: "windows", label: "Windows", href: "/dl/windows" },
+  { key: "linux", label: "Linux", href: "/dl/linux" },
 ] as const;
 
 const fmt = (n: number) => n.toLocaleString("en-US");
