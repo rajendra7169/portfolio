@@ -26,10 +26,13 @@ const reading = Literata({ subsets: ["latin", "latin-ext"], style: ["normal", "i
 const logo = localFont({ src: "./fonts/Agustina.woff2", weight: "400", variable: "--font-agustina", display: "swap" });
 
 export const metadata: Metadata = {
-  title: { default: "Rajendra's Portfolio", template: "%s · Rajendra Pandey" },
+  // The full name leads: it is what people type to find this site.
+  title: { default: "Rajendra Pandey — Software Developer in Kathmandu, Maker of Blazify", template: "%s · Rajendra Pandey" },
   description:
     "Software developer at Matrika Technology in Kathmandu, and the maker of Blazify — a free, open-source music player for Android, iPhone and desktop.",
   metadataBase: new URL("https://rajendrapandey.info.np"),
+  // Each page names itself as the one true address (www and ?query copies point here).
+  alternates: { canonical: "./" },
   openGraph: { title: "Rajendra Pandey", description: "Software developer in Kathmandu. Maker of Blazify.", type: "website" },
   // The picture itself is app/opengraph-image.jpg; this asks for it at full width.
   twitter: { card: "summary_large_image" },
