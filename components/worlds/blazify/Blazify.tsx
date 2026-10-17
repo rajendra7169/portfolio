@@ -6,6 +6,8 @@
 // ember; Anton, Instrument Serif and Outfit).
 import { Anton, Instrument_Serif, Noto_Serif_Devanagari, Outfit } from "next/font/google";
 import Icon from "@/components/Icon";
+import JsonLd from "@/components/JsonLd";
+import { blazifyApp } from "@/lib/seo";
 import { AppTile, DesktopShell, Laptop, OsWindow, Phone, Shot } from "@/components/proj/Devices";
 import BzEqualizer from "@/components/proj/sig/BzEqualizer";
 import { hasShot, iconOf, nextProject, PLATFORMS, shot, type Project } from "@/lib/projects";
@@ -46,6 +48,7 @@ export default function Blazify({ p }: { p: Project }) {
 
   return (
     <BlazifyMotion className={`w-bz ${display.variable} ${serif.variable} ${body.variable} ${deva.variable}`}>
+      <JsonLd data={blazifyApp([...android.slice(0, 4), ...iphone.slice(0, 2), ...desk.slice(0, 2)].map((s) => shot(s.img).src), iconOf(p)!.src)} />
       {/* ── The record ─────────────────────────────────────────────────── */}
       <section className="bz-hero">
         <span className="bz-hero-glow" aria-hidden="true" />
