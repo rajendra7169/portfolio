@@ -157,12 +157,12 @@ export default function Hero() {
               <div className="hx-photo">
                 {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
                 <img
-                  src="/images/hero-800.webp"
-                  srcSet="/images/hero-800.webp 800w, /images/hero-1600.webp 1600w"
+                  src="/images/rajendra-pandey-800.webp"
+                  srcSet="/images/rajendra-pandey-800.webp 800w, /images/rajendra-pandey-1600.webp 1600w"
                   sizes="(max-width: 899px) 80vw, 40vw"
                   width={800}
                   height={906}
-                  alt="Rajendra Pandey in a suit and sunglasses"
+                  alt="Rajendra Pandey, software developer in Kathmandu and maker of Blazify"
                   fetchPriority="high"
                   draggable={false}
                 />

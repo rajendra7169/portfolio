@@ -138,7 +138,7 @@ export default function ContactHero() {
               <div className="ch-avatar">
                 <span className="ch-avatar-img">
                   {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized by `npm run images` */}
-                  <img src="/images/contact-800.webp" alt="Rajendra Pandey" draggable={false} />
+                  <img src="/images/rajendra-pandey-contact-800.webp" alt="Rajendra Pandey, software developer in Kathmandu" draggable={false} />
                 </span>
                 <span className="ch-onair" aria-hidden="true">
                   <i /> On air

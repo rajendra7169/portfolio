@@ -956,7 +956,7 @@ main {
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  mask: url("/images/hero-800.webp") center / 100% 100% no-repeat;
+  mask: url("/images/rajendra-pandey-800.webp") center / 100% 100% no-repeat;
   background: repeating-linear-gradient(to bottom, rgb(74 168 224 / 0.12) 0 2px, transparent 2px 6px);
 }
 /* The bright band, a third of the photo tall, sweeps down it: the same path as
