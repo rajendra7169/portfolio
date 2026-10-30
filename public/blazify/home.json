@@ -1,33 +1,33 @@
 {
   "_about": "Blazify's backup update source, written by scripts/publish_backup.py. The app reads this only when GitHub cannot answer, and tries each APK's urls in order.",
   "latest": {
-    "version": "9.17.0",
-    "date": "2026-10-08",
-    "notes": "<div align=\"center\">\n\n### [![Download Blazify for Android](https://img.shields.io/badge/Download_Blazify_9.17.0-FFA726?style=for-the-badge&logoColor=1A0E00&logo=android)](https://github.com/rajendra7169/blazify/releases/latest/download/Blazify-gms.apk)\n\n**One click. No choosing.** That button gives you the build for an ordinary phone: everything\nBlazify does, casting to a Chromecast, a smart speaker or a television included, and it tells you\nwhen there is a new version.\n\nOn a phone with no Google services — de-Googled, LineageOS, a Huawei — take\n[Blazify.apk](https://github.com/rajendra7169/blazify/releases/latest/download/Blazify.apk)\nbelow instead: the same app, without playing to a television.\n\n</div>\n\n---\n\n## Highlights\n- **Opens about twice as fast** — Home appears in roughly half the time it used to, straight from the launch screen, on every phone\n- **A new look for loading** — Blazify's own logo tells its little story wherever the app waits. No separate splash screen any more\n- **Browse, mood and genre pages, redone** — the moods, then Genres under their own heading, ordered by what you listen to; mood pages open whole with big cards and songs as a list, with a placeholder in the right shape while they load\n- **Smoother on every phone** — Search scrolls smoothly again, Home's shelves are reused as they scroll, and the screen rests when nothing is changing\n- **Updates keep coming even if GitHub doesn't answer** — the app falls back to Blazify's own website, downloads from GitLab and then Codeberg, and picks up a dropped download where it stopped\n\n## New features\n- **One button row for playlists and albums** — like and download on the left, Play in the middle, shuffle and more on the right; a playlist from Browse downloads in one tap\n- Lists open on the song that is playing, instead of a Jump to playing button\n- Download sits among the first tiles of a song's menu\n- Every cover shows the Blazify mark while it loads, or when a song has none\n- Home's greeting card takes the colour of the song that is playing\n- Blaze Together runs on Blazify's own server, and says why if a room can't be made\n\n## Fixes and improvements\n- **Quick picks, Daily discover and radio find related songs again** — YouTube had moved them, and Quick picks fell to a single song\n- Forgotten favourites holds the songs you have stopped playing, not only the ones you still play\n- Choosing another song after one failed to load now plays it, instead of staying on the error\n- A song link that opens Blazify always plays, even when it arrives before the player is ready\n- Fixed a crash when a cover could not load, for example with no connection\n- Pressing Next shows the new cover at once instead of a placeholder\n- Quick picks stay where they first appear instead of reshuffling a few seconds after Home opens\n- Video Art plays through a song's last 45 seconds instead of freezing, picks the official video closest in length to the song, and goes round again when the video is shorter\n- Better Lyrics signs in when a song plays, not when the app opens\n- Onboarding stays inside the screen edges, so Skip can always be pressed\n- A finished update download is kept even when its name is already taken in Downloads\n\n---\n\n**Also on this page:** `Blazify.apk` for phones without Google services, and `Blazify-izzy-9.17.0.apk`,\nthe build with no updater for F-Droid-style repositories.\n\n**Full changelog**: https://github.com/rajendra7169/blazify/compare/v9.16.0...v9.17.0\n",
+    "version": "9.18.0",
+    "date": "2026-10-30",
+    "notes": "<div align=\"center\">\n\n### [![Download Blazify for Android](https://img.shields.io/badge/Download_Blazify_9.18.0-FFA726?style=for-the-badge&logoColor=1A0E00&logo=android)](https://github.com/rajendra7169/blazify/releases/download/v9.18.0/Blazify-gms.apk)\n\n**One click. No choosing.** That button gives you the build for an ordinary phone: everything\nBlazify does, casting to a Chromecast, a smart speaker or a television included, and it tells you\nwhen there is a new version.\n\nOn a phone with no Google services (de-Googled, LineageOS, a Huawei), take\n[Blazify.apk](https://github.com/rajendra7169/blazify/releases/download/v9.18.0/Blazify.apk)\nbelow instead: the same app, without playing to a television.\n\n</div>\n\n---\n\n## Highlights\n- **Songs no longer stop about 30 seconds in.** On phones where YouTube's token can't be made, the song now comes from a source that needs none and plays to the end, and a stream refused mid-song carries on from the same second ([#23](https://github.com/rajendra7169/blazify/issues/23))\n- **Half the download:** about 14 MB instead of 29 MB. The Japanese reading dictionary is fetched only when you ask for Japanese lyrics in English letters, and Home's pictures are smaller files\n- **Music keeps going without a connection:** on Wi-Fi the next three songs are saved to the phone, and with no connection the queue goes on with songs that are there instead of stopping\n- **Offline, Home plays what you have:** the shuffle button, For you and Speed dial play the songs saved on your phone, shuffled, instead of an online radio that fails\n- **Sync a song's plain lyrics yourself:** tap along as it plays and the lines light up in time from then on\n\n## New features\n- Remove from queue in a song's menu, not only by swiping it away\n- Discord shows Blazify as what you are listening on\n- The Ring player has shuffle on the left and repeat on the right, with the standard play button, so the controls stay put when the lyrics open\n- Spanish has every newer text, for Spain and Latin America, and the last English words in screens follow the app's language\n\n## Fixes and improvements\n- **The search screen no longer breaks after you delete a search:** Recent searches and Browse show cleanly instead of over the old results ([#24](https://github.com/rajendra7169/blazify/issues/24))\n- A song YouTube turns away with a \"confirm you're not a bot\" check is asked for again with a fresh session, instead of being skipped as unavailable\n- Going back while editing a search returns to its results with the words they belong to\n- Last.fm scrobbling works again (in the F-Droid build, add your own Last.fm key)\n- Shuffle with crossfade keeps one shuffled order instead of repeating songs and skipping others\n- With explicit songs or videos hidden, tapping a song in a list plays that song, not the one that moved into its place\n- A playlist sorted by artist keeps each artist's songs together, ordered by album\n- Lyrics: outside full screen the current line sits a little lower, so the line just sung no longer hides behind the Sources button\n- Equalizer graph: negative dB labels keep their minus sign, and the 100, 1k and 10k labels are no longer cut in half\n- The playback error report shows the real time of the error\n- Release builds no longer include a design-preview screen that other apps could open\n\n---\n\n**Also on this page:** `Blazify.apk` for phones without Google services, and `Blazify-izzy-9.18.0.apk`,\nthe build with no updater for F-Droid-style repositories.\n\n**Full changelog**: https://github.com/rajendra7169/blazify/compare/v9.17.0...v9.18.0\n",
     "prerelease": false,
     "apks": [
       {
-        "name": "Blazify-gms-9.17.0.apk",
-        "size": 28946838,
+        "name": "Blazify-gms-9.18.0.apk",
+        "size": 13906380,
         "urls": [
-          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.17.0/Blazify-gms-9.17.0.apk",
-          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.17.0/Blazify-gms-9.17.0.apk"
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.18.0/Blazify-gms-9.18.0.apk",
+          "https://codeberg.org/attachments/4c12b000-340e-442f-82ca-2f10d00d8897"
         ]
       },
       {
         "name": "Blazify-gms.apk",
-        "size": 28946838,
+        "size": 13906380,
         "urls": [
-          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.17.0/Blazify-gms.apk",
-          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.17.0/Blazify-gms.apk"
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.18.0/Blazify-gms.apk",
+          "https://codeberg.org/attachments/211c9945-865c-4f0a-93bd-a367884cc796"
         ]
       },
       {
         "name": "Blazify.apk",
-        "size": 27364239,
+        "size": 12340141,
         "urls": [
-          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.17.0/Blazify.apk",
-          "https://codeberg.org/rajaindra7169/blazify/releases/download/v9.17.0/Blazify.apk"
+          "https://gitlab.com/api/v4/projects/hackerraja7169%2Fblazify/packages/generic/blazify/9.18.0/Blazify.apk",
+          "https://codeberg.org/attachments/155d8305-1c5e-4d9d-90e3-0f445a0c7671"
         ]
       }
     ]
